@@ -3,13 +3,10 @@ package testcase;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.jd.dd.glowworm.PB;
-import com.jd.dd.glowworm.util.InvalidProtocolBufferException;
 import com.jd.dd.glowworm.util.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,35 +110,35 @@ public class TestBase {
 //    }
 //
 //
-//    //执行序列化+反序列化，与fastJSON的对比测试可以开启
-//    //并记录反序列化的耗时
-//    protected synchronized Object executeBackAndForth(Object obj, Parameters parameters) throws InterruptedException {
-//        Object result = null;
-//        if (isForFunctionality) {
-//            byte[] bytes = PB.toPBBytes(obj, parameters);
-//            result = PB.parsePBBytes(bytes, parameters);
-//            return result;
-//        } else {
-//            if (needCompareWithFastJSON) {
-//                return compareWithFastJSON(obj, parameters);
-//            } else {
-//                if (!isFirstExecutation) {
-//                    for (int i = preHeatTimes; i > 0; i--) {
-//                        PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
-//                    }
-//                    isFirstExecutation = true;
-//                }
-//                Long start = System.currentTimeMillis();
-//                for (int i = 0; i < runTimes; i++) {
-//                    result = PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
-//                }
-//                Long end = System.currentTimeMillis();
-//                logger.info("测试序列化+反序列化{}  {} 执行时间 {}ms", new Object[]{result.getClass().getSimpleName(), result.toString(), (end - start)});
-//                return result;
-//            }
-//        }
-//    }
-//
+    //执行序列化+反序列化，与fastJSON的对比测试可以开启
+    //并记录反序列化的耗时
+    protected synchronized Object executeBackAndForth(Object obj, Parameters parameters) throws InterruptedException {
+        Object result = null;
+        if (isForFunctionality) {
+            byte[] bytes = PB.toPBBytes(obj, parameters);
+            result = PB.parsePBBytes(bytes, parameters);
+            return result;
+        } else {
+            if (needCompareWithFastJSON) {
+                return compareWithFastJSON(obj, parameters);
+            } else {
+                if (!isFirstExecutation) {
+                    for (int i = preHeatTimes; i > 0; i--) {
+                        PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
+                    }
+                    isFirstExecutation = true;
+                }
+                Long start = System.currentTimeMillis();
+                for (int i = 0; i < runTimes; i++) {
+                    result = PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
+                }
+                Long end = System.currentTimeMillis();
+                logger.info("测试序列化+反序列化{}  {} 执行时间 {}ms", new Object[]{result.getClass().getSimpleName(), result.toString(), (end - start)});
+                return result;
+            }
+        }
+    }
+
     //执行序列化+反序列化，与fastJSON的对比测试可以开启
     //并记录耗时
     protected synchronized <T> T executeBackAndForth(Object obj, Class<T> clazz) throws InterruptedException {
@@ -169,36 +166,36 @@ public class TestBase {
             }
         }
     }
-//
-//
-//    //执行序列化+反序列化，与fastJSON的对比测试可以开启
-//    //并记录反序列化的耗时
-//    protected synchronized <T> T executeBackAndForth(Object obj,Class<T> fieldClass, Parameters parameters) throws InterruptedException {
-//        Object result = null;
-//        if (isForFunctionality) {
-//            result = PB.parsePBBytes(PB.toPBBytes(obj, parameters),fieldClass, parameters);
-//            return (T)result;
-//        } else {
-//            if (needCompareWithFastJSON) {
-//                return compareWithFastJSON(obj, fieldClass, parameters);
-//            } else {
-//                if (!isFirstExecutation) {
-//                    for (int i = preHeatTimes; i > 0; i--) {
-//                        PB.parsePBBytes(PB.toPBBytes(obj, parameters), fieldClass, parameters);
-//                    }
-//                    isFirstExecutation = true;
-//                }
-//                Long start = System.currentTimeMillis();
-//                for (int i = 0; i < runTimes; i++) {
-//                    result = PB.parsePBBytes(PB.toPBBytes(obj, parameters), fieldClass, parameters);
-//                }
-//                Long end = System.currentTimeMillis();
-//                logger.info("测试序列化+反序列化{}  {} 执行时间 {}ms", new Object[]{result.getClass().getSimpleName(), result.toString(), (end - start)});
-//                return (T)result;
-//            }
-//        }
-//    }
-//
+
+
+    //执行序列化+反序列化，与fastJSON的对比测试可以开启
+    //并记录反序列化的耗时
+    protected synchronized <T> T executeBackAndForth(Object obj,Class<T> fieldClass, Parameters parameters) throws InterruptedException {
+        Object result = null;
+        if (isForFunctionality) {
+            result = PB.parsePBBytes(PB.toPBBytes(obj, parameters),fieldClass, parameters);
+            return (T)result;
+        } else {
+            if (needCompareWithFastJSON) {
+                return compareWithFastJSON(obj, fieldClass, parameters);
+            } else {
+                if (!isFirstExecutation) {
+                    for (int i = preHeatTimes; i > 0; i--) {
+                        PB.parsePBBytes(PB.toPBBytes(obj, parameters), fieldClass, parameters);
+                    }
+                    isFirstExecutation = true;
+                }
+                Long start = System.currentTimeMillis();
+                for (int i = 0; i < runTimes; i++) {
+                    result = PB.parsePBBytes(PB.toPBBytes(obj, parameters), fieldClass, parameters);
+                }
+                Long end = System.currentTimeMillis();
+                logger.info("测试序列化+反序列化{}  {} 执行时间 {}ms", new Object[]{result.getClass().getSimpleName(), result.toString(), (end - start)});
+                return (T)result;
+            }
+        }
+    }
+
 
 //    private <T> T compareWithFastJSON(T obj) {
 //        byte[] fastJSONBytes = JSON.toJSONBytes(obj, SerializerFeature.WriteClassName);
@@ -229,35 +226,35 @@ public class TestBase {
 //        return glowWormResult;
 //    }
 //
-//    private <T> T compareWithFastJSON(T obj, Parameters parameters) {
-//        byte[] fastJSONBytes = JSON.toJSONBytes(obj, SerializerFeature.WriteClassName);
-//        for (int i = 0; i < preHeatTimes; i++) {
-//            JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
-//        }
-//        T fastJsonResult = null;
-//        Long startFj = System.currentTimeMillis();
-//        for (int i = 0; i < runTimes; i++) {
-//            fastJsonResult = (T) JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
-//        }
-//        Long endFj = System.currentTimeMillis();
-//
-//        byte[] glowWormBytes = PB.toPBBytes(obj, parameters);
-//        for (int i = 0; i < preHeatTimes; i++) {
-//            PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
-//        }
-//        T glowWormResult = null;
-//        Long startGw = System.currentTimeMillis();
-//        for (int i = 0; i < runTimes; i++) {
-//            glowWormResult = (T) PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
-//        }
-//        Long endGw = System.currentTimeMillis();
-//        logger.info("对比测试：{}  {}", new Object[]{obj.getClass().getSimpleName(), obj.toString()});
-//        logger.info("byte数组大小对比---fastJSON：{}   glowWorm: {}", new Object[]{fastJSONBytes.length, glowWormBytes.length});
-//        logger.info("速度对比----------fastJSON: {}ms glowWorm: {}ms", new Object[]{(endFj - startFj), (endGw - startGw)});
-//        logger.info("--------------------------------------------------------------");
-//        return glowWormResult;
-//    }
-//
+    private <T> T compareWithFastJSON(T obj, Parameters parameters) {
+        byte[] fastJSONBytes = JSON.toJSONBytes(obj, SerializerFeature.WriteClassName);
+        for (int i = 0; i < preHeatTimes; i++) {
+            JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
+        }
+        T fastJsonResult = null;
+        Long startFj = System.currentTimeMillis();
+        for (int i = 0; i < runTimes; i++) {
+            fastJsonResult = (T) JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
+        }
+        Long endFj = System.currentTimeMillis();
+
+        byte[] glowWormBytes = PB.toPBBytes(obj, parameters);
+        for (int i = 0; i < preHeatTimes; i++) {
+            PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
+        }
+        T glowWormResult = null;
+        Long startGw = System.currentTimeMillis();
+        for (int i = 0; i < runTimes; i++) {
+            glowWormResult = (T) PB.parsePBBytes(PB.toPBBytes(obj, parameters), parameters);
+        }
+        Long endGw = System.currentTimeMillis();
+        logger.info("对比测试：{}  {}", new Object[]{obj.getClass().getSimpleName(), obj.toString()});
+        logger.info("byte数组大小对比---fastJSON：{}   glowWorm: {}", new Object[]{fastJSONBytes.length, glowWormBytes.length});
+        logger.info("速度对比----------fastJSON: {}ms glowWorm: {}ms", new Object[]{(endFj - startFj), (endGw - startGw)});
+        logger.info("--------------------------------------------------------------");
+        return glowWormResult;
+    }
+
 
     private <T> T compareWithFastJSON(Object obj, Class<T> clazz) {
         byte[] fastJSONBytes = JSON.toJSONBytes(obj, SerializerFeature.WriteClassName);
@@ -287,35 +284,35 @@ public class TestBase {
         logger.info("--------------------------------------------------------------");
         return glowWormResult;
     }
-//
-//    private <T> T compareWithFastJSON(Object obj, Class<T> clazz, Parameters parameters) {
-//        byte[] fastJSONBytes = JSON.toJSONBytes(obj, SerializerFeature.WriteClassName);
-//        for (int i = 0; i < preHeatTimes; i++) {
-//            JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
-//        }
-//        T fastJsonResult = null;
-//        Long startFj = System.currentTimeMillis();
-//        for (int i = 0; i < runTimes; i++) {
-//            fastJsonResult = (T) JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
-//        }
-//        Long endFj = System.currentTimeMillis();
-//
-//        byte[] glowWormBytes = PB.toPBBytes(obj, parameters);
-//        for (int i = 0; i < preHeatTimes; i++) {
-//            PB.parsePBBytes(PB.toPBBytes(obj, parameters), clazz, parameters);
-//        }
-//        T glowWormResult = null;
-//        Long startGw = System.currentTimeMillis();
-//        for (int i = 0; i < runTimes; i++) {
-//            glowWormResult = PB.parsePBBytes(PB.toPBBytes(obj, parameters), clazz, parameters);
-//        }
-//        Long endGw = System.currentTimeMillis();
-//        logger.info("对比测试：{}  {}", new Object[]{obj.getClass().getSimpleName(), obj.toString()});
-//        logger.info("byte数组大小对比---fastJSON：{}   glowWorm: {}", new Object[]{fastJSONBytes.length, glowWormBytes.length});
-//        logger.info("速度对比----------fastJSON: {}ms glowWorm: {}ms", new Object[]{(endFj - startFj), (endGw - startGw)});
-//        logger.info("--------------------------------------------------------------");
-//        return glowWormResult;
-//    }
+
+    private <T> T compareWithFastJSON(Object obj, Class<T> clazz, Parameters parameters) {
+        byte[] fastJSONBytes = JSON.toJSONBytes(obj, SerializerFeature.WriteClassName);
+        for (int i = 0; i < preHeatTimes; i++) {
+            JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
+        }
+        T fastJsonResult = null;
+        Long startFj = System.currentTimeMillis();
+        for (int i = 0; i < runTimes; i++) {
+            fastJsonResult = (T) JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
+        }
+        Long endFj = System.currentTimeMillis();
+
+        byte[] glowWormBytes = PB.toPBBytes(obj, parameters);
+        for (int i = 0; i < preHeatTimes; i++) {
+            PB.parsePBBytes(PB.toPBBytes(obj, parameters), clazz, parameters);
+        }
+        T glowWormResult = null;
+        Long startGw = System.currentTimeMillis();
+        for (int i = 0; i < runTimes; i++) {
+            glowWormResult = PB.parsePBBytes(PB.toPBBytes(obj, parameters), clazz, parameters);
+        }
+        Long endGw = System.currentTimeMillis();
+        logger.info("对比测试：{}  {}", new Object[]{obj.getClass().getSimpleName(), obj.toString()});
+        logger.info("byte数组大小对比---fastJSON：{}   glowWorm: {}", new Object[]{fastJSONBytes.length, glowWormBytes.length});
+        logger.info("速度对比----------fastJSON: {}ms glowWorm: {}ms", new Object[]{(endFj - startFj), (endGw - startGw)});
+        logger.info("--------------------------------------------------------------");
+        return glowWormResult;
+    }
 
     protected static int encodeZigZag32(int n) {
         // Note: the right-shift must be arithmetic

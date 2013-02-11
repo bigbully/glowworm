@@ -13,7 +13,7 @@ public class StringDeserializer implements ObjectDeserializer {
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         String value = null;
         try {
-            value = deserializer.scanString();
+            value = deserializer.scanStringWithCharset();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

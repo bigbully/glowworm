@@ -13,7 +13,6 @@ import com.jd.dd.glowworm.deserializer.primary.*;
 import com.jd.dd.glowworm.deserializer.reflect.DefaultFieldDeserializer;
 import com.jd.dd.glowworm.deserializer.reflect.FieldDeserializer;
 import com.jd.dd.glowworm.deserializer.reflect.JavaBeanDeserializer;
-import com.jd.dd.glowworm.serializer.multi.ListSerializer;
 import com.jd.dd.glowworm.util.*;
 import com.jd.dd.glowworm.util.IdentityHashMap;
 
@@ -27,8 +26,6 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -351,6 +348,14 @@ public class PBDeserializer {
         return theCodedInputStream.readString();
     }
 
+    public String scanStringWithCharset() throws Exception {
+        if (parameters != null){
+            return theCodedInputStream.readString(parameters.getCharset());
+        }else {
+            return theCodedInputStream.readString();
+        }
+    }
+
     public Object getReference() {
         //todo
         return null;
@@ -640,5 +645,11 @@ public class PBDeserializer {
     }
 
 
+    public Parameters getParameters() {
+        return parameters;
+    }
 
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
+    }
 }

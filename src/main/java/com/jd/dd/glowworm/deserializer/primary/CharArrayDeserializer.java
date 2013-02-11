@@ -14,7 +14,7 @@ public class CharArrayDeserializer implements ObjectDeserializer{
         String value = null;
         try {
             if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
-                value = deserializer.scanString();
+                value = deserializer.scanStringWithCharset();
             }
         }catch (Exception e){
             e.printStackTrace();

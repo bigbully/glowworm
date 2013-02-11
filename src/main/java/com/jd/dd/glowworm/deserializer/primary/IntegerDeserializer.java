@@ -12,11 +12,7 @@ public class IntegerDeserializer implements ObjectDeserializer {
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         Integer value = null;
         try {
-            if (needConfirmExist) {
-                if (deserializer.isObjectExist()) {
-                    value = deserializer.scanInt();
-                }
-            } else {
+            if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
                 value = deserializer.scanInt();
             }
         } catch (Exception ex) {

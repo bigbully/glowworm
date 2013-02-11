@@ -3,6 +3,8 @@ package com.jd.dd.glowworm;
 import com.jd.dd.glowworm.deserializer.ObjectDeserializer;
 import com.jd.dd.glowworm.deserializer.PBDeserializer;
 import com.jd.dd.glowworm.serializer.PBSerializer;
+import com.jd.dd.glowworm.util.Parameters;
+import com.jd.dd.glowworm.util.TypeUtils;
 
 public class PB {
 
@@ -146,102 +148,88 @@ public class PB {
         return retObj;
     }
 
-//
-//
-//    //-----------------------------------------带Parameters参数的--------------------
-//
-//    /**
-//     * 反序列化的方法，带参数
-//     * @param pbBytesParm 反序列化传入的byte
-//     * @param fieldClass 反序列化传入的类型，不能是接口类型
-//     * @param parameters 如果需要选择编码类型，需要写入类型，则创建Parameters对象
-//     * @param <T>
-//     * @return 返回值是fieldClass的实例
-//     */
-//    public static <T> T parsePBBytes(byte[] pbBytesParm, Class<T> fieldClass, Parameters parameters) {
-//        if (pbBytesParm == null){
-//            throw new PBException("不能反序列化空byte数组!");
-//        }
-//        PBDeserializer tmpPBDeserializer = new PBDeserializer(pbBytesParm);
-//        tmpPBDeserializer.setParameters(parameters);
-//        try {
-//            //分析数组头
-//            if (tmpPBDeserializer.hasHead(pbBytesParm)){
-//                tmpPBDeserializer.analysizeHead();
-//            }else {
-//                tmpPBDeserializer.scanByte();
-//            }
-//            if (parameters.getNeedWriteClassName()){
-//                String tmpClassName = tmpPBDeserializer.scanString();
-//            }
-//            return (T)deserializeObj(tmpPBDeserializer, fieldClass);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return null;
-//        }finally {
-//            tmpPBDeserializer.close();
-//        }
-//    }
-//
-//    /**
-//     * 反序列化的方法，带参数
-//     * @param pbBytesParm 反序列化传入的byte数组
-//     * @param parameters 如果需要选择编码类型，需要写入类型，则创建Parameters对象
-//     * @param <T>
-//     * @return object，需要强转
-//     */
-//    public static <T> T parsePBBytes(byte[] pbBytesParm, Parameters parameters) {
-//        if (pbBytesParm == null){
-//            throw new PBException("不能反序列化空byte数组!");
-//        }
-//        PBDeserializer tmpPBDeserializer = new PBDeserializer(pbBytesParm);
-//        tmpPBDeserializer.setParameters(parameters);
-//        Class fieldClass = null;
-//        try {
-//            //分析数组头
-//            if (tmpPBDeserializer.hasHead(pbBytesParm)){
-//                tmpPBDeserializer.analysizeHead();
-//            }else {
-//                tmpPBDeserializer.scanByte();
-//            }
-//            if (parameters.getNeedWriteClassName()){
-//                String tmpClassName = tmpPBDeserializer.scanString();
-//                fieldClass = TypeUtils.loadClass(tmpClassName);
-//            }
-//            return (T)deserializeObj(tmpPBDeserializer, fieldClass);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return null;
-//        }finally {
-//            tmpPBDeserializer.close();
-//        }
-//
-//    }
-//
-//    /**
-//     * 序列化方法，带参数
-//     * @param objectParm 需要序列化的对象
-//     * @param parameters 如果需要选择编码类型，需要写入类型，则创建Parameters对象
-//     * @return 序列化生成的byte数组
-//     */
-//    public static byte[] toPBBytes(Object objectParm, Parameters parameters) {
-//        SerializeWriter tmpSerializeWriter = new SerializeWriter();
-//        try {
-//
-//            PBSerializer tmpPBSerializer = new PBSerializer(tmpSerializeWriter);
-//            tmpPBSerializer.setParameters(parameters);
-//
-//            if (parameters.getNeedWriteClassName()){
-//                // 对象类型字符串
-//                Class<?> clazz = objectParm.getClass();
-//                tmpSerializeWriter.getCodedOutputStream().writeString(clazz.getName());
-//            }
-//
-//            tmpPBSerializer.write(objectParm);
-//            return tmpPBSerializer.createByteArray();
-//        }finally {
-//            tmpSerializeWriter.close();
-//        }
-//
-//    }
+
+
+    //-----------------------------------------带Parameters参数的--------------------
+
+    /**
+     * 反序列化的方法，带参数
+     * @param bytes 反序列化传入的byte
+     * @param fieldClass 反序列化传入的类型，不能是接口类型
+     * @param parameters 如果需要选择编码类型，需要写入类型，则创建Parameters对象
+     * @param <T>
+     * @return 返回值是fieldClass的实例
+     */
+    public static <T> T parsePBBytes(byte[] bytes, Class<T> fieldClass, Parameters parameters) {
+        if (bytes == null){
+            throw new PBException("不能反序列化空byte数组!");
+        }
+        PBDeserializer deserializer = new PBDeserializer();
+        deserializer.setParameters(parameters);
+        try {
+            deserializer.analysizeHead(bytes);
+            if (parameters.getNeedWriteClassName()){
+                String tmpClassName = deserializer.scanString();
+            }
+            return (T)deserializeObj(deserializer, fieldClass);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            deserializer.close();
+        }
+    }
+
+    /**
+     * 反序列化的方法，带参数
+     * @param bytes 反序列化传入的byte数组
+     * @param parameters 如果需要选择编码类型，需要写入类型，则创建Parameters对象
+     * @param <T>
+     * @return object，需要强转
+     */
+    public static <T> T parsePBBytes(byte[] bytes, Parameters parameters) {
+        if (bytes == null){
+            throw new PBException("不能反序列化空byte数组!");
+        }
+        PBDeserializer deserializer = new PBDeserializer();
+        deserializer.setParameters(parameters);
+        Class fieldClass = null;
+        try {
+            //分析数组头
+            deserializer.analysizeHead(bytes);
+            if (parameters.getNeedWriteClassName()){
+                String tmpClassName = deserializer.scanString();
+                fieldClass = TypeUtils.loadClass(tmpClassName);
+            }
+            return (T)deserializeObj(deserializer, fieldClass);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
+            deserializer.close();
+        }
+    }
+
+    /**
+     * 序列化方法，带参数
+     * @param object 需要序列化的对象
+     * @param parameters 如果需要选择编码类型，需要写入类型，则创建Parameters对象
+     * @return 序列化生成的byte数组
+     */
+    public static byte[] toPBBytes(Object object, Parameters parameters) {
+        PBSerializer serializer = new PBSerializer();
+        try {
+            serializer.setParameters(parameters);
+            if (parameters.getNeedWriteClassName()){
+                // 对象类型字符串
+                Class<?> clazz = object.getClass();
+                serializer.writeString(clazz.getName());
+            }
+            serializer.write(object);
+            return serializer.createByteArray();
+        }finally {
+            serializer.close();
+        }
+
+    }
 }

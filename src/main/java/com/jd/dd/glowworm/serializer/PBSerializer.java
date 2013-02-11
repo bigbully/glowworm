@@ -36,6 +36,7 @@ public class PBSerializer {
     private ExistOutputStream existStream;//是否非空的buffer
     private TypeOutputStream typeStream;//保存type的buffer
     private CodedOutputStream headStream;//保存整个头信息
+    private Parameters parameters;//一些参数信息
     private final static ThreadLocal<SoftReference<OutputStreamBuffer>> bufLocal = new ThreadLocal<SoftReference<OutputStreamBuffer>>();//buf的缓存
     private HashMap<Integer, Integer> refMap;//key = 当前元素的index（不重复）, value=引用的index；
 
@@ -366,6 +367,14 @@ public class PBSerializer {
         theCodedOutputStream.writeString(s);
     }
 
+    public void writeStringWithcharset(String s){
+        if (parameters != null){
+            theCodedOutputStream.writeString(s, parameters.getCharset());
+        }else {
+            theCodedOutputStream.writeString(s);
+        }
+    }
+
     public void writeDoubleArray(double[] array) {
         theCodedOutputStream.writeNaturalInt(array.length);
         for (int i = 0; i < array.length; ++i) {
@@ -421,5 +430,11 @@ public class PBSerializer {
     }
 
 
+    public Parameters getParameters() {
+        return parameters;
+    }
 
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
+    }
 }

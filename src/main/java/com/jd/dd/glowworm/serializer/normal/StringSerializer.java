@@ -5,7 +5,6 @@ import com.jd.dd.glowworm.serializer.ObjectSerializer;
 import com.jd.dd.glowworm.serializer.PBSerializer;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 public class StringSerializer implements ObjectSerializer {
 
@@ -16,6 +15,6 @@ public class StringSerializer implements ObjectSerializer {
         if (needWriteType) {
             serializer.writeType(com.jd.dd.glowworm.asm.Type.STRING);
         }
-        serializer.writeString(object.toString());
+        serializer.writeStringWithcharset(object.toString());
     }
 }

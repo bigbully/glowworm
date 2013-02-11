@@ -12,11 +12,7 @@ public class ByteDeserializer implements ObjectDeserializer {
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         Byte value = null;
         try {
-            if (needConfirmExist) {
-                if (deserializer.isObjectExist()) {
-                    value = deserializer.scanByte();
-                }
-            } else {
+            if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
                 value = deserializer.scanByte();
             }
         } catch (Exception ex) {

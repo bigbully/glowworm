@@ -13,11 +13,7 @@ public class FloatDeserializer implements ObjectDeserializer {
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         Float value = null;
         try {
-            if (needConfirmExist) {
-                if (deserializer.isObjectExist()) {
-                    value = deserializer.scanFloat();
-                }
-            } else {
+            if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
                 value = deserializer.scanFloat();
             }
         } catch (Exception ex) {

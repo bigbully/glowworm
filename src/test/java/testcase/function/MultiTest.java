@@ -1,9 +1,10 @@
 package testcase.function;
 
-import userJavabean.LoopPerson1;
-import userJavabean.Person1;
+import com.jd.dd.glowworm.util.Parameters;
 import org.junit.Test;
 import testcase.TestBase;
+import userJavabean.LoopPerson1;
+import userJavabean.Person1;
 import userJavabean.Person2;
 import userJavabean.User1;
 
@@ -403,5 +404,17 @@ public class MultiTest extends TestBase {
             Boolean b2 = (Boolean) itSet.next();
             assertEquals(b1, b2);
         }
+    }
+
+    //测试char[5]{'我', '知', '道'},gbk编码
+    @Test
+    public void testCharArray2() throws Exception {
+        char[] chars = new char[]{'金', '三', '胖'};
+        Parameters parameters = new Parameters();
+        parameters.setCharset("GBK");
+        char[] result = executeBackAndForth(chars, char[].class, parameters);
+        assertTrue("金".equals(new String(String.valueOf(result[0]).getBytes("GBK"), "UTF-8")));
+        assertTrue("三".equals(new String(String.valueOf(result[1]).getBytes("GBK"), "UTF-8")));
+        assertTrue("胖".equals(new String(String.valueOf(result[2]).getBytes("GBK"), "UTF-8")));
     }
 }

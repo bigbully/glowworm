@@ -13,11 +13,7 @@ public class DoubleDeserializer implements ObjectDeserializer {
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         Double value = null;
         try {
-            if (needConfirmExist) {
-                if (deserializer.isObjectExist()) {
-                    value = deserializer.scanDouble();
-                }
-            } else {
+            if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
                 value = deserializer.scanDouble();
             }
         } catch (Exception ex) {

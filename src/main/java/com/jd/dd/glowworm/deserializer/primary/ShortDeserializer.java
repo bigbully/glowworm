@@ -12,11 +12,7 @@ public class ShortDeserializer implements ObjectDeserializer {
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         Short value = null;
         try {
-            if (needConfirmExist) {
-                if (deserializer.isObjectExist()) {
-                    value = deserializer.scanShort();
-                }
-            } else {
+            if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
                 value = deserializer.scanShort();
             }
         } catch (Exception ex) {

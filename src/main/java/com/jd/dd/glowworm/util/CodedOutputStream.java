@@ -63,6 +63,16 @@ public final class CodedOutputStream {
         }
     }
 
+    public void writeString(String value, String Charset) {
+        try {
+            byte[] bytes = value.getBytes(Charset);
+            writeRawVarint32(bytes.length);
+            writeRawBytes(bytes);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void writeDouble(double d) {
         writeRawBytes(getBytesFromLong(Double.doubleToLongBits(d)), 0, 8);
     }

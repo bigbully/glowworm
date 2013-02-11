@@ -2,7 +2,6 @@ package com.jd.dd.glowworm.deserializer.normal;
 
 import com.jd.dd.glowworm.deserializer.ObjectDeserializer;
 import com.jd.dd.glowworm.deserializer.PBDeserializer;
-import com.jd.dd.glowworm.util.TypeUtils;
 
 import java.lang.reflect.Type;
 

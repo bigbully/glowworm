@@ -1,61 +1,12 @@
 package testcase;
 
-import com.jd.dd.glowworm.PBException;
-import com.jd.dd.glowworm.util.Parameters;
-import javabean.*;
 import org.junit.Test;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.sql.Timestamp;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
-import static org.junit.Assert.*;
 
 public class DeserializeTest {
 
 
 
-    @Test
-    public void testCharset1() throws UnsupportedEncodingException, InterruptedException {
-//        String str = new String("消息".getBytes("UTF-8"), "GBK");
-//        Parameters parameters = new Parameters();
-//        parameters.setCharset("GBK");
-//        String result = executeBackAndForth(str, String.class, parameters);
-//        assertTrue("消息".equals(new String(result.getBytes("GBK"), "UTF-8")));
-    }
 
-
-    @Test
-    public void testCharset2() throws UnsupportedEncodingException, InterruptedException {
-//        String str = new String("消息".getBytes("UTF-8"), "GBK");
-//        Person2 person2 = new Person2();
-//        person2.setName(str);
-//        Parameters parameters = new Parameters();
-//        parameters.setCharset("GBK");
-//        Person2 result = executeBackAndForth(person2, Person2.class, parameters);
-//        assertTrue("消息".equals(new String(result.getName().getBytes("GBK"), "UTF-8")));
-    }
-
-
-    @Test
-    public void testCharset3() throws UnsupportedEncodingException, InterruptedException, NoSuchFieldException, IllegalAccessException {
-//        String str = new String("消息".getBytes("UTF-8"), "GBK");
-//        InnerBean3 ib = new InnerBean3(str);
-////        Parameters parameters = new Parameters();
-////        parameters.setCharset("GBK");
-//        InnerBean3 result = executeBackAndForth(ib, InnerBean3.class);
-//        assertTrue("消息".equals(new String(result.findName().getBytes("GBK"), "UTF-8")));
-    }
 
     //测试序列化标注
     //标注在属性上

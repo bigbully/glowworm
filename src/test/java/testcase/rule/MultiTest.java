@@ -1,14 +1,11 @@
 package testcase.rule;
 
-import com.jd.dd.glowworm.asm.Type;
 import org.junit.Test;
 import testcase.TestBase;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class MultiTest extends TestBase {
 
@@ -103,12 +100,7 @@ public class MultiTest extends TestBase {
     }
 
 
-    //测试char[5]{'我', '知', '道'}
-    @Test
-    public void testCharArray2() throws Exception {
-        //todo 对于gbk编码的char数组
-        assertTrue(false);
-    }
+
 
 
 

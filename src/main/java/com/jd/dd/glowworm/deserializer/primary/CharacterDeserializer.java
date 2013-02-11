@@ -13,12 +13,8 @@ public class CharacterDeserializer implements ObjectDeserializer {
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         Object value = null;
         try {
-            if (needConfirmExist) {
-                if (deserializer.isObjectExist()) {
-                    value = deserializer.scanString();
-                }
-            } else {
-                value = deserializer.scanString();
+            if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
+                value = deserializer.scanStringWithCharset();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
