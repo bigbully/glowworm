@@ -6,7 +6,7 @@ import userJavabean.*;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class AsmTest extends TestBase{
 
@@ -197,5 +197,8 @@ public class AsmTest extends TestBase{
         //第三个元素的内容
         assertEquals(1, result[index++]);
     }
+
+
+
 
 }

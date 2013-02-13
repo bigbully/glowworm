@@ -16,6 +16,6 @@ public class CharacterSerializer implements ObjectSerializer {
         if (needWriteType) {
             serializer.writeType(com.jd.dd.glowworm.asm.Type.CHAR);
         }
-        serializer.writeStringWithcharset(value.toString());
+        serializer.writeStringWithCharset(value.toString());
     }
 }

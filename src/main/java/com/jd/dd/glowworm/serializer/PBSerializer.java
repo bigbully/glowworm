@@ -38,7 +38,9 @@ public class PBSerializer {
     private CodedOutputStream headStream;//保存整个头信息
     private Parameters parameters;//一些参数信息
     private final static ThreadLocal<SoftReference<OutputStreamBuffer>> bufLocal = new ThreadLocal<SoftReference<OutputStreamBuffer>>();//buf的缓存
+    private List<SerializeContext> objectIndexList;//用来保存所有和javabeean, Array, List, Set, Map相关的对象-index键值对
     private HashMap<Integer, Integer> refMap;//key = 当前元素的index（不重复）, value=引用的index；
+    private int currentIndex;
 
     static {
         initTheSerializerHMap();
@@ -77,7 +79,7 @@ public class PBSerializer {
         theSerializerHMap.put(Inet6Address.class, InetAddressSerializer.instance);
         theSerializerHMap.put(String.class, StringSerializer.instance);
 
-//        theSerializerHMap.put(Class.class, ClassSerializer.instance);
+        theSerializerHMap.put(Class.class, ClassSerializer.instance);
 
         theSerializerHMap.put(byte[].class, ByteArraySerializer.instance);
         theSerializerHMap.put(short[].class, ShortArraySerializer.instance);
@@ -234,38 +236,15 @@ public class PBSerializer {
         outputStreamBuffer = null;
     }
 
-    //增加一个对象到引用List中
-    private void addObjectIndexList(Object object) {
-//        if (objectIndexList == null){
-//            objectIndexList = new ArrayList<SerializeContext>();
-//        }
-//        objectIndexList.add(new SerializeContext(object,0));
+    public Parameters getParameters() {
+        return parameters;
     }
 
-    //是否考虑引用
-    public boolean needConsiderRef(ObjectSerializer writer) {
-        return false;
-//        if (writer == null){//如果不是在序列化器里进行序列化的，则直接传null。现在list,set是这么做的
-//            return true;
-//        }
-//        Class clazz = writer.getClass();
-//
-//        if (JavaBeanSerializer.class.isAssignableFrom(clazz)) {
-//            return true;
-//        } else if (clazz.getName().startsWith(ASMSerializerFactory.GenClassName_prefix)) {
-//            return true;
-//        } else if (ListSerializer.class.isAssignableFrom(clazz)) {
-//            return true;
-//        } else if (MapSerializer.class.isAssignableFrom(clazz)) {
-//            return true;
-//        } else if (ArraySerializer.class.isAssignableFrom(clazz)) {
-//            return true;
-//        } else if (CollectionSerializer.class.isAssignableFrom(clazz)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
     }
+
+
 
     //组装引用byte数组
     private byte[] getRefByte() {
@@ -367,7 +346,7 @@ public class PBSerializer {
         theCodedOutputStream.writeString(s);
     }
 
-    public void writeStringWithcharset(String s){
+    public void writeStringWithCharset(String s){
         if (parameters != null){
             theCodedOutputStream.writeString(s, parameters.getCharset());
         }else {
@@ -421,7 +400,73 @@ public class PBSerializer {
 
     //--------------以下是引用的处理--------------------//
     public boolean isReference(Object item) {
-        return false;
+        boolean flag;
+        SerializeContext serializeContext = getSerializeContextObj(item);
+        if (serializeContext != null) {//判断是否是引用
+            if (refMap == null) {
+                refMap = new HashMap<Integer, Integer>();
+            }
+            //如果是引用，添加在应用list中,待后续处理
+            refMap.put(objectIndexList.size(), serializeContext.getIndex());
+            flag = true;
+        } else {//不是引用
+            flag = false;
+        }
+        //任何做过判断的对象，放入object-index的MAP中，index从0开始递增
+        if (objectIndexList == null){
+            objectIndexList = new ArrayList<SerializeContext>();
+        }
+        objectIndexList.add(new SerializeContext(item, objectIndexList.size()));
+        return flag;
+    }
+
+    private SerializeContext getSerializeContextObj(Object object) {
+        if (objectIndexList == null) return null;
+        for (SerializeContext serializeContext : objectIndexList) {
+            if (serializeContext.getObj() == object) {
+                return serializeContext;
+            }
+        }
+        return null;
+    }
+
+    //增加一个对象到引用List中
+    private void addObjectIndexList(Object object) {
+        if (objectIndexList == null){
+            objectIndexList = new ArrayList<SerializeContext>();
+        }
+        objectIndexList.add(new SerializeContext(object,0));
+    }
+
+    public void addCurrentIndex(){
+        currentIndex++;
+    }
+
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
+    //是否考虑引用
+    public boolean needConsiderRef(ObjectSerializer writer) {
+        if (writer == null){//如果不是在序列化器里进行序列化的，则直接传null。现在list,set是这么做的
+            return true;
+        }
+        Class clazz = writer.getClass();
+        if (JavaBeanSerializer.class.isAssignableFrom(clazz)) {
+            return true;
+        } else if (isAsmJavaBean(writer)) {
+            return true;
+        } else if (ListSerializer.class.isAssignableFrom(clazz)) {
+            return true;
+        } else if (MapSerializer.class.isAssignableFrom(clazz)) {
+            return true;
+        } else if (ArraySerializer.class.isAssignableFrom(clazz)) {
+            return true;
+        } else if (SetSerializer.class.isAssignableFrom(clazz)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //---------------------工具方法-------------------//
@@ -430,11 +475,5 @@ public class PBSerializer {
     }
 
 
-    public Parameters getParameters() {
-        return parameters;
-    }
 
-    public void setParameters(Parameters parameters) {
-        this.parameters = parameters;
-    }
 }

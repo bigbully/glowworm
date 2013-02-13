@@ -15,7 +15,7 @@ public class CharArraySerializer implements ObjectSerializer {
             serializer.writeType(com.jd.dd.glowworm.asm.Type.ARRAY_CHAR);
         }
         char[] chars = (char[]) object;
-        serializer.writeStringWithcharset(new String(chars));
+        serializer.writeStringWithCharset(new String(chars));
     }
 
 }

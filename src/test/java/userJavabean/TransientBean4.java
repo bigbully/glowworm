@@ -1,4 +1,4 @@
-package javabean;
+package userJavabean;
 
 public class TransientBean4 {
 

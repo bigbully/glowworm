@@ -32,8 +32,8 @@ public class ExistOutputStream {
     }
 
     private void checkCapacity(int minimumCapacity) {
-        if (minimumCapacity > this.limit) {
-            byte[] tmpNewBytes = new byte[minimumCapacity + 1024];
+        if (minimumCapacity + 1 >= this.limit) {
+            byte[] tmpNewBytes = new byte[minimumCapacity + 100];
             System.arraycopy(this.buffer, 0, tmpNewBytes, 0, this.limit);
             this.buffer = tmpNewBytes;
             this.limit = tmpNewBytes.length;

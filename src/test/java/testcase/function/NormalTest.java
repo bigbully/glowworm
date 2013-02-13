@@ -2,11 +2,10 @@ package testcase.function;
 
 import com.jd.dd.glowworm.PBException;
 import com.jd.dd.glowworm.util.Parameters;
+import javabean.InnerBean3;
 import org.junit.Test;
 import testcase.TestBase;
-import userJavabean.Food;
-import userJavabean.Person1;
-import userJavabean.PersonForDate;
+import userJavabean.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -315,26 +314,89 @@ public class NormalTest extends TestBase {
         assertTrue("消息".equals(new String(result.getBytes("GBK"), "UTF-8")));
     }
 
-
+    //测试和自定义字符集相关
     @Test
     public void testCharset2() throws Exception {
-//        String str = new String("消息".getBytes("UTF-8"), "GBK");
-//        Person2 person2 = new Person2();
-//        person2.setName(str);
-//        Parameters parameters = new Parameters();
-//        parameters.setCharset("GBK");
-//        Person2 result = executeBackAndForth(person2, Person2.class, parameters);
-//        assertTrue("消息".equals(new String(result.getName().getBytes("GBK"), "UTF-8")));
+        String str = new String("消息".getBytes("UTF-8"), "GBK");
+        Person2 person2 = new Person2();
+        person2.setName(str);
+        Parameters parameters = new Parameters();
+        parameters.setCharset("GBK");
+        Person2 result = executeBackAndForth(person2, Person2.class, parameters);
+        assertTrue("消息".equals(new String(result.getName().getBytes("GBK"), "UTF-8")));
     }
 
 
+    //测试和自定义字符集相关
     @Test
     public void testCharset3() throws Exception{
-//        String str = new String("消息".getBytes("UTF-8"), "GBK");
-//        InnerBean3 ib = new InnerBean3(str);
-////        Parameters parameters = new Parameters();
-////        parameters.setCharset("GBK");
-//        InnerBean3 result = executeBackAndForth(ib, InnerBean3.class);
-//        assertTrue("消息".equals(new String(result.findName().getBytes("GBK"), "UTF-8")));
+        String str = new String("消息".getBytes("UTF-8"), "GBK");
+        InnerBean3 ib = new InnerBean3(str);
+        Parameters parameters = new Parameters();
+        parameters.setCharset("GBK");
+        InnerBean3 result = executeBackAndForth(ib, InnerBean3.class);
+        assertTrue("消息".equals(new String(result.findName().getBytes("GBK"), "UTF-8")));
+    }
+
+    //测试序列化标注
+    //标注在属性上
+    @Test
+    public void testTransientBean1() throws Exception {
+        TransientBean1 sb = new TransientBean1();
+        sb.setIndex(123123);
+        TransientBean1 result = executeBackAndForth(sb, TransientBean1.class);
+        assertNotNull(result);
+        assertNull(result.getIndex());
+    }
+
+
+    //测试序列化标注
+    //标注在get方法上
+    @Test
+    public void testTransientBean2() throws Exception {
+        TransientBean2 sb = new TransientBean2();
+        sb.setIndex(123123);
+
+        TransientBean2 result = executeBackAndForth(sb, TransientBean2.class);
+        assertNotNull(result);
+        assertNull(result.getIndex());
+    }
+
+    //测试序列化标注
+    //标注在set方法上
+    @Test
+    public void testTransientBean3() throws Exception {
+        TransientBean3 sb = new TransientBean3();
+        sb.setIndex(123123);
+        TransientBean3 result = executeBackAndForth(sb, TransientBean3.class);
+        assertNotNull(result);
+        assertNotNull(result.getIndex());
+    }
+
+    //测试Transient
+    //标注在set方法上,但是没有对应属性
+    @Test
+    public void testTransientBean4() throws Exception {
+        TransientBean4 sb = new TransientBean4();
+        sb.setIndex(123123);
+        TransientBean4 result = executeBackAndForth(sb, TransientBean4.class);
+        assertNotNull(result);
+    }
+
+    //测试Transient
+    //标注在get方法上,但是没有对应属性
+    @Test
+    public void testTransientBean5() throws Exception {
+        TransientBean5 sb = new TransientBean5();
+        TransientBean5 result = executeBackAndForth(sb, TransientBean5.class);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testClass() throws Exception{
+        Class clazz = Person1.class;
+        Class result = executeBackAndForth(clazz, Class.class);
+        assertNotNull(result);
+        assertEquals("Person1", result.getSimpleName());
     }
 }

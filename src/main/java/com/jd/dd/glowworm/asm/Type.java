@@ -44,6 +44,7 @@ public class Type {
     public static final int ARRAY_LONG = 33;
     public static final int ARRAY_SHORT = 34;
 
+    public static final int CLASS = 35;
 
     public static final int Unknown = 63;
 

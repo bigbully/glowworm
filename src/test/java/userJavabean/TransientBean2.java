@@ -1,4 +1,4 @@
-package javabean;
+package userJavabean;
 
 import com.jd.dd.glowworm.util.Transient;
 

@@ -1,17 +1,17 @@
-package javabean;
+package userJavabean;
 
 import java.util.HashMap;
 
-public class LoopPerson5 {
+public class LoopPerson6 {
 
     private Integer integer;
-    private HashMap<String, LoopPerson5> map;
+    private HashMap<LoopPerson6, String> map;
 
-    public HashMap<String, LoopPerson5> getMap() {
+    public HashMap<LoopPerson6, String> getMap() {
         return map;
     }
 
-    public void setMap(HashMap<String, LoopPerson5> map) {
+    public void setMap(HashMap<LoopPerson6, String> map) {
         this.map = map;
     }
 

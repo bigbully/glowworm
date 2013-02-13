@@ -40,7 +40,7 @@ public class PBDeserializer {
     private static IdentityHashMap<Type, ObjectDeserializer> derializers = new IdentityHashMap<Type, ObjectDeserializer>();
     private Parameters parameters;//用来保存反序列化的参数信息
     private Map<Integer, Object> objectIndexMap;//用来保存所有和javabeean, Array, List, Set, Map相关的index-对象键值对
-    private HashMap<Integer, Integer> refMap;
+    private HashMap<Integer, Integer> refMap;//<引用，源>存放引用的map
     private final static ThreadLocal<SoftReference<InputStreamBuffer>> bufLocal = new ThreadLocal<SoftReference<InputStreamBuffer>>();
 
     static {
@@ -76,8 +76,7 @@ public class PBDeserializer {
 
         derializers.put(String.class, StringDeserializer.instance);
 
-        //todo
-//        derializers.put(Object.class, JavaObjectDeserializer.instance);
+        derializers.put(Class.class, ClassDeserializer.instance);
 
         derializers.put(BigDecimal.class, BigDecimalDeserializer.instance);
         derializers.put(BigInteger.class, BigIntegerDeserializer.instance);
@@ -135,7 +134,17 @@ public class PBDeserializer {
     }
 
     private void analysizeRef() {
-
+        try {
+            int refSize = scanNaturalInt();
+            if (refSize > 0) {
+                refMap = new HashMap<Integer, Integer>();
+            }
+            for (int i = 0; i < refSize; i++) {
+                refMap.put(scanNaturalInt(), scanNaturalInt());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public boolean isUserJavaBean(Class parserClazz) {
@@ -357,12 +366,55 @@ public class PBDeserializer {
     }
 
     public Object getReference() {
-        //todo
-        return null;
+        if (objectIndexMap == null) {
+            return null;
+        } else {
+            Integer mapSize = objectIndexMap.size();
+            if (refMap.containsKey(mapSize)) {
+                Object ref = objectIndexMap.get(refMap.get(mapSize));
+                objectIndexMap.put(mapSize, ref);
+                return ref;
+            } else {
+                return null;
+            }
+        }
     }
 
     public void addToObjectIndexMap(Object object, ObjectDeserializer deserializer) {
-        //todo
+        if (needConsiderRef(deserializer)) {
+            if (objectIndexMap == null) {
+                objectIndexMap = new HashMap<Integer, Object>();
+            }
+            objectIndexMap.put(objectIndexMap.size(), object);
+        }
+    }
+
+    public boolean needConsiderRef(ObjectDeserializer parser) {
+        if (refMap != null) {
+            if (parser == null) {//有些情况是在pbDessrializer中反序列化的，这里传null。比如scanlist
+                return true;
+            }
+//            else if (JavaObjectDeserializer.class.isAssignableFrom(parser.getClass())){
+//                return true;
+//            }
+            else if (JavaBeanDeserializer.class.isAssignableFrom(parser.getClass())) {
+                return true;
+            } else if (parser.getClass().getName().startsWith(ASMDeserializerFactory.DeserializerClassName_prefix)) {
+                return true;
+            } else if (MapDeserializer.class.isAssignableFrom(parser.getClass())) {
+                return true;
+            } else if (ArrayDeserializer.class.isAssignableFrom(parser.getClass())) {
+                return true;
+            } else if (SetDeserializer.class.isAssignableFrom(parser.getClass())) {
+                return true;
+            } else if (ListDeserializer.class.isAssignableFrom(parser.getClass())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     public Object scanFieldObject(ObjectDeserializer parser, Type type, boolean needConfirmExist){

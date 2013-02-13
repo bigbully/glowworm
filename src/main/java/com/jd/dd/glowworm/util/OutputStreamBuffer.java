@@ -8,6 +8,7 @@ public class OutputStreamBuffer {
     private TypeOutputStream typeStream;
     private CodedOutputStream headStream;
 
+
     public OutputStreamBuffer(CodedOutputStream theCodedOutputStream, CodedOutputStream refStream, ExistOutputStream existStream, TypeOutputStream typeStream, CodedOutputStream headStream) {
         this.theCodedOutputStream = theCodedOutputStream;
         this.refStream = refStream;
@@ -43,4 +44,6 @@ public class OutputStreamBuffer {
         this.typeStream = typeStream;
         this.headStream = headStream;
     }
+
+
 }

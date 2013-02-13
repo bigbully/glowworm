@@ -150,9 +150,13 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNotNull", "()V");
 
-        mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ILOAD, context.var("char"));
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeChar", "(C)V");
+        mw.visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;");
+        mw.visitVarInsn(ASTORE, context.var("char_obj"));
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitVarInsn(ALOAD, context.var("char_obj"));
+        mw.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Character", "toString", "()Ljava/lang/String;");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeStringWithCharset", "(Ljava/lang/String;)V");
 
         mw.visitLabel(_end);
     }
@@ -184,7 +188,7 @@ public class ASMSerializerFactory implements Opcodes {
 
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(FLOAD, context.var("float"));
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeByte", "(F)V");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeFloat", "(F)V");
 
         mw.visitLabel(_end);
     }
@@ -195,9 +199,29 @@ public class ASMSerializerFactory implements Opcodes {
         _get(mw, context, property);
         mw.visitVarInsn(ASTORE, context.var("object"));
 
+        //判断非空或引用
         Label if_ref = new Label();
         Label else_ref = new Label();
-        handleRef(mw, property, context, if_ref, else_ref);
+        Label if_null = new Label();
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitJumpInsn(IFNULL, if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitInsn(ACONST_NULL);
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "isReference", "(Ljava/lang/Object;)Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitLabel(if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNull", "()V");
+        mw.visitJumpInsn(GOTO, else_ref);
+        mw.visitLabel(if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNotNull", "()V");
+
+
 
         mw.visitFieldInsn(GETSTATIC, ASMUtils.getType(ListSerializer.class), "instance", ASMUtils.getDesc(ListSerializer.class));
         mw.visitVarInsn(ALOAD, context.serializer());
@@ -238,9 +262,27 @@ public class ASMSerializerFactory implements Opcodes {
         _get(mw, context, property);
         mw.visitVarInsn(ASTORE, context.var("object"));
 
+        //判断非空或引用
         Label if_ref = new Label();
         Label else_ref = new Label();
-        handleRef(mw, property, context, if_ref, else_ref);
+        Label if_null = new Label();
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitJumpInsn(IFNULL, if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitInsn(ACONST_NULL);
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "isReference", "(Ljava/lang/Object;)Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitLabel(if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNull", "()V");
+        mw.visitJumpInsn(GOTO, else_ref);
+        mw.visitLabel(if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNotNull", "()V");
 
         mw.visitFieldInsn(GETSTATIC, ASMUtils.getType(SetSerializer.class), "instance", ASMUtils.getDesc(SetSerializer.class));
         mw.visitVarInsn(ALOAD, context.serializer());
@@ -302,7 +344,7 @@ public class ASMSerializerFactory implements Opcodes {
 
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(LLOAD, context.var("long", 2));
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeLong", "(I)V");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeLong", "(J)V");
 
         mw.visitLabel(_end);
     }
@@ -327,7 +369,7 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitLabel(_else); // else { out.writeFieldValue(seperator, fieldName, fieldValue)
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ALOAD, context.var("string"));
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeString",
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeStringWithCharset",
                 "(Ljava/lang/String;)V");
 
         mw.visitLabel(_end_if);
@@ -374,9 +416,29 @@ public class ASMSerializerFactory implements Opcodes {
         _get(mw, context, property);
         mw.visitVarInsn(ASTORE, context.var("object"));
 
+
+        //判断非空或引用
         Label if_ref = new Label();
         Label else_ref = new Label();
-        handleRef(mw, property, context, if_ref, else_ref);
+        Label if_null = new Label();
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitJumpInsn(IFNULL, if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitInsn(ACONST_NULL);
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "isReference", "(Ljava/lang/Object;)Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitLabel(if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNull", "()V");
+        mw.visitJumpInsn(GOTO, else_ref);
+        mw.visitLabel(if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNotNull", "()V");
+
 
         mw.visitFieldInsn(GETSTATIC, ASMUtils.getType(ArraySerializer.class), "instance", ASMUtils.getDesc(ArraySerializer.class));
         mw.visitVarInsn(ALOAD, context.serializer());
@@ -395,15 +457,35 @@ public class ASMSerializerFactory implements Opcodes {
 
     }
 
+
+
     private void _map(Class<?> clazz, MethodVisitor mw, FieldInfo property, Context context, int i) {
         Label _end = new Label();
 
         _get(mw, context, property);
         mw.visitVarInsn(ASTORE, context.var("object"));
 
+        //判断非空或引用
         Label if_ref = new Label();
         Label else_ref = new Label();
-        handleRef(mw, property, context, if_ref, else_ref);
+        Label if_null = new Label();
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitJumpInsn(IFNULL, if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitInsn(ACONST_NULL);
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitVarInsn(ALOAD, context.var("object"));
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "isReference", "(Ljava/lang/Object;)Z");
+        mw.visitJumpInsn(IFEQ, if_ref);
+        mw.visitLabel(if_null);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNull", "()V");
+        mw.visitJumpInsn(GOTO, else_ref);
+        mw.visitLabel(if_ref);
+        mw.visitVarInsn(ALOAD, context.serializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNotNull", "()V");
 
         mw.visitFieldInsn(GETSTATIC, ASMUtils.getType(MapSerializer.class), "instance", ASMUtils.getDesc(MapSerializer.class));
         mw.visitVarInsn(ALOAD, context.serializer());
@@ -459,28 +541,8 @@ public class ASMSerializerFactory implements Opcodes {
     }
 
 
-    //判断当前元素是否为空或是否为引用，并写入null或notNull
-    private void handleRef(MethodVisitor mw, FieldInfo property, Context context, Label if_ref, Label else_ref) {
-        mw.visitVarInsn(ALOAD, context.serializer());
-        mw.visitInsn(ACONST_NULL);
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "(" + ASMUtils.getDesc(ObjectSerializer.class) + ")Z");
 
-        mw.visitJumpInsn(IFEQ, if_ref);
-        mw.visitVarInsn(ALOAD, context.serializer());
-        mw.visitVarInsn(ALOAD, context.var("object"));
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "isReference", "(Ljava/lang/Object;)Z");
-        mw.visitJumpInsn(IFEQ, if_ref);
 
-        mw.visitVarInsn(ALOAD, context.serializer());
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNull", "()V");
-
-        mw.visitJumpInsn(GOTO, else_ref);
-
-        mw.visitLabel(if_ref);
-
-        mw.visitVarInsn(ALOAD, context.serializer());
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNotNull", "()V");
-    }
 
     private void _object(MethodVisitor mw, FieldInfo property, Context context) {
         Label _end = new Label();

@@ -35,6 +35,7 @@ public class TypeOutputStream {
                 bitPos +=3;
                 if (bitPos % 8 == 0 && bitPos != 0){
                     pos++;
+                    checkCapacity(pos);
                 }
             }else{//如果需要进位
                 int thisbitNum = 3 - (bitPos+3) % 8;
@@ -44,10 +45,12 @@ public class TypeOutputStream {
                 if (thisbitNum == 2){
                     buffer[pos] = (byte)(buffer[pos] | ((i & 6) >> 1));
                     pos++;
+                    checkCapacity(pos);
                     buffer[pos] = (byte)((i & 1) << 7);
                 }else if (thisbitNum == 1){
                     buffer[pos] = (byte)(buffer[pos] | ((i & 4) >> 2));
                     pos++;
+                    checkCapacity(pos);
                     buffer[pos] = (byte)((i & 3) << 6);
                 }
                 bitPos +=3;
@@ -61,28 +64,34 @@ public class TypeOutputStream {
                 bitPos +=6;
                 if (bitPos % 8 == 0 && bitPos != 0){
                     pos++;
+                    checkCapacity(pos);
                 }
             }else{//如果需要进位
                 int thisbitNum = 6 - (bitPos+6) % 8;
                 if (thisbitNum == 5){
                     buffer[pos] = (byte)(buffer[pos] | ((i & 62) >> 1));
                     pos++;
+                    checkCapacity(pos);
                     buffer[pos] = (byte)((i & 1) << 7);
                 }else if (thisbitNum == 4){
                     buffer[pos] = (byte)(buffer[pos] | ((i & 60) >> 2));
                     pos++;
+                    checkCapacity(pos);
                     buffer[pos] = (byte)((i & 3) << 6);
                 }else if (thisbitNum == 3){
                     buffer[pos] = (byte)(buffer[pos] | ((i & 56) >> 3));
                     pos++;
+                    checkCapacity(pos);
                     buffer[pos] = (byte)((i & 7) << 5);
                 }else if (thisbitNum == 2){
                     buffer[pos] = (byte)(buffer[pos] | ((i & 48) >> 4));
                     pos++;
+                    checkCapacity(pos);
                     buffer[pos] = (byte)((i & 15) << 4);
                 }else if (thisbitNum == 1){
                     buffer[pos] = (byte)(buffer[pos] | ((i & 32) >> 5));
                     pos++;
+                    checkCapacity(pos);
                     buffer[pos] = (byte)((i & 31) << 3);
                 }
                 bitPos +=6;
@@ -93,7 +102,7 @@ public class TypeOutputStream {
     private void write(boolean bool) {
         if (headBitPos != 0 && headBitPos % 8 == 0){
             headPos++;
-            checkCapacity(headPos);
+            checkCapacityHead(headPos);
         }
         byte b1 = headBitPos % 8 == 0?0:headBuffer[headPos];
         if (bool){
@@ -104,9 +113,18 @@ public class TypeOutputStream {
         headBuffer[headPos] = b1;
     }
 
+    private void checkCapacityHead(int minimumCapacity) {
+        if (minimumCapacity + 1 >= this.headLimit) {
+            byte[] tmpNewBytes = new byte[minimumCapacity + 16];
+            System.arraycopy(this.headBuffer, 0, tmpNewBytes, 0, this.headLimit);
+            this.headBuffer = tmpNewBytes;
+            this.headLimit = tmpNewBytes.length;
+        }
+    }
+
     private void checkCapacity(int minimumCapacity) {
-        if (minimumCapacity > this.limit) {
-            byte[] tmpNewBytes = new byte[minimumCapacity + 1024];
+        if (minimumCapacity + 1 >= this.limit) {
+            byte[] tmpNewBytes = new byte[minimumCapacity + 50];
             System.arraycopy(this.buffer, 0, tmpNewBytes, 0, this.limit);
             this.buffer = tmpNewBytes;
             this.limit = tmpNewBytes.length;

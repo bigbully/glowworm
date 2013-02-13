@@ -409,12 +409,12 @@ public class MultiTest extends TestBase {
     //测试char[5]{'我', '知', '道'},gbk编码
     @Test
     public void testCharArray2() throws Exception {
-        char[] chars = new char[]{'金', '三', '胖'};
+        char[] chars = new char[]{new String("金".getBytes("UTF-8"), "GBK").charAt(0), new String("三".getBytes("UTF-8"), "GBK").charAt(0), new String("胖".getBytes("UTF-8"), "GBK").charAt(0)};
         Parameters parameters = new Parameters();
         parameters.setCharset("GBK");
         char[] result = executeBackAndForth(chars, char[].class, parameters);
-        assertTrue("金".equals(new String(String.valueOf(result[0]).getBytes("GBK"), "UTF-8")));
-        assertTrue("三".equals(new String(String.valueOf(result[1]).getBytes("GBK"), "UTF-8")));
-        assertTrue("胖".equals(new String(String.valueOf(result[2]).getBytes("GBK"), "UTF-8")));
+        assertEquals(chars[0], result[0]);
+        assertEquals(chars[1], result[1]);
+        assertEquals(chars[2], result[2]);
     }
 }

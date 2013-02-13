@@ -10,10 +10,7 @@ import com.jd.dd.glowworm.deserializer.multi.MapDeserializer;
 import com.jd.dd.glowworm.deserializer.multi.SetDeserializer;
 import com.jd.dd.glowworm.deserializer.reflect.FieldDeserializer;
 import com.jd.dd.glowworm.deserializer.reflect.JavaBeanDeserializer;
-import com.jd.dd.glowworm.util.ASMClassLoader;
-import com.jd.dd.glowworm.util.ASMUtils;
-import com.jd.dd.glowworm.util.DeserializeBeanInfo;
-import com.jd.dd.glowworm.util.FieldInfo;
+import com.jd.dd.glowworm.util.*;
 
 import java.lang.reflect.*;
 import java.lang.reflect.Type;
@@ -216,12 +213,24 @@ public class ASMDeserializerFactory implements Opcodes {
                 mw.visitVarInsn(ALOAD, context.deserializer());
                 mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanInt", "()I");
                 mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+            } else if (fieldClass == char.class) {
+                mw.visitVarInsn(ALOAD, context.deserializer());
+                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+                mw.visitInsn(POP);
+                mw.visitVarInsn(ALOAD, context.deserializer());
+                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanStringWithCharset", "()Ljava/lang/String;");
+                mw.visitVarInsn(ASTORE, context.var("tmpString"));
+                mw.visitVarInsn(ALOAD, context.var("tmpString"));
+                mw.visitMethodInsn(INVOKESTATIC, ASMUtils.getType(TypeUtils.class), "castToChar", "(Ljava/lang/Object;)Ljava/lang/Character;");
+                mw.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C");
+
+                mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == long.class) {
                 mw.visitVarInsn(ALOAD, context.deserializer());
                 mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
                 mw.visitInsn(POP);
-                mw.visitVarInsn(LLOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanLong", "()L");
+                mw.visitVarInsn(ALOAD, context.deserializer());
+                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanLong", "()J");
                 mw.visitVarInsn(LSTORE, context.var(fieldInfo.getName() + "_asm", 2));
             } else if (fieldClass == byte.class) {
                 mw.visitVarInsn(ALOAD, context.deserializer());
@@ -250,14 +259,14 @@ public class ASMDeserializerFactory implements Opcodes {
                 mw.visitInsn(POP);
                 mw.visitVarInsn(ALOAD, context.deserializer());
                 mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanDouble", "()D");
-                mw.visitVarInsn(DSTORE, context.var(fieldInfo.getName() + "_asm"));
+                mw.visitVarInsn(DSTORE, context.var(fieldInfo.getName() + "_asm", 2));
             } else if (fieldClass == String.class) {
                 mw.visitVarInsn(ALOAD, context.deserializer());
                 mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
                 Label _if_not_null = new Label();
                 mw.visitJumpInsn(IFEQ, _if_not_null);
                 mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanString", "()Ljava/lang/String;");
+                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanStringWithCharset", "()Ljava/lang/String;");
                 mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
                 Label _else_null = new Label();
                 mw.visitJumpInsn(GOTO, _else_null);
@@ -580,7 +589,9 @@ public class ASMDeserializerFactory implements Opcodes {
                 mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == long.class) {
                 mw.visitVarInsn(LLOAD, context.var(fieldInfo.getName() + "_asm", 2));
-            } else if (fieldClass == float.class) {
+            } else if (fieldClass == char.class) {
+                mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
+            }  else if (fieldClass == float.class) {
                 mw.visitVarInsn(FLOAD, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == double.class) {
                 mw.visitVarInsn(DLOAD, context.var(fieldInfo.getName() + "_asm", 2));
@@ -616,6 +627,8 @@ public class ASMDeserializerFactory implements Opcodes {
             } else if (fieldClass == short.class) {
                 mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == int.class) {
+                mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
+            }  else if (fieldClass == char.class) {
                 mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == long.class) {
                 mw.visitVarInsn(LLOAD, context.var(fieldInfo.getName() + "_asm", 2));

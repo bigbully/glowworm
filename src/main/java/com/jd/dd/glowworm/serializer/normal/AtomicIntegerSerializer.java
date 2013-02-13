@@ -5,7 +5,6 @@ import com.jd.dd.glowworm.serializer.ObjectSerializer;
 import com.jd.dd.glowworm.serializer.PBSerializer;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AtomicIntegerSerializer implements ObjectSerializer {

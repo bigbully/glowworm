@@ -26,10 +26,8 @@ public abstract class ASMJavaBeanDeserializer implements ObjectDeserializer {
         return serializer;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T deserialze(PBDeserializer parser, Type type, Object fieldName) {
-        //todo
-        return (T) serializer.deserialize(parser, type, false);
+    public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams){
+        return (T) serializer.deserialize(deserializer, type, false);
     }
 
     public Object createInstance(PBDeserializer parser) {

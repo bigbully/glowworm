@@ -15,6 +15,6 @@ public class StringSerializer implements ObjectSerializer {
         if (needWriteType) {
             serializer.writeType(com.jd.dd.glowworm.asm.Type.STRING);
         }
-        serializer.writeStringWithcharset(object.toString());
+        serializer.writeStringWithCharset(object.toString());
     }
 }
