@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/test/java/testcase/function/NormalTest.java" line="312" mnemonic="3" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java" line="137" mnemonic="1" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java" line="595" mnemonic="1" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java" line="78" mnemonic="3" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d19e341a-d024-4055-afac-6b09f60ed112" name="Default" comment="">
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\AsmBean.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Glowworm_ASM_LoopPerson1.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Glowworm_Serializer_1.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\InnerBean1.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Person3.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Person9.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\PersonCollection1.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\PersonCollection2.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\UserRaw.java" afterPath="" />
-      <change type="DELETED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\testcase\DeserializeTest.java" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Glowworm_Serializer_1.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/ant.xml" afterPath="$PROJECT_DIR$/.idea/ant.xml" />
@@ -168,7 +159,13 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/testcase/rule/MultiTest.java" afterPath="$PROJECT_DIR$/src/test/java/testcase/rule/MultiTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/testcase/rule/NormalTest.java" afterPath="$PROJECT_DIR$/src/test/java/testcase/rule/NormalTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/testcase/rule/ReflectTest.java" afterPath="$PROJECT_DIR$/src/test/java/testcase/rule/ReflectTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/AtomicPerson1.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/AtomicPerson1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Course.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Course.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Difficulty.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Difficulty.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Food.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Food.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Group.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Group.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/InnerBean.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/InnerBean.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/InnerBean3.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/InnerBean3.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/LoopPerson1.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/LoopPerson1.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/LoopPerson10.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/LoopPerson10.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/LoopPerson11.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/LoopPerson11.java" />
@@ -183,16 +180,31 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/MapBean.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/MapBean.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person1.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person1.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person10.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person10.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person11.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person11.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person2.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person2.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person4.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person4.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person5.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person5.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person6.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person6.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person7.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person7.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Person8.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person8.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/PersonCollection3.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/PersonCollection3.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/PersonCollection4.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/PersonCollection4.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/PersonForDate.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/PersonForDate.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Rule.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Rule.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/RuleItem.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/RuleItem.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/School.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/School.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Student.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Student.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Supply1.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Supply1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Supply2.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Supply2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/Supply3.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Supply3.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/TpMagic.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TpMagic.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/TpMagic2.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TpMagic2.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean1.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean1.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean2.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean2.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean3.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean3.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean4.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean4.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean5.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TransientBean5.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/User.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/User1.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User1.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/User10.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User10.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/User11.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User11.java" />
@@ -206,28 +218,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/User7.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User7.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/User8.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User8.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/User9.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User9.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\AtomicPerson1.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/AtomicPerson1.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Course.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Course.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Difficulty.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Difficulty.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Group.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Group.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\InnerBean.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/InnerBean.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\InnerBean3.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/InnerBean3.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Person11.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person11.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Person5.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person5.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Person6.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person6.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Person7.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person7.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Person8.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Person8.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\PersonCollection4.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/PersonCollection4.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Rule.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Rule.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\RuleItem.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/RuleItem.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\School.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/School.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Student.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Student.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Supply2.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Supply2.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\Supply3.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/Supply3.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\TpMagic.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TpMagic.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\TpMagic2.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/TpMagic2.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\User.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/User.java" />
-      <change type="MOVED" beforePath="F:\Program\WorkSpaceIdea\glowworm-refactoring\src\test\java\javabean\UserGeneric.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/UserGeneric.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/userJavabean/UserGeneric.java" afterPath="$PROJECT_DIR$/src/test/java/userJavabean/UserGeneric.java" />
     </list>
     <ignored path="glowworm-refactoring.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -251,7 +242,7 @@
   </component>
   <component name="DebuggerManager">
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java" line="137" class="com.jd.dd.glowworm.serializer.asm.ASMSerializerFactory" package="com.jd.dd.glowworm.serializer.asm">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java" line="596" class="com.jd.dd.glowworm.serializer.asm.ASMSerializerFactory" package="com.jd.dd.glowworm.serializer.asm">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -305,26 +296,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="ASMSerializerFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="90" column="12" selection-start="3355" selection-end="3355" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="AsmTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/AsmTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1973" column="29" selection-start="72187" selection-end="72187" vertical-scroll-proportion="-4.88">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#27011#27024#0" expanded="true" />
-                <element signature="e#28495#28517#0" expanded="true" />
-                <element signature="e#28666#28688#0" expanded="true" />
-                <element signature="e#40747#40768#0" expanded="true" />
-                <element signature="e#41394#41410#0" expanded="true" />
-                <element signature="e#43681#43690#0" expanded="true" />
-                <element signature="e#45175#45183#0" expanded="true" />
-                <element signature="e#45640#45649#0" expanded="true" />
-                <element signature="e#46116#46124#0" expanded="true" />
-                <element signature="e#50659#50667#0" expanded="true" />
-                <element signature="e#52002#52011#0" expanded="true" />
-                <element signature="e#52717#52726#0" expanded="true" />
-                <element signature="e#53283#53292#0" expanded="true" />
-              </folding>
+            <state line="972" column="35" selection-start="32527" selection-end="32527" vertical-scroll-proportion="-13.88">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Modifier.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://D:/Program Files/Java/jdk1.6.0_31/src.zip!/java/lang/reflect/Modifier.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="56" column="26" selection-start="2127" selection-end="2127" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -332,43 +326,25 @@
       <file leaf-file-name="NormalTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/NormalTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="0" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0">
+            <state line="330" column="16" selection-start="11054" selection-end="11054" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="InnerBean3.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/userJavabean/InnerBean3.java">
+      <file leaf-file-name="ReflectTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/testcase/rule/ReflectTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="31" selection-start="272" selection-end="272" vertical-scroll-proportion="0.0">
+            <state line="14" column="16" selection-start="266" selection-end="266" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ASMSerializerFactory.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java">
+      <file leaf-file-name="ReflectTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/ReflectTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="89" column="4" selection-start="3444" selection-end="3444" vertical-scroll-proportion="0.6402214">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EnumDeserializer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/normal/EnumDeserializer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="0" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ByteArrayDeserializer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/primary/ByteArrayDeserializer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="0" selection-start="486" selection-end="486" vertical-scroll-proportion="0.0">
+            <state line="16" column="23" selection-start="364" selection-end="364" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -383,28 +359,30 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Type.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/asm/Type.java">
+      <file leaf-file-name="PBSerializer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/PBSerializer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="99" column="0" selection-start="3391" selection-end="3391" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="161" column="52" selection-start="6926" selection-end="6966" vertical-scroll-proportion="-6.92">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ASMDeserializerFactory.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ASMDeserializerFactory.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/asm/ASMDeserializerFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="54" column="60" selection-start="2208" selection-end="2208" vertical-scroll-proportion="0.0">
+            <state line="64" column="26" selection-start="2661" selection-end="2661" vertical-scroll-proportion="0.8232044">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PBDeserializer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/PBDeserializer.java">
+      <file leaf-file-name="ASMUtils.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/util/ASMUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="439" column="33" selection-start="16390" selection-end="16405" vertical-scroll-proportion="0.0">
+            <state line="52" column="25" selection-start="1602" selection-end="1602" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -423,8 +401,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/multi/ListSerializer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/multi/SetSerializer.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/util/TypeOutputStream.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/multi/MapSerializer.java" />
         <option value="$PROJECT_DIR$/src/test/java/testcase/rule/BitTest.java" />
@@ -437,8 +413,10 @@
         <option value="$PROJECT_DIR$/src/test/java/testcase/function/AsmTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/testcase/function/NormalTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/userJavabean/InnerBean3.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/asm/ASMDeserializerFactory.java" />
+        <option value="$PROJECT_DIR$/src/test/java/userJavabean/Glowworm_Serializer_1.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/PBSerializer.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/asm/ASMDeserializerFactory.java" />
       </list>
     </option>
   </component>
@@ -540,6 +518,16 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -607,6 +595,36 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="testcase" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm-refactoring" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm-refactoring" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="testcase" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="function" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -926,7 +944,75 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="reflect" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm-refactoring" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm-refactoring" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="deserializer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="normal" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm-refactoring" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm-refactoring" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="glowworm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="deserializer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="asm" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -942,16 +1028,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="glowworm" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -974,9 +1050,9 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="options.searchVisible" value="true" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -994,69 +1070,7 @@
       <recent name="D:\Program Files\IdeaSpace\glowworm-refactoring\src\main\java\com\jd\dd\glowworm\asm" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.testcase in glowworm">
-    <configuration default="false" name="AsmTest.testCollectionWithLoop9" type="JUnit" factoryName="JUnit" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="testcase.function.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="glowworm" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="testcase.function" />
-      <option name="MAIN_CLASS_NAME" value="testcase.function.AsmTest" />
-      <option name="METHOD_NAME" value="testCollectionWithLoop9" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="moduleWithDependencies" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="AsmTest.testTheMostComplicatedJavaBean1" type="JUnit" factoryName="JUnit" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="testcase.function.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="glowworm" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="testcase.function" />
-      <option name="MAIN_CLASS_NAME" value="testcase.function.AsmTest" />
-      <option name="METHOD_NAME" value="testTheMostComplicatedJavaBean1" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="moduleWithDependencies" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="JUnit.AsmTest.testJavaBean8">
     <configuration default="false" name="AsmTest" type="JUnit" factoryName="JUnit" temporary="true">
       <extension name="coverage" enabled="false" merge="false" runner="idea">
         <pattern>
@@ -1109,7 +1123,13 @@
       </option>
       <envs />
       <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -1138,6 +1158,74 @@
       <envs />
       <patterns />
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="ReflectTest.testUserJavaBean1" type="JUnit" factoryName="JUnit" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="testcase.function.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="glowworm" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="testcase.function" />
+      <option name="MAIN_CLASS_NAME" value="testcase.function.ReflectTest" />
+      <option name="METHOD_NAME" value="testUserJavaBean1" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="AsmTest.testJavaBean8" type="JUnit" factoryName="JUnit" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="testcase.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="glowworm" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="testcase.function" />
+      <option name="MAIN_CLASS_NAME" value="testcase.function.AsmTest" />
+      <option name="METHOD_NAME" value="testJavaBean8" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -1268,11 +1356,11 @@
       </method>
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.AsmTest.testCollectionWithLoop9" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.AsmTest.testTheMostComplicatedJavaBean1" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.AsmTest" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.AsmTest.testTheMostComplicatedJavaBean2" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.testcase in glowworm" />
+      <item index="0" class="java.lang.String" itemvalue="JUnit.AsmTest" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.AsmTest.testTheMostComplicatedJavaBean2" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.testcase in glowworm" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.ReflectTest.testUserJavaBean1" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.AsmTest.testJavaBean8" />
     </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
@@ -1328,30 +1416,30 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32997763" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277405" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32214764" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24720357" sideWeight="0.47542736" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24430956" sideWeight="0.29867986" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1741453" sideWeight="0.22147651" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="ASM" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="FLOATING" visible="false" weight="0.7663126" sideWeight="0.56435645" order="6" side_tool="false" content_ui="tabs" x="136" y="72" width="1056" height="606" />
+      <window_info id="ASM" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="FLOATING" visible="false" weight="0.7663126" sideWeight="0.56435645" order="6" side_tool="false" content_ui="tabs" x="512" y="317" width="1056" height="606" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34451902" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32838285" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16666667" sideWeight="0.67337805" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18055555" sideWeight="0.7527964" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16079059" sideWeight="0.67449665" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18055555" sideWeight="0.67449665" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16616085" sideWeight="0.22442244" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15117522" sideWeight="0.67337805" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32662192" sideWeight="0.5208333" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21314102" sideWeight="0.67449665" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32550335" sideWeight="0.5208333" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277405" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16025642" sideWeight="0.6610738" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1449,37 +1537,88 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/normal/EnumSerializer.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/reflect/DefaultFieldDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="25" selection-start="620" selection-end="620" vertical-scroll-proportion="0.0">
+        <state line="12" column="13" selection-start="386" selection-end="386" vertical-scroll-proportion="0.11990408">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/multi/MapDeserializer.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/reflect/FieldDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="0" selection-start="2797" selection-end="2797" vertical-scroll-proportion="0.0">
+        <state line="11" column="22" selection-start="325" selection-end="325" vertical-scroll-proportion="0.118063755">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/userJavabean/Supply2.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/reflect/JavaBeanDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="13" selection-start="84" selection-end="84" vertical-scroll-proportion="0.0">
+        <state line="12" column="13" selection-start="401" selection-end="401" vertical-scroll-proportion="-3.436451">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/MultiTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/asm/ASMJavaBeanDeserializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="467" column="28" selection-start="17879" selection-end="17879" vertical-scroll-proportion="0.0">
+        <state line="12" column="22" selection-start="415" selection-end="415" vertical-scroll-proportion="0.116959065">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/userJavabean/TpMagic2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="13" selection-start="134" selection-end="134" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/userJavabean/Glowworm_Serializer_1.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="17" selection-start="528" selection-end="528" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/NormalTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="330" column="16" selection-start="11054" selection-end="11054" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/testcase/rule/ReflectTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="16" selection-start="266" selection-end="266" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/ReflectTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="23" selection-start="364" selection-end="364" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/Program Files/Java/jdk1.6.0_31/src.zip!/java/lang/reflect/Modifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="56" column="26" selection-start="2127" selection-end="2127" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/PBSerializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="174" column="0" selection-start="7340" selection-end="7340" vertical-scroll-proportion="0.0">
+        <state line="161" column="52" selection-start="6926" selection-end="6966" vertical-scroll-proportion="-6.92">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/util/ASMUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="52" column="25" selection-start="1602" selection-end="1602" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1491,80 +1630,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/asm/Type.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="99" column="0" selection-start="3391" selection-end="3391" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/normal/EnumDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="524" selection-end="524" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/primary/ByteArrayDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="0" selection-start="486" selection-end="486" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/NormalTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/userJavabean/InnerBean3.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="31" selection-start="272" selection-end="272" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/testcase/function/AsmTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1973" column="29" selection-start="72187" selection-end="72187" vertical-scroll-proportion="-4.88">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#27011#27024#0" expanded="true" />
-            <element signature="e#28495#28517#0" expanded="true" />
-            <element signature="e#28666#28688#0" expanded="true" />
-            <element signature="e#40747#40768#0" expanded="true" />
-            <element signature="e#41394#41410#0" expanded="true" />
-            <element signature="e#43681#43690#0" expanded="true" />
-            <element signature="e#45175#45183#0" expanded="true" />
-            <element signature="e#45640#45649#0" expanded="true" />
-            <element signature="e#46116#46124#0" expanded="true" />
-            <element signature="e#50659#50667#0" expanded="true" />
-            <element signature="e#52002#52011#0" expanded="true" />
-            <element signature="e#52717#52726#0" expanded="true" />
-            <element signature="e#53283#53292#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/PBDeserializer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="439" column="33" selection-start="16390" selection-end="16405" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/asm/ASMDeserializerFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="60" selection-start="2208" selection-end="2208" vertical-scroll-proportion="0.0">
+        <state line="972" column="35" selection-start="32527" selection-end="32527" vertical-scroll-proportion="-13.88">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/serializer/asm/ASMSerializerFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="89" column="4" selection-start="3444" selection-end="3444" vertical-scroll-proportion="0.6402214">
+        <state line="90" column="12" selection-start="3355" selection-end="3355" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/jd/dd/glowworm/deserializer/asm/ASMDeserializerFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="26" selection-start="2661" selection-end="2661" vertical-scroll-proportion="0.8232044">
           <folding />
         </state>
       </provider>

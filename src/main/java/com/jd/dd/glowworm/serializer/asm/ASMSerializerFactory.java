@@ -14,9 +14,12 @@ import com.jd.dd.glowworm.util.FieldInfo;
 import com.jd.dd.glowworm.util.TypeUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static com.jd.dd.glowworm.util.ASMUtils.getDesc;
 
 public class ASMSerializerFactory implements Opcodes {
 
@@ -47,11 +50,36 @@ public class ASMSerializerFactory implements Opcodes {
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, className, "java/lang/Object",
                 new String[]{"com/jd/dd/glowworm/serializer/ObjectSerializer"});
 
-//        for (FieldInfo fieldInfo : getters) {
-//            FieldVisitor fw = cw.visitField(ACC_PUBLIC, fieldInfo.getName() + "_asm_fieldType",
-//                    "Ljava/lang/reflect/Type;");
-//            fw.visitEnd();
-//        }
+        //把所有需要从map中查找序列化器的属性的序列化器都记下来，第二次再序列化的时候可以复用
+        for (int i = 0, size = getters.size(); i < size; ++i) {
+            FieldInfo fieldInfo = getters.get(i);
+            Class<?> fieldClass = fieldInfo.getFieldClass();
+
+            if (fieldClass.isPrimitive()) {
+                continue;
+            }
+            if (List.class.isAssignableFrom(fieldClass)) {
+                continue;
+            }
+            if (Set.class.isAssignableFrom(fieldClass)) {
+                continue;
+            }
+            if (Map.class.isAssignableFrom(fieldClass)) {
+                continue;
+            }
+            if (fieldClass.isArray() && !fieldClass.getComponentType().isPrimitive()) {
+                continue;
+            }
+            if (!Modifier.isPublic(fieldClass.getModifiers())){
+                continue;
+            }
+            if (fieldClass == Object.class){
+                continue;
+            }
+            FieldVisitor fw = cw.visitField(ACC_PUBLIC, fieldInfo.getName() + "_asm_s__",
+                    getDesc(ObjectSerializer.class));
+            fw.visitEnd();
+        }
 
         MethodVisitor mw = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
         mw.visitVarInsn(ALOAD, 0);
@@ -117,9 +145,9 @@ public class ASMSerializerFactory implements Opcodes {
             } else if (propertyClass == String.class) {
                 _string(clazz, mw, property, context, i);
             } else if (propertyClass.isArray()) {
-                if (property.getFieldClass().getComponentType().isPrimitive()){//如果是如boolean[]这样的基础类型数组直接走_Object
+                if (property.getFieldClass().getComponentType().isPrimitive()) {//如果是如boolean[]这样的基础类型数组直接走_Object
                     _object(mw, property, context);
-                }else {
+                } else {
                     _array(clazz, mw, property, context, i);
                 }
             } else if (List.class.isAssignableFrom(propertyClass)) {
@@ -231,7 +259,7 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitJumpInsn(IFNULL, if_null);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitInsn(ACONST_NULL);
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "(" + ASMUtils.getDesc(ObjectSerializer.class) + ")Z");
         mw.visitJumpInsn(IFEQ, if_ref);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ALOAD, context.var("object"));
@@ -244,7 +272,6 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitLabel(if_ref);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeNotNull", "()V");
-
 
 
         mw.visitFieldInsn(GETSTATIC, ASMUtils.getType(ListSerializer.class), "instance", ASMUtils.getDesc(ListSerializer.class));
@@ -294,7 +321,7 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitJumpInsn(IFNULL, if_null);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitInsn(ACONST_NULL);
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "(" + ASMUtils.getDesc(ObjectSerializer.class) + ")Z");
         mw.visitJumpInsn(IFEQ, if_ref);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ALOAD, context.var("object"));
@@ -450,7 +477,7 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitJumpInsn(IFNULL, if_null);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitInsn(ACONST_NULL);
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "(" + ASMUtils.getDesc(ObjectSerializer.class) + ")Z");
         mw.visitJumpInsn(IFEQ, if_ref);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ALOAD, context.var("object"));
@@ -483,7 +510,6 @@ public class ASMSerializerFactory implements Opcodes {
     }
 
 
-
     private void _map(Class<?> clazz, MethodVisitor mw, FieldInfo property, Context context, int i) {
         Label _end = new Label();
 
@@ -498,7 +524,7 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitJumpInsn(IFNULL, if_null);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitInsn(ACONST_NULL);
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "("+ASMUtils.getDesc(ObjectSerializer.class)+")Z");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "needConsiderRef", "(" + ASMUtils.getDesc(ObjectSerializer.class) + ")Z");
         mw.visitJumpInsn(IFEQ, if_ref);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ALOAD, context.var("object"));
@@ -566,23 +592,45 @@ public class ASMSerializerFactory implements Opcodes {
     }
 
 
-
-
-
     private void _object(MethodVisitor mw, FieldInfo property, Context context) {
         Label _end = new Label();
+        if (Modifier.isPublic(property.getFieldClass().getModifiers()) && property.getFieldClass() != Object.class) {//如果不是内部类（private）
+            Label notNull_ = new Label();
+            mw.visitVarInsn(ALOAD, 0);
+            mw.visitFieldInsn(GETFIELD, context.getClassName(), property.getName() + "_asm_s__",
+                    getDesc(ObjectSerializer.class));
+            mw.visitJumpInsn(IFNONNULL, notNull_);
+
+            mw.visitVarInsn(ALOAD, 0);
+            mw.visitVarInsn(ALOAD, context.serializer());
+            mw.visitLdcInsn(com.jd.dd.glowworm.asm.Type.getType(getDesc(property.getFieldClass())));
+            mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "getObjectWriter",
+                    "(Ljava/lang/Class;)Lcom/jd/dd/glowworm/serializer/ObjectSerializer;");
+
+            mw.visitFieldInsn(PUTFIELD, context.getClassName(), property.getName() + "_asm_s__",
+                    getDesc(ObjectSerializer.class));
+            mw.visitLabel(notNull_);
+        }
 
         _get(mw, context, property);
         mw.visitVarInsn(ASTORE, context.var("object"));
 
         mw.visitVarInsn(ALOAD, context.serializer());
+        if (Modifier.isPublic(property.getFieldClass().getModifiers()) && property.getFieldClass() != Object.class) {//如果不是内部类(private)
+            mw.visitVarInsn(ALOAD, 0);
+            mw.visitFieldInsn(GETFIELD, context.getClassName(), property.getName() + "_asm_s__",
+                    getDesc(ObjectSerializer.class));
+        } else {
+            mw.visitInsn(ACONST_NULL);
+        }
+
         mw.visitVarInsn(ALOAD, context.var("object"));
         if (property.getFieldClass() == Object.class) {//如果是拿Object声明的，needWriteType=true
             mw.visitInsn(ICONST_1);
         } else {
             mw.visitInsn(ICONST_0);
         }
-        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeFieldObject", "(Ljava/lang/Object;Z)V");
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeFieldObject", "(" + ASMUtils.getDesc(ObjectSerializer.class) + "Ljava/lang/Object;Z)V");
 
         mw.visitLabel(_end);
     }

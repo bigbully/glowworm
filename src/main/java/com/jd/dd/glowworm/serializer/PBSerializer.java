@@ -303,14 +303,15 @@ public class PBSerializer {
     }
 
     //写入不知名的Object对象，作为UserJavaBean的属性
-    public void writeFieldObject(Object object, boolean needWriteType) {
+    public void writeFieldObject(ObjectSerializer writer, Object object, boolean needWriteType) {
         try {
             if (object == null) {
                 writeNull();
             } else {
                 Class<?> clazz = object.getClass();
-                ObjectSerializer writer = getObjectWriter(clazz);
-
+                if (writer == null){//是这样的，如果这个clazz不是内部类的话，会在asm序列化器中提前把对应的writer找出并缓存，如果是内部类的话，则在运行时期再找出writer，所以传入的是null
+                    writer = getObjectWriter(clazz);
+                }
                 if (needConsiderRef(writer) && this.isReference(object)) {
                     writeNull();
                 } else {

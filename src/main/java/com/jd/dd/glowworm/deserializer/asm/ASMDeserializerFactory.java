@@ -551,9 +551,7 @@ public class ASMDeserializerFactory implements Opcodes {
 
     private void _deserialze_obj(Context context, MethodVisitor mw, FieldInfo fieldInfo,
                                  Class<?> fieldClass) {
-        //添加判断循环引用
         Label notNull_ = new Label();
-        mw.visitVarInsn(ALOAD, context.deserializer());
         mw.visitVarInsn(ALOAD, 0);
         mw.visitFieldInsn(GETFIELD, context.getClassName(), fieldInfo.getName() + "_asm_deser__",
                 getDesc(ObjectDeserializer.class));
