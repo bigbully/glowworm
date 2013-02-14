@@ -1,4 +1,6 @@
-package javabean;
+package userJavabean;
+
+import userJavabean.Course;
 
 import java.util.List;
 

@@ -2,7 +2,6 @@ package testcase.function;
 
 import com.jd.dd.glowworm.PBException;
 import com.jd.dd.glowworm.util.Parameters;
-import javabean.InnerBean3;
 import org.junit.Test;
 import testcase.TestBase;
 import userJavabean.*;

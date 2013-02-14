@@ -79,8 +79,8 @@ public class ASMSerializerFactory implements Opcodes {
 
         byte[] code = cw.toByteArray();
 
-        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
-                "D:/" + className + ".class"));
+//        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
+//                "D:/" + className + ".class"));
 
         Class<?> exampleClass = classLoader.defineClassPublic(className, code, 0, code.length);
         Object instance = exampleClass.newInstance();
@@ -117,7 +117,11 @@ public class ASMSerializerFactory implements Opcodes {
             } else if (propertyClass == String.class) {
                 _string(clazz, mw, property, context, i);
             } else if (propertyClass.isArray()) {
-                _array(clazz, mw, property, context, i);
+                if (property.getFieldClass().getComponentType().isPrimitive()){//如果是如boolean[]这样的基础类型数组直接走_Object
+                    _object(mw, property, context);
+                }else {
+                    _array(clazz, mw, property, context, i);
+                }
             } else if (List.class.isAssignableFrom(propertyClass)) {
                 _list(clazz, mw, property, context, i);
             } else if (Set.class.isAssignableFrom(propertyClass)) {
@@ -133,12 +137,32 @@ public class ASMSerializerFactory implements Opcodes {
     private void _date(Class<?> clazz, MethodVisitor mw, FieldInfo property, Context context) {
         Label _end = new Label();
         _get(mw, context, property);
+
         mw.visitVarInsn(ASTORE, context.var("date"));
+
+        Label _else = new Label();
+        Label _end_if = new Label();
+
+        // if (value == null) {
+        mw.visitVarInsn(ALOAD, context.var("date"));
+        mw.visitJumpInsn(IFNONNULL, _else);
+
+        write_null(mw, property, context);
+
+        mw.visitJumpInsn(GOTO, _end_if);
+
+        mw.visitLabel(_else); // else { out.writeFieldValue(seperator, fieldName, fieldValue)
+        write_not_null(mw, property, context);
+
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ALOAD, context.var("date"));
         mw.visitMethodInsn(INVOKEVIRTUAL, "java/util/Date", "getTime", "()J");
         mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeLong", "(J)V");
+
+        mw.visitLabel(_end_if);
+
         mw.visitLabel(_end);
+
     }
 
     private void _char(Class<?> clazz, MethodVisitor mw, FieldInfo property, Context context) {
@@ -367,6 +391,7 @@ public class ASMSerializerFactory implements Opcodes {
         mw.visitJumpInsn(GOTO, _end_if);
 
         mw.visitLabel(_else); // else { out.writeFieldValue(seperator, fieldName, fieldValue)
+        write_not_null(mw, property, context);
         mw.visitVarInsn(ALOAD, context.serializer());
         mw.visitVarInsn(ALOAD, context.var("string"));
         mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBSerializer.class), "writeStringWithCharset",

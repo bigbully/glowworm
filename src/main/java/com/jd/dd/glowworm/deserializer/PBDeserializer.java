@@ -26,6 +26,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -42,6 +43,7 @@ public class PBDeserializer {
     private Map<Integer, Object> objectIndexMap;//用来保存所有和javabeean, Array, List, Set, Map相关的index-对象键值对
     private HashMap<Integer, Integer> refMap;//<引用，源>存放引用的map
     private final static ThreadLocal<SoftReference<InputStreamBuffer>> bufLocal = new ThreadLocal<SoftReference<InputStreamBuffer>>();
+    private int currentIndex;//对象的index,用来查找是否为循环引用
 
     static {
         initTheDeserializerHMap();
@@ -77,6 +79,7 @@ public class PBDeserializer {
         derializers.put(String.class, StringDeserializer.instance);
 
         derializers.put(Class.class, ClassDeserializer.instance);
+        derializers.put(Object.class, JavaObjectDeserializer.instance);
 
         derializers.put(BigDecimal.class, BigDecimalDeserializer.instance);
         derializers.put(BigInteger.class, BigIntegerDeserializer.instance);
@@ -138,9 +141,11 @@ public class PBDeserializer {
             int refSize = scanNaturalInt();
             if (refSize > 0) {
                 refMap = new HashMap<Integer, Integer>();
-            }
-            for (int i = 0; i < refSize; i++) {
-                refMap.put(scanNaturalInt(), scanNaturalInt());
+                for (int i = 0; i < refSize; i++) {
+                    refMap.put(scanNaturalInt(), scanNaturalInt());
+                }
+            }else {
+                refMap = null;
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -231,7 +236,9 @@ public class PBDeserializer {
             return deserializer;
         }
 
-        if (clazz.isArray()) {
+        if (clazz.isEnum() || (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())){
+            deserializer = new EnumDeserializer(clazz);
+        }else if (clazz.isArray()) {
             return ArrayDeserializer.instance;
         } else if (Map.class.isAssignableFrom(clazz)){
             return MapDeserializer.instance;
@@ -310,7 +317,11 @@ public class PBDeserializer {
     }
 
     public boolean isObjectExist() {
-        return existStream.readRawByte() == 0 ? true : false;
+        boolean isExisted = existStream.readRawByte() == 0 ? true : false;
+        if (!isExisted){
+            currentIndex++;
+        }
+        return isExisted;
     }
 
     public boolean scanBool() throws IOException {
@@ -341,8 +352,11 @@ public class PBDeserializer {
         return theCodedInputStream.readDouble();
     }
 
-    public Enum scanEnum() throws Exception {
-        return Enum.valueOf((Class<Enum>) TypeUtils.loadClass(scanString()), scanString());
+    public Enum scanEnum(Class enumClazz) throws Exception {
+        if(enumClazz == null){
+            enumClazz = TypeUtils.loadClass(scanString());
+        }
+        return Enum.valueOf((Class<Enum>) enumClazz,  scanString());
     }
 
     public int scanNaturalInt() throws Exception {
@@ -366,16 +380,22 @@ public class PBDeserializer {
     }
 
     public Object getReference() {
-        if (objectIndexMap == null) {
+        if (refMap == null){
             return null;
-        } else {
-            Integer mapSize = objectIndexMap.size();
-            if (refMap.containsKey(mapSize)) {
-                Object ref = objectIndexMap.get(refMap.get(mapSize));
-                objectIndexMap.put(mapSize, ref);
-                return ref;
-            } else {
+        }else {
+            if (objectIndexMap == null) {
                 return null;
+            } else {
+                currentIndex--;//这里是因为之前判断isObjectExist时已经把index++了，这里只能把index还原
+                if (refMap.containsKey(currentIndex)) {
+                    Object ref = objectIndexMap.get(refMap.get(currentIndex));
+                    objectIndexMap.put(currentIndex, ref);
+                    currentIndex++;//在操作完引用相关之后再把index++
+                    return ref;
+                } else {
+                    currentIndex++;//在操作完引用相关之后再把index++
+                    return null;
+                }
             }
         }
     }
@@ -385,7 +405,7 @@ public class PBDeserializer {
             if (objectIndexMap == null) {
                 objectIndexMap = new HashMap<Integer, Object>();
             }
-            objectIndexMap.put(objectIndexMap.size(), object);
+            objectIndexMap.put(currentIndex++, object);
         }
     }
 
@@ -439,8 +459,8 @@ public class PBDeserializer {
         try {
             itemType = itemType == null ? scanType() : itemType;
             switch (itemType) {
-//                case com.jd.dd.glowworm.asm.Type.OBJECT:
-//                    return parseObject(null);
+                case com.jd.dd.glowworm.asm.Type.OBJECT:
+                    return scanObject();
                 case com.jd.dd.glowworm.asm.Type.BYTE:
                     return scanByte();
                 case com.jd.dd.glowworm.asm.Type.SHORT:
@@ -464,7 +484,7 @@ public class PBDeserializer {
                 case com.jd.dd.glowworm.asm.Type.BIGINTEGER:
                     return scanBigInteger();
                 case com.jd.dd.glowworm.asm.Type.ENUM:
-                    return scanEnum();
+                    return scanEnum(null);
                 case com.jd.dd.glowworm.asm.Type.ARRAY_BYTE:
                     return scanByteArray();
                 case com.jd.dd.glowworm.asm.Type.ARRAY_CHAR:
@@ -495,44 +515,20 @@ public class PBDeserializer {
                     return scanAtomicInt();
                 case com.jd.dd.glowworm.asm.Type.ATOMIC_LONG:
                     return scanAtomicLong();
-//                case com.jd.dd.glowworm.asm.Type.LIST_ARRAYLIST:
-//                    ArrayList retList = new ArrayList();
-//                    addToObjectIndexMap(retList, null);
-//                    parseArray(Object.class, retList, null, null);
-//                    return retList;
-//                case com.jd.dd.glowworm.asm.Type.LIST_LINKEDLIST:
-//                    LinkedList retLinkedList = new LinkedList();
-//                    addToObjectIndexMap(retLinkedList, null);
-//                    parseArray(Object.class, retLinkedList, null, null);
-//                    return retLinkedList;
-//                case com.jd.dd.glowworm.asm.Type.COLLECTION_HASHSET:
-//                    HashSet retHashSet = new HashSet();
-//                    addToObjectIndexMap(retHashSet, null);
-//                    parseArray(Object.class, retHashSet, null, null);
-//                    return retHashSet;
-//                case com.jd.dd.glowworm.asm.Type.COLLECTION_TREESET:
-//                    TreeSet retTreeSet = new TreeSet();
-//                    addToObjectIndexMap(retTreeSet, null);
-//                    parseArray(Object.class, retTreeSet, null, null);
-//                    return retTreeSet;
-//                case com.jd.dd.glowworm.asm.Type.MAP_HASH:
-//                    HashMap retMap = new HashMap();
-//                    addToObjectIndexMap(retMap, null);
-//                    int tmpMapSz = scanInt();
-//                    parseObject(retMap, null, tmpMapSz);
-//                    return retMap;
-//                case com.jd.dd.glowworm.asm.Type.MAP_LinkedHash:
-//                    LinkedHashMap retLinkedHashMap = new LinkedHashMap();
-//                    addToObjectIndexMap(retLinkedHashMap, null);
-//                    tmpMapSz = scanInt();
-//                    parseObject(retLinkedHashMap, null, tmpMapSz);
-//                    return retLinkedHashMap;
-//                case com.jd.dd.glowworm.asm.Type.MAP_ConcurrentHashMap:
-//                    ConcurrentHashMap retConcurrentHashMap = new ConcurrentHashMap();
-//                    addToObjectIndexMap(retConcurrentHashMap, null);
-//                    tmpMapSz = scanInt();
-//                    parseObject(retConcurrentHashMap, null, tmpMapSz);
-//                    return retConcurrentHashMap;
+                case com.jd.dd.glowworm.asm.Type.LIST_ARRAYLIST:
+                    return ListDeserializer.instance.deserialize(this, ArrayList.class, false);
+                case com.jd.dd.glowworm.asm.Type.LIST_LINKEDLIST:
+                    return ListDeserializer.instance.deserialize(this, LinkedList.class, false);
+                case com.jd.dd.glowworm.asm.Type.COLLECTION_HASHSET:
+                    return SetDeserializer.instance.deserialize(this, HashSet.class, false);
+                case com.jd.dd.glowworm.asm.Type.COLLECTION_TREESET:
+                    return SetDeserializer.instance.deserialize(this, TreeSet.class, false);
+                case com.jd.dd.glowworm.asm.Type.MAP_HASH:
+                    return MapDeserializer.instance.deserialize(this, HashMap.class, false);
+                case com.jd.dd.glowworm.asm.Type.MAP_LinkedHash:
+                    return MapDeserializer.instance.deserialize(this, LinkedHashMap.class, false);
+                case com.jd.dd.glowworm.asm.Type.MAP_ConcurrentHashMap:
+                    return MapDeserializer.instance.deserialize(this, ConcurrentHashMap.class, false);
                 default:
                     throw new PBException("没找到对应的解析类型 " + itemType);
             }
@@ -540,6 +536,18 @@ public class PBDeserializer {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Object scanObject() {
+        String typeName = null;
+        try {
+            typeName = scanString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Class<?> clazz = TypeUtils.loadClass(typeName);
+        ObjectDeserializer deserializer = getDeserializer(clazz);
+        return deserializer.deserialize(this, clazz, true);
     }
 
     public AtomicBoolean scanAtomicBool() throws IOException {

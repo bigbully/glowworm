@@ -391,6 +391,7 @@ public class PBSerializer {
 
     ///---------------是否存在的判断------------------//
     public void writeNull() {
+        currentIndex++;
         existStream.write(false);
     }
 
@@ -401,22 +402,24 @@ public class PBSerializer {
     //--------------以下是引用的处理--------------------//
     public boolean isReference(Object item) {
         boolean flag;
+        currentIndex++;
         SerializeContext serializeContext = getSerializeContextObj(item);
+        //任何做过判断的对象，放入object-index的MAP中，index从0开始递增
+        if (objectIndexList == null){
+            objectIndexList = new ArrayList<SerializeContext>();
+        }
+        objectIndexList.add(new SerializeContext(item, currentIndex));
         if (serializeContext != null) {//判断是否是引用
             if (refMap == null) {
                 refMap = new HashMap<Integer, Integer>();
             }
             //如果是引用，添加在应用list中,待后续处理
-            refMap.put(objectIndexList.size(), serializeContext.getIndex());
+            refMap.put(currentIndex, serializeContext.getIndex());
+            currentIndex--;//考虑确定每个引用之后writeNull的时候会index++，由于之前已经加过一次了，所以这里还原，等待writeNull的时候再增加
             flag = true;
         } else {//不是引用
             flag = false;
         }
-        //任何做过判断的对象，放入object-index的MAP中，index从0开始递增
-        if (objectIndexList == null){
-            objectIndexList = new ArrayList<SerializeContext>();
-        }
-        objectIndexList.add(new SerializeContext(item, objectIndexList.size()));
         return flag;
     }
 
@@ -435,15 +438,7 @@ public class PBSerializer {
         if (objectIndexList == null){
             objectIndexList = new ArrayList<SerializeContext>();
         }
-        objectIndexList.add(new SerializeContext(object,0));
-    }
-
-    public void addCurrentIndex(){
-        currentIndex++;
-    }
-
-    public int getCurrentIndex() {
-        return currentIndex;
+        objectIndexList.add(new SerializeContext(object,currentIndex));
     }
 
     //是否考虑引用

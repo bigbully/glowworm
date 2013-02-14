@@ -417,4 +417,71 @@ public class MultiTest extends TestBase {
         assertEquals(chars[1], result[1]);
         assertEquals(chars[2], result[2]);
     }
+
+    //测试Object数组中的循环引用
+    @Test
+    public void testCollection4() throws Exception{
+        Object[] array = new Object[2];
+        LoopPerson1 p1 = new LoopPerson1();
+        p1.setB(new Byte("1"));
+        LoopPerson1 p2 = new LoopPerson1();
+        p2.setB(new Byte("2"));
+        p1.setBrother(p2);
+        p2.setBrother(p1);
+
+        array[0] = p1;
+        array[1] = p2;
+
+        Object[] result = executeBackAndForth(array, Object[].class);
+        assertEquals("1", String.valueOf(((LoopPerson1)result[0]).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1)result[1]).getB()));
+        assertEquals(result[0], ((LoopPerson1)result[1]).getBrother());
+    }
+
+    //序列化一个Object数组，测试不传多余类名
+    @Test
+    public void testCollection5() throws Exception{
+        Object[] array = new Object[3];
+        LoopPerson1 p1 = new LoopPerson1();
+        p1.setB(new Byte("1"));
+        LoopPerson1 p2 = new LoopPerson1();
+        p2.setB(new Byte("2"));
+        p1.setBrother(p2);
+        p2.setBrother(p1);
+
+        Person1 p3 = new Person1();
+        p3.setId(3L);
+
+        array[0] = p1;
+        array[1] = p2;
+        array[2] = p3;
+
+        Object[] result = executeBackAndForth(array, Object[].class);
+        assertEquals("1", String.valueOf(((LoopPerson1)result[0]).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1)result[1]).getB()));
+        assertEquals(result[0], ((LoopPerson1)result[1]).getBrother());
+        assertEquals(String.valueOf(3), ((Person1)result[2]).getId().toString());
+    }
+
+    //序列化一个list，不传多余类名
+    @Test
+    public void testCollectionWithLoop3() throws Exception{
+        List list = new ArrayList();
+        LoopPerson1 p1 = new LoopPerson1();
+        p1.setB(new Byte("1"));
+        LoopPerson1 p2 = new LoopPerson1();
+        p2.setB(new Byte("2"));
+
+        Person1 p3 = new Person1();
+        p3.setId(3L);
+
+        list.add(p1);
+        list.add(p2);
+        list.add(p3);
+
+        ArrayList result = executeBackAndForth(list, ArrayList.class);
+        assertEquals("1", String.valueOf(((LoopPerson1)result.get(0)).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1)result.get(1)).getB()));
+        assertEquals(String.valueOf(3), ((Person1)result.get(2)).getId().toString());
+    }
 }

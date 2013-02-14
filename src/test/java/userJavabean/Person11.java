@@ -1,4 +1,4 @@
-package javabean;
+package userJavabean;
 
 import java.util.Map;
 

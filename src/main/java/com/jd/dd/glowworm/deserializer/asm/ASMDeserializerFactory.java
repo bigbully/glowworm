@@ -50,8 +50,8 @@ public class ASMDeserializerFactory implements Opcodes {
 
         byte[] code = cw.toByteArray();
 
-        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
-                "d:/" + className + ".class"));
+//        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
+//                "d:/" + className + ".class"));
 
         Class<?> exampleClass = classLoader.defineClassPublic(className, code, 0, code.length);
 
@@ -61,6 +61,8 @@ public class ASMDeserializerFactory implements Opcodes {
         return (ObjectDeserializer) instance;
     }
 
+    //这个方法注意一下啊。如果某个属性最终需要调用PbDesiariazer.scanFieldObject()方法，那么就提前在整个类的反序列化器中把每个属性的序列化器存下来，以后就不用再从Map中查找了~
+    //但是几种特殊类型因为没有自己对应的唯一的序列化器，所以就pass了~
     private void _init(ClassWriter cw, Context context) {
         for (int i = 0, size = context.getFieldInfoList().size(); i < size; ++i) {
             FieldInfo fieldInfo = context.getFieldInfoList().get(i);
@@ -69,18 +71,22 @@ public class ASMDeserializerFactory implements Opcodes {
             if (fieldClass.isPrimitive()) {
                 continue;
             }
-
-            if (fieldClass.isEnum()) {
-
-            } else if (Collection.class.isAssignableFrom(fieldClass)) {
-                FieldVisitor fw = cw.visitField(ACC_PUBLIC, fieldInfo.getName() + "_asm_list_item_deser__",
-                        getDesc(ObjectDeserializer.class));
-                fw.visitEnd();
-            } else {
-                FieldVisitor fw = cw.visitField(ACC_PUBLIC, fieldInfo.getName() + "_asm_deser__",
-                        getDesc(ObjectDeserializer.class));
-                fw.visitEnd();
+            if (List.class.isAssignableFrom(fieldClass)){
+                continue;
             }
+            if (Set.class.isAssignableFrom(fieldClass)){
+                continue;
+            }
+            if (Map.class.isAssignableFrom(fieldClass)){
+                continue;
+            }
+            if (fieldClass.isArray() && !fieldClass.getComponentType().isPrimitive()){
+                continue;
+            }
+            FieldVisitor fw = cw.visitField(ACC_PUBLIC, fieldInfo.getName() + "_asm_deser__",
+                    getDesc(ObjectDeserializer.class));
+            fw.visitEnd();
+
         }
 
         MethodVisitor mw = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + getDesc(PBDeserializer.class)
@@ -197,136 +203,41 @@ public class ASMDeserializerFactory implements Opcodes {
         for (int i = 0, size = context.getFieldInfoList().size(); i < size; ++i) {
             FieldInfo fieldInfo = context.getFieldInfoList().get(i);
             Class<?> fieldClass = fieldInfo.getFieldClass();
-            Type fieldType = fieldInfo.getFieldType();
 
             if (fieldClass == boolean.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanBool", "()Z");
-                mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+                _boolean(context, mw, fieldInfo);
             } else if (fieldClass == int.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanInt", "()I");
-                mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+                _int(context, mw, fieldInfo);
             } else if (fieldClass == char.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanStringWithCharset", "()Ljava/lang/String;");
-                mw.visitVarInsn(ASTORE, context.var("tmpString"));
-                mw.visitVarInsn(ALOAD, context.var("tmpString"));
-                mw.visitMethodInsn(INVOKESTATIC, ASMUtils.getType(TypeUtils.class), "castToChar", "(Ljava/lang/Object;)Ljava/lang/Character;");
-                mw.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C");
-
-                mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+                _char(context, mw, fieldInfo);
             } else if (fieldClass == long.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanLong", "()J");
-                mw.visitVarInsn(LSTORE, context.var(fieldInfo.getName() + "_asm", 2));
+                _long(context, mw, fieldInfo);
             } else if (fieldClass == byte.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanByte", "()B");
-                mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+                _byte(context, mw, fieldInfo);
             } else if (fieldClass == short.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanShort", "()S");
-                mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+                _short(context, mw, fieldInfo);
             } else if (fieldClass == float.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanFloat", "()F");
-                mw.visitVarInsn(FSTORE, context.var(fieldInfo.getName() + "_asm"));
+                _float(context, mw, fieldInfo);
             } else if (fieldClass == double.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                mw.visitInsn(POP);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanDouble", "()D");
-                mw.visitVarInsn(DSTORE, context.var(fieldInfo.getName() + "_asm", 2));
+                _double(context, mw, fieldInfo);
             } else if (fieldClass == String.class) {
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
-                Label _if_not_null = new Label();
-                mw.visitJumpInsn(IFEQ, _if_not_null);
-                mw.visitVarInsn(ALOAD, context.deserializer());
-                mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanStringWithCharset", "()Ljava/lang/String;");
-                mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
-                Label _else_null = new Label();
-                mw.visitJumpInsn(GOTO, _else_null);
-                mw.visitLabel(_if_not_null);
-                mw.visitInsn(ACONST_NULL);
-                mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
-                mw.visitLabel(_else_null);
+                _string(context, mw, fieldInfo);
+            } else if (fieldClass == Date.class) {
+                _date(context, mw, fieldInfo);
             } else if (fieldClass.isArray()) {
-                _array(context, mw, fieldInfo, fieldClass);
+                if (fieldClass.getComponentType().isPrimitive()){//如果是如boolean[]这样的基础类型数组直接走_Object
+                    _deserialze_obj(context, mw, fieldInfo, fieldClass);
+                    continue;
+                }else {
+                    _array(context, mw, fieldInfo, fieldClass);
+                }
             } else if (Map.class.isAssignableFrom(fieldClass)) {
                 _map(context, mw, fieldInfo, fieldClass);
             } else if (List.class.isAssignableFrom(fieldClass)) {
                 _list(context, mw, fieldInfo, fieldClass);
             } else if (Set.class.isAssignableFrom(fieldClass)) {
                 _set(context, mw, fieldInfo, fieldClass);
-            }
-//            } else if (fieldClass == byte[].class) {
-//                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanFieldByteArray", "()[B");
-//                mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
-//            } else if (fieldClass.isEnum()) {
-//                mw.visitInsn(ACONST_NULL);
-//                mw.visitTypeInsn(CHECKCAST, getType(fieldClass)); // cast
-//                mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
-//
-//                mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanFieldString",
-//                        "()Ljava/lang/String;");
-//                mw.visitMethodInsn(INVOKESTATIC, getType(fieldClass), "valueOf", "(Ljava/lang/String;)"
-//                        + getDesc(fieldClass));
-//                mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
-//
-//            } else if (Collection.class.isAssignableFrom(fieldClass)) {
-//
-//                Type actualTypeArgument = ((ParameterizedType) fieldType).getActualTypeArguments()[0];
-//
-//                if (actualTypeArgument instanceof Class) {
-//                    Class<?> itemClass = (Class<?>) actualTypeArgument;
-//
-//                    if (!Modifier.isPublic(itemClass.getModifiers())) {
-//                        throw new ASMException("can not create ASMParser");
-//                    }
-//
-//                    /*if (itemClass == String.class) {
-//                        mw.visitLdcInsn(com.jd.dd.glowworm.asm.Type.getType(getDesc(fieldClass))); // cast
-//                        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanFieldStringList",
-//                                           "([Ljava/lang/Class;)" + getDesc(Collection.class));
-//                        mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
-//                    } else {*/
-//                    _deserialze_list_obj(context, mw, fieldInfo, fieldClass, itemClass);
-//
-//                    /*if (i == size - 1) {
-//                        _deserialize_endCheck(context, mw, reset_);
-//                    }*/
-//                    continue;
-//                    //}
-//                } else {
-//                    throw new ASMException("can not create ASMParser");
-//                }
-
-            else {
-                mw.visitVarInsn(ALOAD, context.deserializer());
+            } else {
                 _deserialze_obj(context, mw, fieldInfo, fieldClass);
                 continue;
             }
@@ -411,6 +322,115 @@ public class ASMDeserializerFactory implements Opcodes {
         //System.out.println(maxStack+"#"+context.getVariantCount());
         mw.visitMaxs(maxStack, context.getVariantCount());
         mw.visitEnd();
+    }
+
+    private void _date(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        Label if_not_null = new Label();
+        mw.visitJumpInsn(IFEQ, if_not_null);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanDate", "()Ljava/util/Date;");
+        mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
+        Label if_null = new Label();
+        mw.visitJumpInsn(GOTO, if_null);
+        mw.visitLabel(if_not_null);
+        mw.visitInsn(ACONST_NULL);
+        mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
+        mw.visitLabel(if_null);
+    }
+
+    private void _string(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        Label _if_not_null = new Label();
+        mw.visitJumpInsn(IFEQ, _if_not_null);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanStringWithCharset", "()Ljava/lang/String;");
+        mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
+        Label _else_null = new Label();
+        mw.visitJumpInsn(GOTO, _else_null);
+        mw.visitLabel(_if_not_null);
+        mw.visitInsn(ACONST_NULL);
+        mw.visitVarInsn(ASTORE, context.var(fieldInfo.getName() + "_asm"));
+        mw.visitLabel(_else_null);
+    }
+
+    private void _double(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanDouble", "()D");
+        mw.visitVarInsn(DSTORE, context.var(fieldInfo.getName() + "_asm", 2));
+    }
+
+    private void _float(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanFloat", "()F");
+        mw.visitVarInsn(FSTORE, context.var(fieldInfo.getName() + "_asm"));
+    }
+
+    private void _short(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanShort", "()S");
+        mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+    }
+
+    private void _byte(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanByte", "()B");
+        mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+    }
+
+    private void _long(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanLong", "()J");
+        mw.visitVarInsn(LSTORE, context.var(fieldInfo.getName() + "_asm", 2));
+    }
+
+    private void _char(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "scanStringWithCharset", "()Ljava/lang/String;");
+        mw.visitVarInsn(ASTORE, context.var("tmpString"));
+        mw.visitVarInsn(ALOAD, context.var("tmpString"));
+        mw.visitMethodInsn(INVOKESTATIC, ASMUtils.getType(TypeUtils.class), "castToChar", "(Ljava/lang/Object;)Ljava/lang/Character;");
+        mw.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C");
+
+        mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+    }
+
+    private void _int(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanInt", "()I");
+        mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
+    }
+
+    private void _boolean(Context context, MethodVisitor mw, FieldInfo fieldInfo) {
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, ASMUtils.getType(PBDeserializer.class), "isObjectExist", "()Z");
+        mw.visitInsn(POP);
+        mw.visitVarInsn(ALOAD, context.deserializer());
+        mw.visitMethodInsn(INVOKEVIRTUAL, getType(PBDeserializer.class), "scanBool", "()Z");
+        mw.visitVarInsn(ISTORE, context.var(fieldInfo.getName() + "_asm"));
     }
 
     private void _list(Context context, MethodVisitor mw, FieldInfo fieldInfo, Class<?> fieldClass) {
@@ -533,6 +553,7 @@ public class ASMDeserializerFactory implements Opcodes {
                                  Class<?> fieldClass) {
         //添加判断循环引用
         Label notNull_ = new Label();
+        mw.visitVarInsn(ALOAD, context.deserializer());
         mw.visitVarInsn(ALOAD, 0);
         mw.visitFieldInsn(GETFIELD, context.getClassName(), fieldInfo.getName() + "_asm_deser__",
                 getDesc(ObjectDeserializer.class));

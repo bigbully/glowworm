@@ -7,14 +7,18 @@ import java.lang.reflect.Type;
 
 public class EnumDeserializer implements ObjectDeserializer{
 
-    public final static EnumDeserializer instance = new EnumDeserializer();
+    private final Class<?> enumClass;
+
+    public EnumDeserializer(Class<?> enumClass) {
+        this.enumClass = enumClass;
+    }
 
     @Override
     public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         Enum value = null;
         try {
             if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
-                value = deserializer.scanEnum();
+                value = deserializer.scanEnum(enumClass);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

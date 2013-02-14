@@ -232,7 +232,7 @@ public class BitTest {
     }
 
     public static void main(String[] args) {
-//        String str = "11000000";
+//        String str = "10110100";
 //        byte b = 0;
 //        for (int i = 0; i < 8; i++) {
 //            b  = (byte)((b << 1) | Integer.parseInt(str.substring(i, i + 1)));
@@ -241,7 +241,7 @@ public class BitTest {
 
 
         String str = "";
-        byte b = 32;
+        byte b = 40;
         for (int i = 0; i < 8; i++) {
             str += (b >>> (7 - i) & 1);
         }

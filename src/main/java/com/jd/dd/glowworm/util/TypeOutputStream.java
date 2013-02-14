@@ -59,7 +59,7 @@ public class TypeOutputStream {
             write(false);//typeHead里写1
             if (bitPos % 8 < 3 || bitPos == 0){//要加的这3个bit在这个8个bit之内
                 byte b1 = bitPos % 8 == 0?0:buffer[pos];
-                b1 = (byte)((b1 | i) << (2 - (bitPos % 8)));
+                b1 = (byte)(b1 | (i << (2 - (bitPos % 8))));
                 buffer[pos] = b1;
                 bitPos +=6;
                 if (bitPos % 8 == 0 && bitPos != 0){
