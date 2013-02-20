@@ -5,31 +5,31 @@ import java.util.Map;
 
 public class User12 {
 
-    public User12(){
+    public User12() {
         innerUser = new InnerUser();
     }
 
-    public void putMap(Map map ){
+    public void putMap(Map map) {
         innerUser.setMap(map);
     }
 
-    public Map findMap(){
+    public Map findMap() {
         return innerUser.getMap();
     }
 
-    public void putHashMap(HashMap hashMap){
+    public void putHashMap(HashMap hashMap) {
         innerUser.setHashMap(hashMap);
     }
 
-    public HashMap findHashMap(){
+    public HashMap findHashMap() {
         return innerUser.getHashMap();
     }
 
-    public void putGenericMap(Map<Integer, User1> genericMap){
+    public void putGenericMap(Map<Integer, User1> genericMap) {
         innerUser.setGenericMap(genericMap);
     }
 
-    public Map<Integer, User1> findGenericMap(){
+    public Map<Integer, User1> findGenericMap() {
         return innerUser.getGenericMap();
     }
 
@@ -43,7 +43,7 @@ public class User12 {
         this.innerUser = innerUser;
     }
 
-    private class InnerUser{
+    private class InnerUser {
         private Map map;
         private HashMap hashMap;
         private Map<Integer, User1> genericMap;

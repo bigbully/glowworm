@@ -5,7 +5,7 @@ import com.jd.dd.glowworm.deserializer.PBDeserializer;
 
 import java.lang.reflect.Type;
 
-public class EnumDeserializer implements ObjectDeserializer{
+public class EnumDeserializer implements ObjectDeserializer {
 
     private final Class<?> enumClass;
 
@@ -23,6 +23,6 @@ public class EnumDeserializer implements ObjectDeserializer{
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return (T)value;
+        return (T) value;
     }
 }

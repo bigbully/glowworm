@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -23,7 +24,7 @@ import static org.junit.Assert.*;
 public class NormalTest extends TestBase {
 
     @Test
-     public void testBoolean() throws Exception {
+    public void testBoolean() throws Exception {
         Boolean flag = true;
         Boolean result = executeBackAndForth(flag, Boolean.class);
         assertEquals(true, result);
@@ -42,7 +43,6 @@ public class NormalTest extends TestBase {
         boolean result = executeBackAndForth(flag, Boolean.class);
         assertEquals(true, result);
     }
-
 
 
     //测试Byte类型 MAX_VALUE
@@ -116,7 +116,6 @@ public class NormalTest extends TestBase {
     }
 
 
-
     //测试Float类型
     @Test
     public void testFloat1() throws Exception {
@@ -168,13 +167,23 @@ public class NormalTest extends TestBase {
 
     //测试Enum类型
     @Test
-    public void testEnum() throws Exception {
+    public void testEnumArray() throws Exception {
         Object[] objects = {Food.BEEF, Food.PORK};
         Object[] result = executeBackAndForth(objects, Object[].class);
         assertNotNull(result);
         assertEquals(2, result.length);
         assertEquals(Food.BEEF, result[0]);
         assertEquals(Food.PORK, result[1]);
+    }
+
+    //序列化单独的Enum
+    @Test
+    public void testEnum() throws Exception {
+        Difficulty d = Difficulty.HARD;
+        Parameters parameters = new Parameters();
+        parameters.setNeedWriteClassName(true);
+        Difficulty result = (Difficulty) executeBackAndForth(d, parameters);
+        assertEquals(d.toString(), result.toString());
     }
 
     //IP地址相关
@@ -205,12 +214,22 @@ public class NormalTest extends TestBase {
         assertEquals(timestamp.getTime(), result.getTime());
     }
 
+    //Time
+    @Test
+    public void testTime() throws Exception {
+        long millis = (System.currentTimeMillis() / 1000) * 1000;
+        Time time = new Time(millis);
+        Time result = executeBackAndForth(time, Time.class);
+        assertEquals(time.getTime(), result.getTime());
+    }
+
     //测试一个javabean钟放所有date类型及其他类型
     @Test
     public void testDateAndOther() throws Exception {
         PersonForDate pfd = new PersonForDate();
         long millis = (System.currentTimeMillis() / 1000) * 1000;
         Timestamp timestamp = new Timestamp(millis);
+        Time time = new Time(millis);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ParsePosition pos = new ParsePosition(0);
         Date date = formatter.parse("2012-12-21 23:59:59", pos);
@@ -223,12 +242,14 @@ public class NormalTest extends TestBase {
         pfd.setTimestamp(timestamp);
         pfd.setBd(bd);
         pfd.setBi(bi);
+        pfd.setTime(time);
 
         PersonForDate result = executeBackAndForth(pfd, PersonForDate.class);
         SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         assertEquals(ia.getHostAddress(), result.getInet4Address().getHostAddress());
         assertEquals("2012-12-21 23:59:59", formatter1.format(result.getDate()));
         assertEquals(timestamp.getTime(), result.getTimestamp().getTime());
+        assertEquals(time.getTime(), result.getTime().getTime());
         assertEquals(bd, result.getBd());
         assertEquals(bi, result.getBi());
     }
@@ -305,7 +326,7 @@ public class NormalTest extends TestBase {
 
     //测试和自定义字符集相关
     @Test
-    public void testCharset1() throws Exception{
+    public void testCharset1() throws Exception {
         String str = new String("消息".getBytes("UTF-8"), "GBK");
         Parameters parameters = new Parameters();
         parameters.setCharset("GBK");
@@ -328,7 +349,7 @@ public class NormalTest extends TestBase {
 
     //测试和自定义字符集相关
     @Test
-    public void testCharset3() throws Exception{
+    public void testCharset3() throws Exception {
         String str = new String("消息".getBytes("UTF-8"), "GBK");
         InnerBean3 ib = new InnerBean3(str);
         Parameters parameters = new Parameters();
@@ -392,10 +413,23 @@ public class NormalTest extends TestBase {
     }
 
     @Test
-    public void testClass() throws Exception{
+    public void testClass() throws Exception {
         Class clazz = Person1.class;
         Class result = executeBackAndForth(clazz, Class.class);
         assertNotNull(result);
         assertEquals("Person1", result.getSimpleName());
+    }
+
+    @Test
+    public void testException() throws Exception {
+        Exception e = new RuntimeException("123123");
+        Parameters p = new Parameters();
+        p.setNeedWriteClassName(true);
+//        Object a = JSON.toJSON(e);
+//        Exception result = (Exception)JSON.parse(JSON.toJSONBytes(e, SerializerFeature.WriteClassName));
+        Exception result = (Exception) executeBackAndForth(e, p);
+        assertEquals(e.getMessage(), result.getMessage());
+        assertEquals(e.getCause(), result.getCause());
+        assertEquals(e.getStackTrace().length, result.getStackTrace().length);
     }
 }

@@ -44,7 +44,7 @@ public class SetSerializer extends MultiSerializer implements ObjectSerializer {
     protected void writeElementWithGerenic(PBSerializer serializer, Object multi, Class elementClazz, int size) {
         ObjectSerializer objectSerializer = serializer.getObjectWriter(elementClazz);
         boolean needConsiderRef = serializer.needConsiderRef(objectSerializer);
-        Iterator iterator = ((Set)multi).iterator();
+        Iterator iterator = ((Set) multi).iterator();
         for (int i = 0; i < size; i++) {
             Object item = getEachElement(iterator, i);
             if (item == null) {
@@ -69,7 +69,7 @@ public class SetSerializer extends MultiSerializer implements ObjectSerializer {
         try {
             ObjectSerializer preWriter = null;
             Class preClazz = null;
-            Iterator iterator = ((Set)multi).iterator();
+            Iterator iterator = ((Set) multi).iterator();
             for (int i = 0; i < size; i++) {
                 Object item = getEachElement(iterator, i);
                 if (item == null) {

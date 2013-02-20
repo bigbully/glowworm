@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 public class BitTest {
 
     @Test
-    public void testExistStreamInput(){
+    public void testExistStreamInput() {
         ExistInputStream stream = new ExistInputStream(new byte[]{-12, 23}, 0, 2);
         assertEquals(1, stream.readRawByte());
         assertEquals(1, stream.readRawByte());
@@ -33,7 +33,7 @@ public class BitTest {
     }
 
     @Test
-    public void testTypeStreamInput1(){
+    public void testTypeStreamInput1() {
         byte[] bytes = new byte[]{1, 0, 3, -85, -94, 31};  //10101011 10100010 00011111
         TypeInputStream stream = new TypeInputStream(bytes, 1, 1);
         stream.reset(3, 3);
@@ -48,7 +48,7 @@ public class BitTest {
     }
 
     @Test
-    public void testTypeStreamInput2(){
+    public void testTypeStreamInput2() {
         //11111111 11000000
         //        10101101 10100011 10111011 11110010 00010010 11111001 11011010 00010001
         byte[] bytes = new byte[]{2, -1, -64, 8, -83, -93, -69, -14, 18, -7, -38, 17};
@@ -240,11 +240,12 @@ public class BitTest {
 //        System.out.println(b);
 
 
-        String str = "";
-        byte b = 40;
-        for (int i = 0; i < 8; i++) {
-            str += (b >>> (7 - i) & 1);
-        }
-        System.out.println(str);
+//        String str = "";
+//        byte b = 40;
+//        for (int i = 0; i < 8; i++) {
+//            str += (b >>> (7 - i) & 1);
+//        }
+//        System.out.println(str);
+        System.out.println(Integer.MAX_VALUE / 1000 / 1000);
     }
 }

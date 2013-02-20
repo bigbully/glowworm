@@ -51,10 +51,10 @@ public class MapDeserializer extends MultiDeserialier implements ObjectDeseriali
         deserializer.addToObjectIndexMap(map, this);
         Class keyClazz;
         Class valueClazz;
-        if (extraParams == null || extraParams.length == 0){
+        if (extraParams == null || extraParams.length == 0) {
             keyClazz = Object.class;
             valueClazz = Object.class;
-        }else {
+        } else {
             keyClazz = (Class) extraParams[0];
             valueClazz = (Class) extraParams[1];
         }

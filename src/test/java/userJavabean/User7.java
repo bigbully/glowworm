@@ -2,13 +2,13 @@ package userJavabean;
 
 public class User7 {
 
-    public User7(){
+    public User7() {
         this.innerUser = new InnerUser();
     }
 
     private InnerUser innerUser;
 
-    public void putInnerBoolean(Boolean b){
+    public void putInnerBoolean(Boolean b) {
         innerUser.setB(b);
     }
 
@@ -24,7 +24,7 @@ public class User7 {
         return innerUser.getB();
     }
 
-    private class InnerUser{
+    private class InnerUser {
         private Boolean b;
 
         public Boolean getB() {

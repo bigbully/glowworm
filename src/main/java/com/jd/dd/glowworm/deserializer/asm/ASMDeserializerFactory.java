@@ -71,16 +71,16 @@ public class ASMDeserializerFactory implements Opcodes {
             if (fieldClass.isPrimitive()) {
                 continue;
             }
-            if (List.class.isAssignableFrom(fieldClass)){
+            if (List.class.isAssignableFrom(fieldClass)) {
                 continue;
             }
-            if (Set.class.isAssignableFrom(fieldClass)){
+            if (Set.class.isAssignableFrom(fieldClass)) {
                 continue;
             }
-            if (Map.class.isAssignableFrom(fieldClass)){
+            if (Map.class.isAssignableFrom(fieldClass)) {
                 continue;
             }
-            if (fieldClass.isArray() && !fieldClass.getComponentType().isPrimitive()){
+            if (fieldClass.isArray() && !fieldClass.getComponentType().isPrimitive()) {
                 continue;
             }
             FieldVisitor fw = cw.visitField(ACC_PUBLIC, fieldInfo.getName() + "_asm_deser__",
@@ -225,10 +225,10 @@ public class ASMDeserializerFactory implements Opcodes {
             } else if (fieldClass == Date.class) {
                 _date(context, mw, fieldInfo);
             } else if (fieldClass.isArray()) {
-                if (fieldClass.getComponentType().isPrimitive()){//如果是如boolean[]这样的基础类型数组直接走_Object
+                if (fieldClass.getComponentType().isPrimitive()) {//如果是如boolean[]这样的基础类型数组直接走_Object
                     _deserialze_obj(context, mw, fieldInfo, fieldClass);
                     continue;
-                }else {
+                } else {
                     _array(context, mw, fieldInfo, fieldClass);
                 }
             } else if (Map.class.isAssignableFrom(fieldClass)) {
@@ -610,7 +610,7 @@ public class ASMDeserializerFactory implements Opcodes {
                 mw.visitVarInsn(LLOAD, context.var(fieldInfo.getName() + "_asm", 2));
             } else if (fieldClass == char.class) {
                 mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
-            }  else if (fieldClass == float.class) {
+            } else if (fieldClass == float.class) {
                 mw.visitVarInsn(FLOAD, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == double.class) {
                 mw.visitVarInsn(DLOAD, context.var(fieldInfo.getName() + "_asm", 2));
@@ -647,7 +647,7 @@ public class ASMDeserializerFactory implements Opcodes {
                 mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == int.class) {
                 mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
-            }  else if (fieldClass == char.class) {
+            } else if (fieldClass == char.class) {
                 mw.visitVarInsn(ILOAD, context.var(fieldInfo.getName() + "_asm"));
             } else if (fieldClass == long.class) {
                 mw.visitVarInsn(LLOAD, context.var(fieldInfo.getName() + "_asm", 2));

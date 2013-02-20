@@ -1,4 +1,3 @@
-
 package com.jd.dd.glowworm.serializer.reflect;
 
 import com.jd.dd.glowworm.serializer.PBSerializer;

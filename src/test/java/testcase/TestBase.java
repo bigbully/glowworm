@@ -75,7 +75,8 @@ public class TestBase {
             return result;
         }
     }
-//
+
+    //
 //    protected synchronized Object executeBackAndForthWithFastJson(Object obj) {
 //        return JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
 //    }
@@ -145,7 +146,7 @@ public class TestBase {
         Object result = null;
         if (isForFunctionality) {
             result = PB.parsePBBytes(PB.toPBBytes(obj), clazz);
-            return (T)result;
+            return (T) result;
         } else {
             if (needCompareWithFastJSON) {
                 return compareWithFastJSON(obj, clazz);
@@ -162,7 +163,7 @@ public class TestBase {
                 }
                 Long end = System.currentTimeMillis();
                 logger.info("测试序列化+反序列化{}  {} 执行时间 {}ms", new Object[]{result.getClass().getSimpleName(), result.toString(), (end - start)});
-                return (T)result;
+                return (T) result;
             }
         }
     }
@@ -170,11 +171,11 @@ public class TestBase {
 
     //执行序列化+反序列化，与fastJSON的对比测试可以开启
     //并记录反序列化的耗时
-    protected synchronized <T> T executeBackAndForth(Object obj,Class<T> fieldClass, Parameters parameters) throws InterruptedException {
+    protected synchronized <T> T executeBackAndForth(Object obj, Class<T> fieldClass, Parameters parameters) throws InterruptedException {
         Object result = null;
         if (isForFunctionality) {
-            result = PB.parsePBBytes(PB.toPBBytes(obj, parameters),fieldClass, parameters);
-            return (T)result;
+            result = PB.parsePBBytes(PB.toPBBytes(obj, parameters), fieldClass, parameters);
+            return (T) result;
         } else {
             if (needCompareWithFastJSON) {
                 return compareWithFastJSON(obj, fieldClass, parameters);
@@ -191,13 +192,13 @@ public class TestBase {
                 }
                 Long end = System.currentTimeMillis();
                 logger.info("测试序列化+反序列化{}  {} 执行时间 {}ms", new Object[]{result.getClass().getSimpleName(), result.toString(), (end - start)});
-                return (T)result;
+                return (T) result;
             }
         }
     }
 
 
-//    private <T> T compareWithFastJSON(T obj) {
+    //    private <T> T compareWithFastJSON(T obj) {
 //        byte[] fastJSONBytes = JSON.toJSONBytes(obj, SerializerFeature.WriteClassName);
 //        for (int i = 0; i < preHeatTimes; i++) {
 //            JSON.parse(JSON.toJSONBytes(obj, SerializerFeature.WriteClassName));
@@ -392,19 +393,19 @@ public class TestBase {
         list.add(refArray);
         int existLength = result[1 + refLength];
         byte[] existArray = new byte[existLength];
-        System.arraycopy(result, 1+ refLength + 1, existArray, 0, existLength);
+        System.arraycopy(result, 1 + refLength + 1, existArray, 0, existLength);
         list.add(existArray);
         int typeHeadLength = result[1 + refLength + 1 + existLength];
         byte[] typeHeadArray = new byte[typeHeadLength];
-        System.arraycopy(result, 1+ refLength + 1 + existLength + 1, typeHeadArray , 0, typeHeadLength);
+        System.arraycopy(result, 1 + refLength + 1 + existLength + 1, typeHeadArray, 0, typeHeadLength);
         list.add(typeHeadArray);
         int typeLength = result[1 + refLength + 1 + existLength + 1 + typeHeadLength];
         byte[] typeArray = new byte[typeLength];
-        System.arraycopy(result, 1+ refLength + 1 + existLength + 1 + typeHeadLength + 1, typeArray, 0, typeLength);
+        System.arraycopy(result, 1 + refLength + 1 + existLength + 1 + typeHeadLength + 1, typeArray, 0, typeLength);
         list.add(typeArray);
         int contentLength = result.length - 4 - refLength - existLength - typeHeadLength - typeLength;
         byte[] contentBytes = new byte[contentLength];
-        System.arraycopy(result, 1+ refLength + 1 + existLength + 1 + typeHeadLength + 1 + typeLength, contentBytes, 0, contentLength);
+        System.arraycopy(result, 1 + refLength + 1 + existLength + 1 + typeHeadLength + 1 + typeLength, contentBytes, 0, contentLength);
         list.add(contentBytes);
         //打印content信息
         System.out.println("content内容为：");

@@ -1,7 +1,7 @@
 package testcase.function;
 
+import com.jd.dd.glowworm.PB;
 import com.jd.dd.glowworm.util.Parameters;
-import userJavabean.RuleItem;
 import org.junit.Test;
 import testcase.TestBase;
 import userJavabean.*;
@@ -20,11 +20,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.Assert.*;
 
-public class AsmTest extends TestBase{
+public class AsmTest extends TestBase {
 
     //只有一个属性boolean的userJavaBean
     @Test
-    public void testUserJavaBean1() throws Exception{
+    public void testUserJavaBean1() throws Exception {
         User1 u = new User1();
         u.setB(true);
         User1 result = executeBackAndForth(u, User1.class);
@@ -33,7 +33,7 @@ public class AsmTest extends TestBase{
 
     //只有一个属性Boolean的userJavaBean
     @Test
-    public void testUserJavaBean2() throws Exception{
+    public void testUserJavaBean2() throws Exception {
         User2 u = new User2();
         u.setB(true);
         User2 result = executeBackAndForth(u, User2.class);
@@ -42,7 +42,7 @@ public class AsmTest extends TestBase{
 
     //只有一个属性Boolean的userJavaBean 但是属性为空
     @Test
-    public void testUserJavaBean3() throws Exception{
+    public void testUserJavaBean3() throws Exception {
         User2 u = new User2();
         User2 result = executeBackAndForth(u, User2.class);
         assertNull(result.getB());
@@ -50,7 +50,7 @@ public class AsmTest extends TestBase{
 
 
     @Test
-    public void testUserJavaBean4() throws Exception{
+    public void testUserJavaBean4() throws Exception {
         User1 u1 = new User1();
         u1.setB(true);
 
@@ -64,7 +64,7 @@ public class AsmTest extends TestBase{
 
     //测试User4中的属性是User1数组的情况，都走asm
     @Test
-    public void testUserJavaBean5() throws Exception{
+    public void testUserJavaBean5() throws Exception {
         User4 u4 = new User4();
         User1[] user1s = new User1[3];
         User1 u11 = new User1();
@@ -87,7 +87,7 @@ public class AsmTest extends TestBase{
 
     //测试User4中的属性是Object数组的情况，都走asm
     @Test
-    public void testUserJavaBean6() throws Exception{
+    public void testUserJavaBean6() throws Exception {
         User5 u5 = new User5();
         Object[] user1s = new Object[4];
         User1 u11 = new User1();
@@ -106,10 +106,10 @@ public class AsmTest extends TestBase{
 
         u5.setObjects(user1s);
         User5 result = executeBackAndForth(u5, User5.class);
-        assertEquals(true, ((User1)result.getObjects()[0]).getB());
-        assertEquals(false, ((User1)result.getObjects()[1]).getB());
+        assertEquals(true, ((User1) result.getObjects()[0]).getB());
+        assertEquals(false, ((User1) result.getObjects()[1]).getB());
         assertNull(result.getObjects()[2]);
-        assertEquals(true, ((User2)result.getObjects()[3]).getB());
+        assertEquals(true, ((User2) result.getObjects()[3]).getB());
     }
 
     //测试asm中有个map属性，map中放各种类型的变量
@@ -132,7 +132,7 @@ public class AsmTest extends TestBase{
 
     //类里放各种类型的map，走asm
     @Test
-    public void testUserJavaBean7() throws Exception{
+    public void testUserJavaBean7() throws Exception {
         User13 u = new User13();
         Map<Integer, Object> map = new ConcurrentHashMap<Integer, Object>();
         User1 u1 = new User1();
@@ -163,11 +163,11 @@ public class AsmTest extends TestBase{
         u.setGenericMap(map1);
 
         User13 result = executeBackAndForth(u, User13.class);
-        assertEquals(true, ((User1)result.getMap().get(1)).getB());
-        assertEquals(false, ((User1)result.getMap().get(2)).getB());
+        assertEquals(true, ((User1) result.getMap().get(1)).getB());
+        assertEquals(false, ((User1) result.getMap().get(2)).getB());
         assertEquals("123", result.getMap().get(3));
-        assertEquals(true, ((User1)result.getHashMap().get(1)).getB());
-        assertEquals(false, ((User1)result.getHashMap().get(2)).getB());
+        assertEquals(true, ((User1) result.getHashMap().get(1)).getB());
+        assertEquals(false, ((User1) result.getHashMap().get(2)).getB());
         assertEquals("123", result.getHashMap().get(3));
         assertEquals(true, (result.getGenericMap().get(1)).getB());
         assertEquals(false, (result.getGenericMap().get(2)).getB());
@@ -199,7 +199,7 @@ public class AsmTest extends TestBase{
 
     //测试list中装不同类型的元素时，是否可以针对不同类名选择性写入类名
     @Test
-    public void testCollection2() throws Exception{
+    public void testCollection2() throws Exception {
         PersonCollection3 p = new PersonCollection3();
         ArrayList list = new ArrayList();
         Person1 p1 = new Person1();
@@ -215,9 +215,9 @@ public class AsmTest extends TestBase{
         list.add(p2);
         p.setList(list);
         PersonCollection3 result = executeBackAndForth(p, PersonCollection3.class);
-        assertEquals("1", ((Person1)result.getList().get(0)).getId().toString());
-        assertEquals("12", ((Person1)result.getList().get(1)).getId().toString());
-        assertEquals("2", ((Person2)result.getList().get(2)).getId().toString());
+        assertEquals("1", ((Person1) result.getList().get(0)).getId().toString());
+        assertEquals("12", ((Person1) result.getList().get(1)).getId().toString());
+        assertEquals("2", ((Person2) result.getList().get(2)).getId().toString());
     }
 
 
@@ -542,7 +542,7 @@ public class AsmTest extends TestBase{
 
         Parameters parameters = new Parameters();
         parameters.setNeedWriteClassName(true);
-        List<LoopPerson1> result = (List)executeBackAndForth(list, parameters);
+        List<LoopPerson1> result = (List) executeBackAndForth(list, parameters);
         assertEquals(result.get(0), result.get(1).getBrother());
     }
 
@@ -597,7 +597,7 @@ public class AsmTest extends TestBase{
         Parameters parameters = new Parameters();
         parameters.setNeedWriteClassName(true);
 
-        Set<LoopPerson1> result = (Set)executeBackAndForth(list, parameters);
+        Set<LoopPerson1> result = (Set) executeBackAndForth(list, parameters);
         Iterator<LoopPerson1> it = result.iterator();
         assertEquals(it.next(), it.next().getBrother());
     }
@@ -655,7 +655,7 @@ public class AsmTest extends TestBase{
         Parameters parameters = new Parameters();
         parameters.setNeedWriteClassName(true);
 
-        Map<String, LoopPerson1> result = (Map)executeBackAndForth(map, parameters);
+        Map<String, LoopPerson1> result = (Map) executeBackAndForth(map, parameters);
         assertEquals(result.get("1"), result.get("2").getBrother());
     }
 
@@ -677,7 +677,7 @@ public class AsmTest extends TestBase{
         Parameters parameters = new Parameters();
         parameters.setNeedWriteClassName(true);
 
-        Map result = (Map)executeBackAndForth(map, parameters);
+        Map result = (Map) executeBackAndForth(map, parameters);
         assertEquals((LoopPerson1) result.get("1"), ((LoopPerson1) result.get("2")).getBrother());
     }
 
@@ -750,7 +750,7 @@ public class AsmTest extends TestBase{
         Parameters parameters = new Parameters();
         parameters.setNeedWriteClassName(true);
 
-        Map result = (Map)executeBackAndForth(map, parameters);
+        Map result = (Map) executeBackAndForth(map, parameters);
         LoopPerson1 expected = null;
         LoopPerson1 actual = null;
         for (Object entry : result.entrySet()) {
@@ -959,11 +959,10 @@ public class AsmTest extends TestBase{
     }
 
 
-
     //针对用Object声明属性，用所有其他类型实现属性
     //关于Object属性声明的终极测试！
     @Test
-    public void testJavaBean8() throws Exception{
+    public void testJavabeanWithAllObjectField() throws Exception {
         Person10 p = new Person10();
         p.setObj1(true);
         p.setObj2(new Boolean(false));
@@ -1055,6 +1054,11 @@ public class AsmTest extends TestBase{
 
         p.setObj42(map3);
 
+        Person1 p1 = new Person1();
+        p1.setId(1L);
+        List list = Arrays.asList("1", 1, p1);
+        p.setObj43(list);
+
         Person10 result = executeBackAndForth(p, Person10.class);
         assertEquals(p.getObj1().toString(), result.getObj1().toString());
         assertEquals(p.getObj2().toString(), result.getObj2().toString());
@@ -1085,36 +1089,40 @@ public class AsmTest extends TestBase{
         assertEquals(p.getObj24().toString(), result.getObj24().toString());
         assertEquals(p.getObj25().toString(), result.getObj25().toString());
         assertEquals(p.getObj26().toString(), result.getObj26().toString());
-        assertEquals(((Person1)p.getObj27()).getId(), ((Person1)result.getObj27()).getId());
+        assertEquals(((Person1) p.getObj27()).getId(), ((Person1) result.getObj27()).getId());
         assertEquals(((InnerBean) p.getObj28()).getI(), ((InnerBean) result.getObj28()).getI());
 
-        assertEquals(((LinkedList<String>)(p.getObj29())).get(0), ((LinkedList<String>)(result.getObj29())).get(0));
+        assertEquals(((LinkedList<String>) (p.getObj29())).get(0), ((LinkedList<String>) (result.getObj29())).get(0));
         assertEquals(((LinkedList<String>) (p.getObj29())).get(1), ((LinkedList<String>) (result.getObj29())).get(1));
-        assertEquals(((LinkedList)(p.getObj30())).get(0), ((LinkedList)(result.getObj30())).get(0));
-        assertEquals(((LinkedList)(p.getObj30())).get(1), ((LinkedList)(result.getObj30())).get(1));
-        assertEquals(((LinkedList)(p.getObj31())).get(0), ((LinkedList)(result.getObj31())).get(0));
-        assertEquals(((LinkedList)(p.getObj31())).get(1), ((LinkedList)(result.getObj31())).get(1));
-        assertEquals(((Person1)((LinkedList)(p.getObj31())).get(2)).getId(), ((Person1)((LinkedList)(result.getObj31())).get(2)).getId());
+        assertEquals(((LinkedList) (p.getObj30())).get(0), ((LinkedList) (result.getObj30())).get(0));
+        assertEquals(((LinkedList) (p.getObj30())).get(1), ((LinkedList) (result.getObj30())).get(1));
+        assertEquals(((LinkedList) (p.getObj31())).get(0), ((LinkedList) (result.getObj31())).get(0));
+        assertEquals(((LinkedList) (p.getObj31())).get(1), ((LinkedList) (result.getObj31())).get(1));
+        assertEquals(((Person1) ((LinkedList) (p.getObj31())).get(2)).getId(), ((Person1) ((LinkedList) (result.getObj31())).get(2)).getId());
 
-        assertEquals(((TreeSet)p.getObj32()).iterator().next(), ((TreeSet)result.getObj32()).iterator().next());
-        assertEquals(((TreeSet)p.getObj33()).iterator().next(), ((TreeSet)result.getObj33()).iterator().next());
-        assertEquals(((Person1)((TreeSet)p.getObj34()).iterator().next()).getId(),((Person1)((TreeSet)result.getObj34()).iterator().next()).getId());
+        assertEquals(((TreeSet) p.getObj32()).iterator().next(), ((TreeSet) result.getObj32()).iterator().next());
+        assertEquals(((TreeSet) p.getObj33()).iterator().next(), ((TreeSet) result.getObj33()).iterator().next());
+        assertEquals(((Person1) ((TreeSet) p.getObj34()).iterator().next()).getId(), ((Person1) ((TreeSet) result.getObj34()).iterator().next()).getId());
 
-        assertEquals(((LinkedHashMap)p.getObj35()).get("123"), ((LinkedHashMap)result.getObj35()).get("123"));
-        assertEquals(((LinkedHashMap)p.getObj36()).get(123), ((LinkedHashMap)result.getObj36()).get(123));
-        assertEquals(((Person1)(((Map.Entry)(((LinkedHashMap)p.getObj37()).entrySet().iterator().next())).getKey())).getId(), ((Person1)(((Map.Entry)(((LinkedHashMap)result.getObj37()).entrySet().iterator().next())).getKey())).getId());
-        assertEquals(((Person1)(((Map.Entry)(((LinkedHashMap)p.getObj38()).entrySet().iterator().next())).getValue())).getId(), ((Person1)(((Map.Entry)(((LinkedHashMap)result.getObj38()).entrySet().iterator().next())).getValue())).getId());
+        assertEquals(((LinkedHashMap) p.getObj35()).get("123"), ((LinkedHashMap) result.getObj35()).get("123"));
+        assertEquals(((LinkedHashMap) p.getObj36()).get(123), ((LinkedHashMap) result.getObj36()).get(123));
+        assertEquals(((Person1) (((Map.Entry) (((LinkedHashMap) p.getObj37()).entrySet().iterator().next())).getKey())).getId(), ((Person1) (((Map.Entry) (((LinkedHashMap) result.getObj37()).entrySet().iterator().next())).getKey())).getId());
+        assertEquals(((Person1) (((Map.Entry) (((LinkedHashMap) p.getObj38()).entrySet().iterator().next())).getValue())).getId(), ((Person1) (((Map.Entry) (((LinkedHashMap) result.getObj38()).entrySet().iterator().next())).getValue())).getId());
 
         assertEquals(result, result.getObj39());
-        assertEquals(((Person1)((LinkedList)(result.getObj31())).get(2)), result.getObj40());
-        assertEquals(((Map.Entry)(((LinkedHashMap)result.getObj38()).entrySet().iterator().next())).getValue(), ((Map.Entry)(((HashMap)result.getObj41()).entrySet().iterator().next())).getValue());
+        assertEquals(((Person1) ((LinkedList) (result.getObj31())).get(2)), result.getObj40());
+        assertEquals(((Map.Entry) (((LinkedHashMap) result.getObj38()).entrySet().iterator().next())).getValue(), ((Map.Entry) (((HashMap) result.getObj41()).entrySet().iterator().next())).getValue());
 
         assertEquals(result.getObj37(), result.getObj42());
+        assertEquals(3, ((List) result.getObj43()).size());
+        assertEquals("1", ((List) result.getObj43()).get(0));
+        assertEquals(1, ((List) result.getObj43()).get(1));
+        assertEquals("1", ((Person1) ((List) result.getObj43()).get(2)).getId().toString());
     }
 
     //针对javabean-asm中有HASHMAP，无循环引用 value
     @Test
-    public void testJavaBean9() throws Exception{
+    public void testJavaBean9() throws Exception {
         LoopPerson5 lp1 = new LoopPerson5();
         lp1.setInteger(1);
 
@@ -1131,7 +1139,7 @@ public class AsmTest extends TestBase{
 
     //针对javabean-asm中有HASHMAP，无循环引用 key
     @Test
-    public void testJavaBean10() throws Exception{
+    public void testJavaBean10() throws Exception {
         LoopPerson6 lp1 = new LoopPerson6();
         lp1.setInteger(1);
 
@@ -1149,7 +1157,7 @@ public class AsmTest extends TestBase{
 
     //无泛型或泛型为Object的集合，如何循环引用
     @Test
-    public void testJavaBeanLoopWithCollection() throws Exception{
+    public void testJavaBeanLoopWithCollection() throws Exception {
         Person11 p1 = new Person11();
         p1.setInteger(1);
         Person11 p2 = new Person11();
@@ -1386,7 +1394,7 @@ public class AsmTest extends TestBase{
 
     //序列化一个对象，对象里有个属性是list，无泛型，不传多余类名
     @Test
-    public void testCollectionWithLoop4() throws Exception{
+    public void testCollectionWithLoop4() throws Exception {
         PersonCollection3 pc = new PersonCollection3();
         ArrayList list = new ArrayList();
         LoopPerson1 p1 = new LoopPerson1();
@@ -1408,16 +1416,16 @@ public class AsmTest extends TestBase{
         pc.setList(list);
 
         PersonCollection3 result = executeBackAndForth(pc, PersonCollection3.class);
-        assertEquals("1", String.valueOf(((LoopPerson1)result.getList().get(0)).getB()));
-        assertEquals("2", String.valueOf(((LoopPerson1)result.getList().get(1)).getB()));
+        assertEquals("1", String.valueOf(((LoopPerson1) result.getList().get(0)).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1) result.getList().get(1)).getB()));
         assertEquals("123", String.valueOf(result.getList().get(2)));
-        assertEquals("44", String.valueOf(((LoopPerson1)result.getList().get(3)).getB()));
-        assertEquals(String.valueOf(3), ((Person1)result.getList().get(4)).getId().toString());
+        assertEquals("44", String.valueOf(((LoopPerson1) result.getList().get(3)).getB()));
+        assertEquals(String.valueOf(3), ((Person1) result.getList().get(4)).getId().toString());
     }
 
     //序列化一个对象，对象里有个属性是list，有泛型但泛型是Object，不传多余类名
     @Test
-    public void testCollectionWithLoop6() throws Exception{
+    public void testCollectionWithLoop6() throws Exception {
         PersonCollection4 pc = new PersonCollection4();
         ArrayList<Object> list = new ArrayList<Object>();
         LoopPerson1 p1 = new LoopPerson1();
@@ -1439,16 +1447,16 @@ public class AsmTest extends TestBase{
         pc.setList(list);
 
         PersonCollection4 result = executeBackAndForth(pc, PersonCollection4.class);
-        assertEquals("1", String.valueOf(((LoopPerson1)result.getList().get(0)).getB()));
-        assertEquals("2", String.valueOf(((LoopPerson1)result.getList().get(1)).getB()));
+        assertEquals("1", String.valueOf(((LoopPerson1) result.getList().get(0)).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1) result.getList().get(1)).getB()));
         assertEquals("123", String.valueOf(result.getList().get(2)));
-        assertEquals("44", String.valueOf(((LoopPerson1)result.getList().get(3)).getB()));
-        assertEquals(String.valueOf(3), ((Person1)result.getList().get(4)).getId().toString());
+        assertEquals("44", String.valueOf(((LoopPerson1) result.getList().get(3)).getB()));
+        assertEquals(String.valueOf(3), ((Person1) result.getList().get(4)).getId().toString());
     }
 
     //序列化一个对象，对象里有个属性是list，有泛型，不传类名
     @Test
-    public void testCollectionWithLoop7() throws Exception{
+    public void testCollectionWithLoop7() throws Exception {
         UserGeneric ug = new UserGeneric();
         Person2 p1 = new Person2();
         p1.setId(1L);
@@ -1472,7 +1480,7 @@ public class AsmTest extends TestBase{
 
     //序列化一个对象，对象里有个属性是set，有泛型
     @Test
-    public void testCollectionWithLoop8() throws Exception{
+    public void testCollectionWithLoop8() throws Exception {
         UserGeneric ug = new UserGeneric();
         Person2 p1 = new Person2();
         p1.setId(1L);
@@ -1492,7 +1500,7 @@ public class AsmTest extends TestBase{
 
     //序列化一个对象，对象里有个属性是set，有泛型,是接口
     @Test
-    public void testCollectionWithLoop9() throws Exception{
+    public void testCollectionWithLoop9() throws Exception {
         UserGeneric ug = new UserGeneric();
         Person2 p1 = new Person2();
         p1.setId(1L);
@@ -2422,4 +2430,54 @@ public class AsmTest extends TestBase{
         assertEquals(String.valueOf(20), String.valueOf(result.getThebytes()[20]));
     }
 
+    //dubbo的测试用例
+    @Test
+    public void testForDubbo() throws Exception {
+        DubboUser du = new DubboUser();
+        byte[] bytes = PB.toPBBytes(du);
+        DubboUser result = PB.parsePBBytes(bytes, DubboUser.class);
+        assertEquals(du.getData().length, result.getData().length);
+        for (int i = 0; i < 3; i++) {
+            assertEquals(du.getData()[i], result.getData()[i]);
+        }
+        assertEquals(du.getTest_int(), result.getTest_int());
+        assertEquals(du.getTest_long(), result.getTest_long());
+        assertEquals(du.getTest_string(), result.getTest_string());
+    }
+
+    //asm中的arrays.arraylist 带泛型+不带泛型
+    @Test
+    public void testArrayListInArrays() throws Exception {
+        User15 u = new User15();
+        Person1 p = new Person1();
+        p.setId(1L);
+        List list = Arrays.asList("1", 1, p);
+        u.setList(list);
+
+        Person1 p2 = new Person1();
+        p2.setId(2L);
+        Person1 p3 = new Person1();
+        p3.setId(3L);
+        List<Person1> list2 = Arrays.asList(p2, p3);
+        u.setList1(list2);
+
+        User15 result = executeBackAndForth(u, User15.class);
+        assertEquals(3, result.getList().size());
+        assertEquals("1", result.getList().get(0));
+        assertEquals(1, result.getList().get(1));
+        assertEquals("1", ((Person1) result.getList().get(2)).getId().toString());
+
+        assertEquals("2", (result.getList1().get(0)).getId().toString());
+        assertEquals("3", (result.getList1().get(1)).getId().toString());
+
+    }
+
+    //测试序列化Exception
+    @Test
+    public void testException() throws Exception {
+        User16 u = new User16();
+        u.setException(new RuntimeException("123123"));
+        User16 result = executeBackAndForth(u, User16.class);
+        assertEquals("123123", result.getException().getMessage());
+    }
 }

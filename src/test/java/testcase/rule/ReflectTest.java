@@ -8,11 +8,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class ReflectTest extends TestBase{
+public class ReflectTest extends TestBase {
 
     //只有一个属性boolean的javabean
     @Test
-    public void testUserJavaBean1() throws Exception{
+    public void testUserJavaBean1() throws Exception {
         User7 u7 = new User7();
         u7.putInnerBoolean(true);
         byte[] result = executeSerialization(u7);
@@ -36,7 +36,7 @@ public class ReflectTest extends TestBase{
 
     //只有一个属性Boolean的javabean
     @Test
-    public void testUserJavaBean2() throws Exception{
+    public void testUserJavaBean2() throws Exception {
         User8 u = new User8();
         u.putInnerBoolean(true);
         byte[] result = executeSerialization(u);
@@ -60,7 +60,7 @@ public class ReflectTest extends TestBase{
 
     //测试User9的inner中的属性是User1的情况，user1走asm
     @Test
-    public void testUserJavaBean3() throws Exception{
+    public void testUserJavaBean3() throws Exception {
         User1 u1 = new User1();
         u1.setB(true);
 
@@ -87,7 +87,7 @@ public class ReflectTest extends TestBase{
 
     //测试User10中inner类中的属性是User1数组的情况，都走user1走asm
     @Test
-    public void testUserJavaBean4() throws Exception{
+    public void testUserJavaBean4() throws Exception {
         User10 u10 = new User10();
 
         User1[] user1s = new User1[3];
@@ -127,7 +127,7 @@ public class ReflectTest extends TestBase{
 
     //测试User11的inner类中的属性是Object数组的情况，数组中user1走asm
     @Test
-    public void testUserJavaBean5() throws Exception{
+    public void testUserJavaBean5() throws Exception {
         User11 u_11 = new User11();
         Object[] user1s = new Object[4];
         User1 u11 = new User1();

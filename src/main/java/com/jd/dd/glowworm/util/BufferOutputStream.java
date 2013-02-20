@@ -2,7 +2,6 @@ package com.jd.dd.glowworm.util;
 
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 public final class BufferOutputStream {
     byte[] buffer;
@@ -68,9 +67,9 @@ public final class BufferOutputStream {
 
 
     public byte[] getBytes() {
-        if (this.pos == 0){
+        if (this.pos == 0) {
             return null;
-        }else {
+        } else {
             byte[] retBytes = new byte[this.pos];
             System.arraycopy(this.buffer, 0, retBytes, 0, this.pos);
             return retBytes;

@@ -12,7 +12,7 @@ public final class CodedOutputStream {
         return bos.getBytes();
     }
 
-    public void reset(){
+    public void reset() {
         bos.reset();
     }
 
@@ -29,7 +29,7 @@ public final class CodedOutputStream {
         }
     }
 
-    public void writeInt(int i){
+    public void writeInt(int i) {
         writeRawVarint32(encodeZigZag32(i));
     }
 
@@ -130,7 +130,6 @@ public final class CodedOutputStream {
         returnInt[7] = (byte) ((longValueParm >>> 0) & 0xFF);
         return returnInt;
     }
-
 
 
     private void writeRawLittleEndian32(int value) {

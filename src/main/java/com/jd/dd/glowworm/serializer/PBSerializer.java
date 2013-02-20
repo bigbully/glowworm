@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -75,6 +76,7 @@ public class PBSerializer {
         theSerializerHMap.put(BigInteger.class, BigIntegerSerializer.instance);
         theSerializerHMap.put(Date.class, DateSerializer.instance);
         theSerializerHMap.put(Timestamp.class, TimestampSerializer.instance);
+        theSerializerHMap.put(Time.class, TimeSerializer.instance);
         theSerializerHMap.put(Inet4Address.class, InetAddressSerializer.instance);
         theSerializerHMap.put(Inet6Address.class, InetAddressSerializer.instance);
         theSerializerHMap.put(String.class, StringSerializer.instance);
@@ -106,11 +108,13 @@ public class PBSerializer {
 
         if (ref != null) {
             outputStreamBuffer = ref.get();
-            theCodedOutputStream = outputStreamBuffer.getTheCodedOutputStream();
-            refStream = outputStreamBuffer.getRefStream();
-            typeStream = outputStreamBuffer.getTypeStream();
-            existStream = outputStreamBuffer.getExistStream();
-            headStream = outputStreamBuffer.getHeadStream();
+            if (outputStreamBuffer != null) {
+                theCodedOutputStream = outputStreamBuffer.getTheCodedOutputStream();
+                refStream = outputStreamBuffer.getRefStream();
+                typeStream = outputStreamBuffer.getTypeStream();
+                existStream = outputStreamBuffer.getExistStream();
+                headStream = outputStreamBuffer.getHeadStream();
+            }
             bufLocal.set(null);
         }
 
@@ -141,10 +145,12 @@ public class PBSerializer {
                 return MapSerializer.instance;
             } else if (List.class.isAssignableFrom(clazz)) {
                 return ListSerializer.instance;
-            } else if (Set.class.isAssignableFrom(clazz)){
+            } else if (Set.class.isAssignableFrom(clazz)) {
                 return SetSerializer.instance;
             } else if (clazz.isEnum() || (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())) {
                 return EnumSerializer.instance;
+            } else if (Exception.class.isAssignableFrom(clazz)) {
+                theSerializerHMap.put(clazz, new ExceptionSerializer(clazz));
             } else {
                 try {
                     theSerializerHMap.put(clazz, createJavaBeanSerializer(clazz));
@@ -245,7 +251,6 @@ public class PBSerializer {
     }
 
 
-
     //组装引用byte数组
     private byte[] getRefByte() {
         if (refMap == null) {
@@ -309,7 +314,7 @@ public class PBSerializer {
                 writeNull();
             } else {
                 Class<?> clazz = object.getClass();
-                if (writer == null){//是这样的，如果这个clazz不是内部类的话，会在asm序列化器中提前把对应的writer找出并缓存，如果是内部类的话，则在运行时期再找出writer，所以传入的是null
+                if (writer == null) {//是这样的，如果这个clazz不是内部类的话，会在asm序列化器中提前把对应的writer找出并缓存，如果是内部类的话，则在运行时期再找出writer，所以传入的是null
                     writer = getObjectWriter(clazz);
                 }
                 if (needConsiderRef(writer) && this.isReference(object)) {
@@ -347,10 +352,10 @@ public class PBSerializer {
         theCodedOutputStream.writeString(s);
     }
 
-    public void writeStringWithCharset(String s){
-        if (parameters != null){
+    public void writeStringWithCharset(String s) {
+        if (parameters != null) {
             theCodedOutputStream.writeString(s, parameters.getCharset());
-        }else {
+        } else {
             theCodedOutputStream.writeString(s);
         }
     }
@@ -406,7 +411,7 @@ public class PBSerializer {
         currentIndex++;
         SerializeContext serializeContext = getSerializeContextObj(item);
         //任何做过判断的对象，放入object-index的MAP中，index从0开始递增
-        if (objectIndexList == null){
+        if (objectIndexList == null) {
             objectIndexList = new ArrayList<SerializeContext>();
         }
         objectIndexList.add(new SerializeContext(item, currentIndex));
@@ -436,15 +441,15 @@ public class PBSerializer {
 
     //增加一个对象到引用List中
     private void addObjectIndexList(Object object) {
-        if (objectIndexList == null){
+        if (objectIndexList == null) {
             objectIndexList = new ArrayList<SerializeContext>();
         }
-        objectIndexList.add(new SerializeContext(object,currentIndex));
+        objectIndexList.add(new SerializeContext(object, currentIndex));
     }
 
     //是否考虑引用
     public boolean needConsiderRef(ObjectSerializer writer) {
-        if (writer == null){//如果不是在序列化器里进行序列化的，则直接传null。现在list,set是这么做的
+        if (writer == null) {//如果不是在序列化器里进行序列化的，则直接传null。现在list,set是这么做的
             return true;
         }
         Class clazz = writer.getClass();
@@ -469,7 +474,6 @@ public class PBSerializer {
     public boolean isAsmJavaBean(ObjectSerializer writer) {
         return writer.getClass().getName().startsWith(ASMSerializerFactory.GenClassName_prefix);
     }
-
 
 
 }

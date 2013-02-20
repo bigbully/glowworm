@@ -11,15 +11,15 @@ public class ArrayDeserializer extends MultiDeserialier implements ObjectDeseria
     public final static ArrayDeserializer instance = new ArrayDeserializer();
 
     @Override
-    public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist,Object... extraParams) {
+    public <T> T deserialize(PBDeserializer deserializer, Type type, boolean needConfirmExist, Object... extraParams) {
         if (needConfirmExist) {
             try {
                 if (deserializer.isObjectExist()) {
                     Class componentType;
-                    if (!needConfirmExist){
-                        componentType = (Class)extraParams[0];
-                    }else {
-                        componentType = ((Class)type).getComponentType();
+                    if (!needConfirmExist) {
+                        componentType = (Class) extraParams[0];
+                    } else {
+                        componentType = ((Class) type).getComponentType();
                     }
                     return (T) getArray(deserializer, componentType);
                 } else {
@@ -30,16 +30,15 @@ public class ArrayDeserializer extends MultiDeserialier implements ObjectDeseria
             }
         } else {
             Class componentType;
-            if (needConfirmExist){
-                componentType = (Class)extraParams[0];
-            }else {
-                componentType = ((Class)type).getComponentType();
+            if (needConfirmExist) {
+                componentType = (Class) extraParams[0];
+            } else {
+                componentType = ((Class) type).getComponentType();
             }
             return (T) getArray(deserializer, componentType);
         }
         return null;
     }
-
 
 
     private Object getArray(PBDeserializer parser, Class componentType) {

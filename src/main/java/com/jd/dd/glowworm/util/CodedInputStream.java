@@ -198,7 +198,7 @@ public final class CodedInputStream {
         while (shift < 64) {
             byte b = readRawByte();
             // 修复大数值long数据丢失的bug
-            result |= (long)(b & 0x7F) << shift;
+            result |= (long) (b & 0x7F) << shift;
             if ((b & 0x80) == 0)
                 return result;
             shift += 7;
@@ -283,11 +283,11 @@ public final class CodedInputStream {
     public void skipRawBytes(int size)
             throws IOException {
         if (size == 0)
-            return ;
+            return;
 
         if (this.pos + size > this.limit) {
             throw new EOFException();
-        }else {
+        } else {
             int n = (int) this.bis.skip(size);
             pos += n;
         }
@@ -309,17 +309,17 @@ public final class CodedInputStream {
         return new String(data.data, data.offset, data.length, charset);
     }
 
-    public int getPos(){
+    public int getPos() {
         return pos;
     }
 
-    public void reset(byte[] bytes){
+    public void reset(byte[] bytes) {
         limit = bytes.length;
         pos = offset;
         bis.setNewData(bytes);
     }
 
-    public void reset(){
+    public void reset() {
         limit = offset;
         pos = offset;
         bis.reset();

@@ -45,6 +45,8 @@ public class ListSerializer extends MultiSerializer implements ObjectSerializer 
             serializer.writeType(Type.LIST_ARRAYLIST);
         } else if (LinkedList.class.isAssignableFrom(clazz)) {
             serializer.writeType(Type.LIST_LINKEDLIST);
+        } else if (clazz.getName().equals("java.util.Arrays$ArrayList")) {
+            serializer.writeType(Type.LIST_ARRAYS_ARRAYLIST);
         } else {
             serializer.writeType(Type.Unknown);
         }

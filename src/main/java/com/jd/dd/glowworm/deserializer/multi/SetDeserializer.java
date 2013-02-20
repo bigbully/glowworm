@@ -5,15 +5,17 @@ import com.jd.dd.glowworm.deserializer.ObjectDeserializer;
 import com.jd.dd.glowworm.deserializer.PBDeserializer;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class SetDeserializer extends MultiDeserialier implements ObjectDeserializer{
+public class SetDeserializer extends MultiDeserialier implements ObjectDeserializer {
 
     public final static SetDeserializer instance = new SetDeserializer();
 
     @Override
     public void setEachElement(Object multi, int i, Object item) {
-        ((Set)multi).add(item);
+        ((Set) multi).add(item);
     }
 
     @Override

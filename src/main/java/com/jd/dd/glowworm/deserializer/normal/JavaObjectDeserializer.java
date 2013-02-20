@@ -6,7 +6,7 @@ import com.jd.dd.glowworm.deserializer.PBDeserializer;
 import java.lang.reflect.Type;
 
 
-public class JavaObjectDeserializer implements ObjectDeserializer{
+public class JavaObjectDeserializer implements ObjectDeserializer {
 
     public static final JavaObjectDeserializer instance = new JavaObjectDeserializer();
 

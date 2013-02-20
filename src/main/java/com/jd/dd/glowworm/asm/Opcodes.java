@@ -1,4 +1,3 @@
-
 package com.jd.dd.glowworm.asm;
 
 /**
@@ -143,7 +142,7 @@ public interface Opcodes {
     // int    LASTORE             = 80;                     // -
     // int    FASTORE             = 81;                     // -
     // int    DASTORE             = 82;                     // -
-    int    AASTORE             = 83;                     // -
+    int AASTORE = 83;                     // -
     // int    BASTORE             = 84;                     // -
     // int    CASTORE             = 85;                     // -
     // int    SASTORE             = 86;                     // -
@@ -249,8 +248,8 @@ public interface Opcodes {
     // int INVOKEDYNAMIC = 186; // -
     int NEW = 187;                    // visitTypeInsn
     //    int    NEWARRAY            = 188;                    // visitIntInsn
-    int    ANEWARRAY           = 189;                    // visitTypeInsn
-//    int    ARRAYLENGTH         = 190;                    // visitInsn
+    int ANEWARRAY = 189;                    // visitTypeInsn
+    //    int    ARRAYLENGTH         = 190;                    // visitInsn
 //    int    ATHROW              = 191;                    // -
     int CHECKCAST = 192;                    // visitTypeInsn
     int INSTANCEOF = 193;                    // -

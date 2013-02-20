@@ -6,13 +6,13 @@ import userJavabean.*;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class AsmTest extends TestBase{
+public class AsmTest extends TestBase {
 
     //只有一个属性boolean的javabean
     @Test
-    public void testUserJavaBean1() throws Exception{
+    public void testUserJavaBean1() throws Exception {
         User1 u = new User1();
         u.setB(true);
         byte[] result = executeSerialization(u);
@@ -36,7 +36,7 @@ public class AsmTest extends TestBase{
 
     //只有一个属性Boolean的javabean
     @Test
-    public void testUserJavaBean2() throws Exception{
+    public void testUserJavaBean2() throws Exception {
         User2 u = new User2();
         u.setB(true);
         byte[] result = executeSerialization(u);
@@ -60,7 +60,7 @@ public class AsmTest extends TestBase{
 
     //测试User3中的属性是User1的情况，都走asm
     @Test
-    public void testUserJavaBean3() throws Exception{
+    public void testUserJavaBean3() throws Exception {
         User1 u1 = new User1();
         u1.setB(true);
 
@@ -87,7 +87,7 @@ public class AsmTest extends TestBase{
 
     //测试User4中的属性是User1数组的情况，都走asm
     @Test
-    public void testUserJavaBean4() throws Exception{
+    public void testUserJavaBean4() throws Exception {
         User4 u4 = new User4();
         User1[] user1s = new User1[3];
         User1 u11 = new User1();
@@ -126,7 +126,7 @@ public class AsmTest extends TestBase{
 
     //测试User4中的属性是Object数组的情况，都走asm
     @Test
-    public void testUserJavaBean5() throws Exception{
+    public void testUserJavaBean5() throws Exception {
         User5 u5 = new User5();
         Object[] user1s = new Object[4];
         User1 u11 = new User1();
@@ -197,8 +197,6 @@ public class AsmTest extends TestBase{
         //第三个元素的内容
         assertEquals(1, result[index++]);
     }
-
-
 
 
 }

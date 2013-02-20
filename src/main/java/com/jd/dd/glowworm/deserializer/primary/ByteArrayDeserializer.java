@@ -16,7 +16,7 @@ public class ByteArrayDeserializer implements ObjectDeserializer {
             if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
                 ret = deserializer.scanByteArray();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return (T) ret;

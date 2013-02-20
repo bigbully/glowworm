@@ -1,7 +1,6 @@
 package com.jd.dd.glowworm.serializer;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 public interface ObjectSerializer {
 

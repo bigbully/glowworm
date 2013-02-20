@@ -2,17 +2,17 @@ package userJavabean;
 
 public class User11 {
 
-    public User11(){
+    public User11() {
         this.innerUser = new InnerUser();
     }
 
     private InnerUser innerUser;
 
-    public void putInnerArray(Object[] user1s){
+    public void putInnerArray(Object[] user1s) {
         innerUser.setUser1s(user1s);
     }
 
-    public Object[] findInnerArray(){
+    public Object[] findInnerArray() {
         return innerUser.getUser1s();
     }
 
@@ -24,7 +24,7 @@ public class User11 {
         this.innerUser = innerUser;
     }
 
-    private class InnerUser{
+    private class InnerUser {
         private Object[] user1s;
 
         public Object[] getUser1s() {

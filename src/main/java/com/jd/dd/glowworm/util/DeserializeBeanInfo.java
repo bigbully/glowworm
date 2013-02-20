@@ -114,21 +114,22 @@ public class DeserializeBeanInfo {
                 String propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
                 Field field = ASMUtils.getField(clazz, propertyName);
 
-                if (field == null) {
-                    continue;
-                }
-                //如果有瞬时变量，去除
-                if (field.getAnnotation(Transient.class) != null) {
-                    continue;
-                }
-                //如果有瞬时get方法，去除
-                try {
-                    Method getMethod = clazz.getDeclaredMethod("g" + methodName.substring(1, methodName.length()));
-                    if (getMethod.getAnnotation(Transient.class) != null) {
+                if (field != null) {
+                    //如果有瞬时变量，去除
+                    if (field.getAnnotation(Transient.class) != null) {
                         continue;
                     }
-                } catch (NoSuchMethodException e) {
-                    //一个set方法没有对应的get方法就算了
+                    //如果有瞬时get方法，去除
+                    try {
+                        Method getMethod = clazz.getDeclaredMethod("g" + methodName.substring(1, methodName.length()));
+                        if (getMethod.getAnnotation(Transient.class) != null) {
+                            continue;
+                        }
+                    } catch (NoSuchMethodException e) {
+                        //一个set方法没有对应的get方法就算了
+                    }
+                } else {
+                    continue;
                 }
                 beanInfo.add(new FieldInfo(propertyName, method, null, clazz, type));
                 method.setAccessible(true);
@@ -191,7 +192,7 @@ public class DeserializeBeanInfo {
                 String propertyName = Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
 
                 FieldInfo fieldInfo = beanInfo.getField(propertyName);
-                if (fieldInfo != null) {
+                if (fieldInfo == null) {
                     continue;
                 }
 

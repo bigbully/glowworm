@@ -45,6 +45,9 @@ public class Type {
     public static final int ARRAY_SHORT = 34;
 
     public static final int CLASS = 35;
+    public static final int LIST_ARRAYS_ARRAYLIST = 36;
+    public static final int TIME = 37;
+    public static final int EXCEPTION = 38;
 
     public static final int Unknown = 63;
 

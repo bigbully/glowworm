@@ -18,9 +18,9 @@ public abstract class MultiDeserialier {
 
     //判断是否是解析属性
     protected boolean isScanField(Object[] extraParams) {
-        if(extraParams != null && extraParams.length > 0){
+        if (extraParams != null && extraParams.length > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

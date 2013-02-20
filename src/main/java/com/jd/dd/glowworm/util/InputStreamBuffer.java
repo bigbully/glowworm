@@ -24,7 +24,7 @@ public class InputStreamBuffer {
         return typeStream;
     }
 
-    public void setAll(CodedInputStream theCodedInputStream, ExistInputStream existStream, TypeInputStream typeStream){
+    public void setAll(CodedInputStream theCodedInputStream, ExistInputStream existStream, TypeInputStream typeStream) {
         this.theCodedInputStream = theCodedInputStream;
         this.existStream = existStream;
         this.typeStream = typeStream;

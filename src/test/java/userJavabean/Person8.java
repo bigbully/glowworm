@@ -1,7 +1,5 @@
 package userJavabean;
 
-import userJavabean.Course;
-
 import java.util.List;
 
 public class Person8 {

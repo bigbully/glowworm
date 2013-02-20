@@ -94,6 +94,6 @@ public final class BufferInputStream {
         this.buffer = data;
         this.mark = 0;
         this.pos = 0;
-        this.limit = (0+ data.length);
+        this.limit = (0 + data.length);
     }
 }

@@ -44,8 +44,7 @@ public class Person10 {
     private Object obj40;
     private Object obj41;
     private Object obj42;
-
-
+    private Object obj43;
 
 
     public Object getObj1() {
@@ -382,5 +381,13 @@ public class Person10 {
 
     public void setObj42(Object obj42) {
         this.obj42 = obj42;
+    }
+
+    public Object getObj43() {
+        return obj43;
+    }
+
+    public void setObj43(Object obj43) {
+        this.obj43 = obj43;
     }
 }

@@ -1,4 +1,3 @@
-
 package com.jd.dd.glowworm.serializer.primary;
 
 import com.jd.dd.glowworm.serializer.ObjectSerializer;

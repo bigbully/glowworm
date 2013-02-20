@@ -70,10 +70,10 @@ public class ASMSerializerFactory implements Opcodes {
             if (fieldClass.isArray() && !fieldClass.getComponentType().isPrimitive()) {
                 continue;
             }
-            if (!Modifier.isPublic(fieldClass.getModifiers())){
+            if (!Modifier.isPublic(fieldClass.getModifiers())) {
                 continue;
             }
-            if (fieldClass == Object.class){
+            if (fieldClass == Object.class) {
                 continue;
             }
             FieldVisitor fw = cw.visitField(ACC_PUBLIC, fieldInfo.getName() + "_asm_s__",

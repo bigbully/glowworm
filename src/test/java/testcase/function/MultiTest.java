@@ -220,7 +220,7 @@ public class MultiTest extends TestBase {
 
     //序列化一个LoopPerson1的数组，测试不传类名
     @Test
-    public void testCollection6() throws Exception{
+    public void testCollection6() throws Exception {
         LoopPerson1[] array = new LoopPerson1[3];
         LoopPerson1 p1 = new LoopPerson1();
         p1.setB(new Byte("1"));
@@ -234,8 +234,8 @@ public class MultiTest extends TestBase {
         array[1] = p2;
 
         LoopPerson1[] result = executeBackAndForth(array, LoopPerson1[].class);
-        assertEquals("1", String.valueOf(((LoopPerson1)result[0]).getB()));
-        assertEquals("2", String.valueOf(((LoopPerson1)result[1]).getB()));
+        assertEquals("1", String.valueOf(((LoopPerson1) result[0]).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1) result[1]).getB()));
     }
 
     //Object数组
@@ -263,7 +263,7 @@ public class MultiTest extends TestBase {
         map.put("1", true);
         map.put("2", false);
         map.put("3", null);
-        HashMap result  = executeBackAndForth(map, HashMap.class);
+        HashMap result = executeBackAndForth(map, HashMap.class);
         assertEquals(true, result.get("1"));
         assertEquals(false, result.get("2"));
         assertNull(result.get("3"));
@@ -286,11 +286,11 @@ public class MultiTest extends TestBase {
         map.put("3", null);
         map.put("4", u3);
 
-        HashMap result  = executeBackAndForth(map, HashMap.class);
-        assertEquals(true, ((User1)result.get("1")).getB());
-        assertEquals(false, ((User1)result.get("2")).getB());
+        HashMap result = executeBackAndForth(map, HashMap.class);
+        assertEquals(true, ((User1) result.get("1")).getB());
+        assertEquals(false, ((User1) result.get("2")).getB());
         assertNull(result.get("3"));
-        assertEquals(true, ((User1)result.get("4")).getB());
+        assertEquals(true, ((User1) result.get("4")).getB());
     }
 
     //测试HashMap {u1:"1", u2:"2", null:"3", u3:"4"}
@@ -310,7 +310,7 @@ public class MultiTest extends TestBase {
         map.put(null, "3");
         map.put(u3, "4");
 
-        HashMap result  = executeBackAndForth(map, HashMap.class);
+        HashMap result = executeBackAndForth(map, HashMap.class);
 
         boolean flag1 = false;
         boolean flag2 = false;
@@ -319,19 +319,19 @@ public class MultiTest extends TestBase {
 
         Iterator it = result.entrySet().iterator();
         for (int i = 0; i < result.size(); i++) {
-            Map.Entry entry = (Map.Entry)it.next();
-            if (entry.getKey() instanceof User1){
-                if (((User1)entry.getKey()).getB()){
-                    if (entry.getValue().equals("1")){
+            Map.Entry entry = (Map.Entry) it.next();
+            if (entry.getKey() instanceof User1) {
+                if (((User1) entry.getKey()).getB()) {
+                    if (entry.getValue().equals("1")) {
                         flag1 = true;
-                    }else if (entry.getValue().equals("4")){
+                    } else if (entry.getValue().equals("4")) {
                         flag4 = true;
                     }
-                }else if(!((User1)entry.getKey()).getB()){
+                } else if (!((User1) entry.getKey()).getB()) {
                     flag2 = true;
                 }
-            }else if (entry.getKey() == null){
-                if (entry.getValue().equals("3")){
+            } else if (entry.getKey() == null) {
+                if (entry.getValue().equals("3")) {
                     flag3 = true;
                 }
             }
@@ -358,7 +358,7 @@ public class MultiTest extends TestBase {
 
     //测试list中装不同类型的元素时，是否可以针对不同类名选择性写入类名
     @Test
-    public void testCollection3() throws Exception{
+    public void testCollection3() throws Exception {
         ArrayList list = new ArrayList();
         Person1 p1 = new Person1();
         p1.setId(1L);
@@ -372,9 +372,9 @@ public class MultiTest extends TestBase {
         list.add(p1_1);
         list.add(p2);
         ArrayList result = executeBackAndForth(list, ArrayList.class);
-        assertEquals("1", ((Person1)result.get(0)).getId().toString());
-        assertEquals("12", ((Person1)result.get(1)).getId().toString());
-        assertEquals("2", ((Person2)result.get(2)).getId().toString());
+        assertEquals("1", ((Person1) result.get(0)).getId().toString());
+        assertEquals("12", ((Person1) result.get(1)).getId().toString());
+        assertEquals("2", ((Person2) result.get(2)).getId().toString());
     }
 
     //List 直接序列化ArrayList
@@ -420,7 +420,7 @@ public class MultiTest extends TestBase {
 
     //测试Object数组中的循环引用
     @Test
-    public void testCollection4() throws Exception{
+    public void testCollection4() throws Exception {
         Object[] array = new Object[2];
         LoopPerson1 p1 = new LoopPerson1();
         p1.setB(new Byte("1"));
@@ -433,14 +433,14 @@ public class MultiTest extends TestBase {
         array[1] = p2;
 
         Object[] result = executeBackAndForth(array, Object[].class);
-        assertEquals("1", String.valueOf(((LoopPerson1)result[0]).getB()));
-        assertEquals("2", String.valueOf(((LoopPerson1)result[1]).getB()));
-        assertEquals(result[0], ((LoopPerson1)result[1]).getBrother());
+        assertEquals("1", String.valueOf(((LoopPerson1) result[0]).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1) result[1]).getB()));
+        assertEquals(result[0], ((LoopPerson1) result[1]).getBrother());
     }
 
     //序列化一个Object数组，测试不传多余类名
     @Test
-    public void testCollection5() throws Exception{
+    public void testCollection5() throws Exception {
         Object[] array = new Object[3];
         LoopPerson1 p1 = new LoopPerson1();
         p1.setB(new Byte("1"));
@@ -457,15 +457,15 @@ public class MultiTest extends TestBase {
         array[2] = p3;
 
         Object[] result = executeBackAndForth(array, Object[].class);
-        assertEquals("1", String.valueOf(((LoopPerson1)result[0]).getB()));
-        assertEquals("2", String.valueOf(((LoopPerson1)result[1]).getB()));
-        assertEquals(result[0], ((LoopPerson1)result[1]).getBrother());
-        assertEquals(String.valueOf(3), ((Person1)result[2]).getId().toString());
+        assertEquals("1", String.valueOf(((LoopPerson1) result[0]).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1) result[1]).getB()));
+        assertEquals(result[0], ((LoopPerson1) result[1]).getBrother());
+        assertEquals(String.valueOf(3), ((Person1) result[2]).getId().toString());
     }
 
     //序列化一个list，不传多余类名
     @Test
-    public void testCollectionWithLoop3() throws Exception{
+    public void testCollectionWithLoop3() throws Exception {
         List list = new ArrayList();
         LoopPerson1 p1 = new LoopPerson1();
         p1.setB(new Byte("1"));
@@ -480,8 +480,22 @@ public class MultiTest extends TestBase {
         list.add(p3);
 
         ArrayList result = executeBackAndForth(list, ArrayList.class);
-        assertEquals("1", String.valueOf(((LoopPerson1)result.get(0)).getB()));
-        assertEquals("2", String.valueOf(((LoopPerson1)result.get(1)).getB()));
-        assertEquals(String.valueOf(3), ((Person1)result.get(2)).getId().toString());
+        assertEquals("1", String.valueOf(((LoopPerson1) result.get(0)).getB()));
+        assertEquals("2", String.valueOf(((LoopPerson1) result.get(1)).getB()));
+        assertEquals(String.valueOf(3), ((Person1) result.get(2)).getId().toString());
+    }
+
+    //测试直接序列化Arrays.ArrayList
+    @Test
+    public void testArraysArrayList() throws Exception {
+        List list = Arrays.asList("1", "2");
+        Parameters parameters = new Parameters();
+        parameters.setNeedWriteClassName(true);
+        List result = (List) executeBackAndForth(list, parameters);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("1", list.get(0));
+        assertEquals("2", list.get(1));
     }
 }
+

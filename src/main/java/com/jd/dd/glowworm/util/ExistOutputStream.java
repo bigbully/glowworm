@@ -18,15 +18,15 @@ public class ExistOutputStream {
     }
 
     public void write(boolean bool) {
-        if (bitPos != 0 && bitPos % 8 == 0){
+        if (bitPos != 0 && bitPos % 8 == 0) {
             pos++;
             checkCapacity(pos);
         }
-        byte b1 = bitPos % 8 == 0 ? 0:buffer[pos];
-        if (bool){
+        byte b1 = bitPos % 8 == 0 ? 0 : buffer[pos];
+        if (bool) {
             bitPos++;
-        }else {
-            b1 = (byte)(b1 | (1 << (7 - (bitPos++ % 8))));
+        } else {
+            b1 = (byte) (b1 | (1 << (7 - (bitPos++ % 8))));
         }
         buffer[pos] = b1;
     }
@@ -45,10 +45,10 @@ public class ExistOutputStream {
         this.bitPos = this.offset;
     }
 
-    public byte[] getBytes(){
-        if (this.bitPos == 0){
+    public byte[] getBytes() {
+        if (this.bitPos == 0) {
             return null;
-        }else {
+        } else {
             byte[] retBytes = new byte[pos + 1];
             System.arraycopy(buffer, 0, retBytes, 0, pos + 1);
             return retBytes;

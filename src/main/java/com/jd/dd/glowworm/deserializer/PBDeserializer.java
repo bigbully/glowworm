@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,12 +86,15 @@ public class PBDeserializer {
         derializers.put(BigInteger.class, BigIntegerDeserializer.instance);
         derializers.put(Date.class, DateDeserializer.instance);
         derializers.put(Timestamp.class, TimestampDeserializer.instance);
+        derializers.put(Time.class, TimeDeserializer.instance);
         derializers.put(Inet4Address.class, InetAddressDeserializer.instance);
         derializers.put(Inet6Address.class, InetAddressDeserializer.instance);
 
         derializers.put(AtomicInteger.class, AtomicIntegerDeserializer.instance);
         derializers.put(AtomicBoolean.class, AtomicBooleanDeserializer.instance);
         derializers.put(AtomicLong.class, AtomicLongDeserializer.instance);
+
+        derializers.put(StackTraceElement.class, StackTraceElementDeserializer.instance);
     }
 
     public void analysizeHead(byte[] bytes) throws IOException {
@@ -98,9 +102,11 @@ public class PBDeserializer {
 
         if (ref != null) {
             inputStreamBuffer = ref.get();
-            theCodedInputStream = inputStreamBuffer.getTheCodedInputStream();
-            existStream = inputStreamBuffer.getExistStream();
-            typeStream = inputStreamBuffer.getTypeStream();
+            if (inputStreamBuffer != null) {
+                theCodedInputStream = inputStreamBuffer.getTheCodedInputStream();
+                existStream = inputStreamBuffer.getExistStream();
+                typeStream = inputStreamBuffer.getTypeStream();
+            }
             bufLocal.set(null);
         }
 
@@ -144,10 +150,10 @@ public class PBDeserializer {
                 for (int i = 0; i < refSize; i++) {
                     refMap.put(scanNaturalInt(), scanNaturalInt());
                 }
-            }else {
+            } else {
                 refMap = null;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -161,7 +167,7 @@ public class PBDeserializer {
         return parserClazz.getName().startsWith(ASMDeserializerFactory.DeserializerClassName_prefix);
     }
 
-    public boolean isPureObject(ObjectDeserializer parser){
+    public boolean isPureObject(ObjectDeserializer parser) {
         return parser instanceof JavaObjectDeserializer;
     }
 
@@ -236,16 +242,18 @@ public class PBDeserializer {
             return deserializer;
         }
 
-        if (clazz.isEnum() || (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())){
+        if (clazz.isEnum() || (clazz.getSuperclass() != null && clazz.getSuperclass().isEnum())) {
             deserializer = new EnumDeserializer(clazz);
-        }else if (clazz.isArray()) {
+        } else if (clazz.isArray()) {
             return ArrayDeserializer.instance;
-        } else if (Map.class.isAssignableFrom(clazz)){
+        } else if (Map.class.isAssignableFrom(clazz)) {
             return MapDeserializer.instance;
-        } else if (List.class.isAssignableFrom(clazz)){
+        } else if (List.class.isAssignableFrom(clazz)) {
             return ListDeserializer.instance;
-        } else if (Set.class.isAssignableFrom(clazz)){
+        } else if (Set.class.isAssignableFrom(clazz)) {
             return SetDeserializer.instance;
+        } else if (Exception.class.isAssignableFrom(clazz)) {
+            deserializer = new ExceptionDeserializer(clazz);
         } else {
             deserializer = createJavaBeanDeserializer(clazz, type);
         }
@@ -318,7 +326,7 @@ public class PBDeserializer {
 
     public boolean isObjectExist() {
         boolean isExisted = existStream.readRawByte() == 0 ? true : false;
-        if (!isExisted){
+        if (!isExisted) {
             currentIndex++;
         }
         return isExisted;
@@ -328,35 +336,40 @@ public class PBDeserializer {
         return theCodedInputStream.readBool();
     }
 
-    public int scanInt() throws IOException{
+    public int scanInt() throws IOException {
         return theCodedInputStream.readInt();
     }
 
-    public float scanFloat() throws IOException{
+    public float scanFloat() throws IOException {
         return theCodedInputStream.readFloat();
     }
 
     public short scanShort() throws IOException {
-        return (short)theCodedInputStream.readInt();
+        return (short) theCodedInputStream.readInt();
     }
 
-    public long scanLong() throws IOException{
+    public long scanLong() throws IOException {
         return theCodedInputStream.readLong();
     }
 
-    public byte scanByte() throws IOException{
+    public byte scanByte() throws IOException {
         return theCodedInputStream.readRawByte();
     }
 
-    public double scanDouble() throws IOException{
+    public double scanDouble() throws IOException {
         return theCodedInputStream.readDouble();
     }
 
     public Enum scanEnum(Class enumClazz) throws Exception {
-        if(enumClazz == null){
+        if (enumClazz == null) {
             enumClazz = TypeUtils.loadClass(scanString());
         }
-        return Enum.valueOf((Class<Enum>) enumClazz,  scanString());
+        return Enum.valueOf((Class<Enum>) enumClazz, scanString());
+    }
+
+    public Enum scanEnum() throws Exception {
+        Class enumClazz = TypeUtils.loadClass(scanString());
+        return scanEnum(enumClazz);
     }
 
     public int scanNaturalInt() throws Exception {
@@ -372,17 +385,17 @@ public class PBDeserializer {
     }
 
     public String scanStringWithCharset() throws Exception {
-        if (parameters != null){
+        if (parameters != null) {
             return theCodedInputStream.readString(parameters.getCharset());
-        }else {
+        } else {
             return theCodedInputStream.readString();
         }
     }
 
     public Object getReference() {
-        if (refMap == null){
+        if (refMap == null) {
             return null;
-        }else {
+        } else {
             if (objectIndexMap == null) {
                 return null;
             } else {
@@ -437,13 +450,13 @@ public class PBDeserializer {
         }
     }
 
-    public Object scanFieldObject(ObjectDeserializer parser, Type type, boolean needConfirmExist){
+    public Object scanFieldObject(ObjectDeserializer parser, Type type, boolean needConfirmExist) {
         Object ret = null;
         try {
             if (isAsmJavaBean(parser.getClass()) || isPureObject(parser)) {
-                if (isObjectExist()){
+                if (isObjectExist()) {
                     ret = parser.deserialize(this, type, needConfirmExist);
-                }else {
+                } else {
                     ret = getReference();
                 }
             } else {
@@ -484,7 +497,9 @@ public class PBDeserializer {
                 case com.jd.dd.glowworm.asm.Type.BIGINTEGER:
                     return scanBigInteger();
                 case com.jd.dd.glowworm.asm.Type.ENUM:
-                    return scanEnum(null);
+                    return scanEnum();
+                case com.jd.dd.glowworm.asm.Type.EXCEPTION:
+                    return scanObject();
                 case com.jd.dd.glowworm.asm.Type.ARRAY_BYTE:
                     return scanByteArray();
                 case com.jd.dd.glowworm.asm.Type.ARRAY_CHAR:
@@ -509,6 +524,8 @@ public class PBDeserializer {
                     return scanDate();
                 case com.jd.dd.glowworm.asm.Type.TIMESTAMP:
                     return scanTimeStamp();
+                case com.jd.dd.glowworm.asm.Type.TIME:
+                    return scanTime();
                 case com.jd.dd.glowworm.asm.Type.ATOMIC_BOOL:
                     return scanAtomicBool();
                 case com.jd.dd.glowworm.asm.Type.ATOMIC_INT:
@@ -517,6 +534,8 @@ public class PBDeserializer {
                     return scanAtomicLong();
                 case com.jd.dd.glowworm.asm.Type.LIST_ARRAYLIST:
                     return ListDeserializer.instance.deserialize(this, ArrayList.class, false);
+                case com.jd.dd.glowworm.asm.Type.LIST_ARRAYS_ARRAYLIST:
+                    return ListDeserializer.instance.deserialize(this, Arrays.class, false);
                 case com.jd.dd.glowworm.asm.Type.LIST_LINKEDLIST:
                     return ListDeserializer.instance.deserialize(this, LinkedList.class, false);
                 case com.jd.dd.glowworm.asm.Type.COLLECTION_HASHSET:
@@ -565,6 +584,10 @@ public class PBDeserializer {
 
     public Timestamp scanTimeStamp() throws IOException {
         return new Timestamp(theCodedInputStream.readLong());
+    }
+
+    public Time scanTime() throws IOException {
+        return new Time(theCodedInputStream.readLong());
     }
 
     public Date scanDate() throws IOException {
@@ -627,7 +650,7 @@ public class PBDeserializer {
         byte[] tmpBytes = scanByteArray();
         boolean[] booleans = new boolean[tmpBytes.length];
         for (int i = 0; i < tmpBytes.length; i++) {
-            booleans[i] = tmpBytes[i] == 1?true:false;
+            booleans[i] = tmpBytes[i] == 1 ? true : false;
         }
         return booleans;
     }
@@ -712,4 +735,5 @@ public class PBDeserializer {
     public void setParameters(Parameters parameters) {
         this.parameters = parameters;
     }
+
 }

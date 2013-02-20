@@ -5,7 +5,7 @@ import com.jd.dd.glowworm.deserializer.PBDeserializer;
 
 import java.lang.reflect.Type;
 
-public class CharArrayDeserializer implements ObjectDeserializer{
+public class CharArrayDeserializer implements ObjectDeserializer {
 
     public final static CharArrayDeserializer instance = new CharArrayDeserializer();
 
@@ -16,9 +16,9 @@ public class CharArrayDeserializer implements ObjectDeserializer{
             if (needConfirmExist && deserializer.isObjectExist() || !needConfirmExist) {
                 value = deserializer.scanStringWithCharset();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return (T)value.toCharArray();
+        return (T) value.toCharArray();
     }
 }
