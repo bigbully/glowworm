@@ -48,14 +48,24 @@
 
 
           <h4>glowworm的特点</h4>
-<p>
+          <p>
           1.不依赖第三方库<br>
           2.无需编写idl文件<br>
           3.支持各种数据类型<br>
           4.整体架构优秀<br>
           5.基于byte数组的序列化方案<br>
 
-</p>
+        </p>
+
+        <h4>glowworm支持的类型</h4>
+        <p>
+          1.所有基本类型<br>
+          2.用户自定义的javabean<br>
+          3.支持数组，常用的List、Set、Map<br>
+          4.支持一些特殊类型，现阶段支持的还比较有限，索性就都列在下面了：Date, Time, Timestamp, Enum, InetAddress, AtomicBoolean, AtomicInteger, AtomiceLong, BigDecimal, BigInteger, Class, Exception<br>
+          5.对泛型有优化，鼓励使用泛型<br>
+          6.完美支持引用，包括循环引用<br>
+        </p>
 
           <h4>glowworm的架构</h4>
 
@@ -84,6 +94,335 @@ public void writeLong(long l) {
           <p>而再往下一层的BufferOutputStream就是实实在在的操作数组了</p>
           <p>反序列化的流程就是序列化的逆过程，在此不再赘述。</p>
           <p>可以看出，无论是序列化还是反序列化，架构的层级都是一致的，彼此对称的，非常清晰简明，易于理解。</p>
+
+          <h3>glowworm的技术内幕</h3>
+
+          <p>因为参考了fastjson的架构，protobuf的协议，这两个著名的序列化组件的一些特点也被glowworm吸收进来。</p>
+
+          <h4>使用threadLocal缓存byte[]</h4>
+
+          <p>因为每次序列化或反序列化在创建一个数组以及对数组扩容时都有消耗，所以我们参照fastjson的架构，把这些byte[]包括序列化的内容以及头信息，都保存在ThreadLocal中，便于重复使用。序列化为例，在PBSerializer中声明了ThreadLocal变量，这个变量缓存了所有glowworm中用于保存信息的byte[]。</p>
+          <pre><code>
+private final static ThreadLocal&ltSoftReference&ltOutputStreamBuffer&gt&gt bufLocal = new ThreadLocal&ltSoftReference&ltOutputStreamBuffer&gt&gt();
+          </code></pre>
+
+          <p>每次初始化PBSerializer时首先把这个变量从当前线程中取出，进行分析。</p>
+          <pre><code>
+//初始化CodedOutputStream
+    private void initBuffer() {
+        SoftReference<OutputStreamBuffer> ref = bufLocal.get();
+
+        if (ref != null) {
+            outputStreamBuffer = ref.get();
+            if (outputStreamBuffer != null) {
+                theCodedOutputStream = outputStreamBuffer.getTheCodedOutputStream();
+                refStream = outputStreamBuffer.getRefStream();
+                typeStream = outputStreamBuffer.getTypeStream();
+                existStream = outputStreamBuffer.getExistStream();
+                headStream = outputStreamBuffer.getHeadStream();
+            }
+            bufLocal.set(null);
+        }
+
+        if (theCodedOutputStream == null) {
+            theCodedOutputStream = new CodedOutputStream(new BufferOutputStream(1024));
+        }
+        if (refStream == null) {
+            refStream = new CodedOutputStream(new BufferOutputStream(30));
+        }
+        if (typeStream == null) {
+            typeStream = new TypeOutputStream(50);
+        }
+        if (existStream == null) {
+            existStream = new ExistOutputStream(100);
+        }
+        if (headStream == null) {
+            headStream = new CodedOutputStream(new BufferOutputStream(10));
+        }
+    }
+          </code></pre>
+
+          <p>在每次序列化结束时会调用close方法，进行把相应的变量暂存入ThreadLocal中</p>
+          <pre><code>
+//关闭时缓存buffer
+    public void close() {
+        theCodedOutputStream.reset();
+        refStream.reset();
+        existStream.reset();
+        typeStream.reset();
+        typeStream.headReset();
+        headStream.reset();
+
+        if (outputStreamBuffer == null) {
+            outputStreamBuffer = new OutputStreamBuffer(theCodedOutputStream, refStream, existStream, typeStream, headStream);
+        } else {
+            outputStreamBuffer.setAll(theCodedOutputStream, refStream, existStream, typeStream, headStream);
+        }
+
+        bufLocal.set(new SoftReference&ltOutputStreamBuffer&gt(outputStreamBuffer));
+
+        theCodedOutputStream = null;
+        refStream = null;
+        existStream = null;
+        typeStream = null;
+
+        outputStreamBuffer = null;
+    }
+          </code></pre>
+
+          <h4>使用一个特殊的IdentityHashMap优化性能</h4>
+
+          <p>这个也是fastJson的产物，因为这个map作为类变量存储所有类-序列化器（以及类-反序列化器）的映射，所以会涉及到并发，但采用HashMap在做transfer操作的时候有可能导致死循环，如果采用ConcurrentHashMap性能有不高。所以fastJson使用了IndentityHashMap，其中去掉了key对比过程中的equal操作（毕竟实际场景中的key值仅限于Class），去掉了transfer操作（毕竟常见业务类并不多，无需扩容）。</p>
+          <pre><code>
+private static IdentityHashMap theSerializerHMap = new IdentityHashMap();//序列化器的缓存
+          </code></pre>
+
+          <h4>ASM的引入</h4>
+
+          <p>ASM(http://asm.ow2.org/)是一个字节码操纵框架，可以动态的往java环境中加入class类。为了解析JavaBean的结构，不得做类反射，而类反射毕竟效率不高。所以引入了asm。</p>
+          <p>使用场景就是如果序列化一个用户自定义的JavaBean，我们通过类反射解析这个JavaBean的结构，用asm生成对应的序列化器及反序列化器（其中包括对这个JavaBean属性的调用），以后就可以复用了。达到只做一次类反射的效果。glowworm也参考fastJson从这个框架中把用到的源码直接抠出来，使asm部分的代码不至于太臃肿。</p>
+
+          <p>另外，在动态生成序列化器的时候，会把每一个属性的序列化器作为实例变量存在这个javabean的序列化器内部，在第一次进行序列化时为其初始化，以后就可以进行复用了，无需每次都从IdentityHashMap中查找。</p>
+
+          <h4>序列化协议方面</h4>
+
+          <p>glowworm现阶段使用的序列化协议基本照搬protobuf的，并不是说protobuf的协议就是最好的，只是暂时还没有发现更好的。比如针对int类型的序列化协议，protobuf就略有不同。我们都知道常规32位int转成byte需要4个byte，但事实上业务使用中Integer.MAX_VALUE大小的整形使用并不多，所以4位byte显然是有浪费的。所以对于正整数使用varint算法，int转成byte的大小事浮动的，int数值小则有可能只需要2个byte，而Integer.MAX_VALUE则需要6个。而对于负整数，我们首先会先进行ZigZag之后再进行varint，同样可以节省int向byte转化之后的大小。</p>
+
+          <h4>glowworm序列化时是不传属性名的</h4>
+          <p>这也是为什么和采用json规范相比大小差距这么明显。glowworm序列化的时候不传属性名，但是会提前对所有属性进行排序，保证序列化与反序列化时属性的写和读的顺序是一致的。这点在之后会提到的对引用的处理上也至关重要。</p>
+
+          <h4>对于对象类型以及是否存在的优化</h4>
+
+          <p>如果User user = new User();如此声明一个对象的话，我们自然知道这个对象的结构，但如果遇到用Object进行声明，或者在集合声明时没有加入泛型的话。glowworm在序列化时需要写入Type来标识这个对象的类型。</p>
+
+          <pre><code>
+public class Type {
+
+    //0~7为所有常用类型
+    public static final int OBJECT = 0;
+    public static final int BOOLEAN = 1;
+    public static final int INT = 2;
+    public static final int LONG = 3;
+    public static final int DOUBLE = 4;
+    public static final int STRING = 5;
+    public static final int LIST_ARRAYLIST = 6;
+    public static final int MAP_HASH = 7;
+
+    //非常用类型按顺序往下排
+    public static final int CHAR = 8;
+    public static final int BYTE = 9;
+    public static final int SHORT = 10;
+    public static final int FLOAT = 11;
+
+    public static final int BIGDECIMAL = 12;
+    public static final int BIGINTEGER = 13;
+    //一下省略
+    ...
+}
+          </code></pre>
+
+          <p>我们实现约定可以序列化的类型不超过64种，2的6次方，共8位bit(注意是bit，不是byte)。首先筛选出常用的类型8种，非常用类型30多种（以后如果有需要继续添加）。这样用3位bit（注意是bit哦~）就可以标识常用类型，6位bit标识费常用类型。另外加1位bit用来标识是常用类型还是飞常用类型。对比最初的用1位BYTE来标识类型，容量上缩减不少。</p>
+
+
+          <pre><code>
+public void write(int i) {
+        if (i &lt 8) {//如果是常用类型
+            write(true);//typeHead里写0
+            if (bitPos % 8 &lt 6 || bitPos == 0) {//要加的这3个bit在这个8个bit之内
+                byte b1 = bitPos % 8 == 0 ? 0 : buffer[pos];
+                b1 = (byte) (b1 | (i &lt&lt (5 - (bitPos % 8))));
+                buffer[pos] = b1;
+                bitPos += 3;
+                if (bitPos % 8 == 0 && bitPos != 0) {
+                    pos++;
+                    checkCapacity(pos);
+                }
+            } else {//如果需要进位
+                int thisbitNum = 3 - (bitPos + 3) % 8;
+                //拿thisbitNum == 2举例，可以写在当前byte中有两位bit，所以下面算法是，首先把byte左移两位。
+                //把i & 6 &gt&gt 1的意思是i这个三位bit，与110这三位bit向与，然后又移1位，获得两位bit
+                //再与之前的计算结果向或
+                if (thisbitNum == 2) {
+                    buffer[pos] = (byte) (buffer[pos] | ((i & 6) &gt&gt 1));
+                    pos++;
+                    checkCapacity(pos);
+                    buffer[pos] = (byte) ((i & 1) &lt&lt 7);
+                } else if (thisbitNum == 1) {
+                    buffer[pos] = (byte) (buffer[pos] | ((i & 4) &gt&gt 2));
+                    pos++;
+                    checkCapacity(pos);
+                    buffer[pos] = (byte) ((i & 3) &lt&lt 6);
+                }
+                bitPos += 3;
+            }
+        } else {//非常用类型
+            write(false);//typeHead里写1
+            if (bitPos % 8 &lt 3 || bitPos == 0) {//要加的这3个bit在这个8个bit之内
+                byte b1 = bitPos % 8 == 0 ? 0 : buffer[pos];
+                b1 = (byte) (b1 | (i &lt&lt (2 - (bitPos % 8))));
+                buffer[pos] = b1;
+                bitPos += 6;
+                if (bitPos % 8 == 0 && bitPos != 0) {
+                    pos++;
+                    checkCapacity(pos);
+                }
+            } else {//如果需要进位
+                int thisbitNum = 6 - (bitPos + 6) % 8;
+                if (thisbitNum == 5) {
+                    buffer[pos] = (byte) (buffer[pos] | ((i & 62) &gt&gt 1));
+                    pos++;
+                    checkCapacity(pos);
+                    buffer[pos] = (byte) ((i & 1) &lt&lt 7);
+                } else if (thisbitNum == 4) {
+                    buffer[pos] = (byte) (buffer[pos] | ((i & 60) &gt&gt 2));
+                    pos++;
+                    checkCapacity(pos);
+                    buffer[pos] = (byte) ((i & 3) &lt&lt 6);
+                } else if (thisbitNum == 3) {
+                    buffer[pos] = (byte) (buffer[pos] | ((i & 56) &gt&gt 3));
+                    pos++;
+                    checkCapacity(pos);
+                    buffer[pos] = (byte) ((i & 7) &lt&lt 5);
+                } else if (thisbitNum == 2) {
+                    buffer[pos] = (byte) (buffer[pos] | ((i & 48) &gt&gt 4));
+                    pos++;
+                    checkCapacity(pos);
+                    buffer[pos] = (byte) ((i & 15) &lt&lt 4);
+                } else if (thisbitNum == 1) {
+                    buffer[pos] = (byte) (buffer[pos] | ((i & 32) &gt&gt 5));
+                    pos++;
+                    checkCapacity(pos);
+                    buffer[pos] = (byte) ((i & 31) &lt&lt 3);
+                }
+                bitPos += 6;
+            }
+        }
+    }
+          </code></pre>
+
+          <p>不仅如此，考虑到javabean的每一个属性都有可能为空。我们用1位bit来标识是否存在这个属性。这样对大小的缩减来看，越复杂的javabean，缩减的越明显。</p>
+
+
+          <h4>针对集合的优化</h4>
+
+          <p>glowworm对于集合的序列化做了很多工作。这里的集合指的是广义上的结合，包括Array，List，Set，Map。在序列化时这四种类型集合的操作其实没本质差异。在我们看来都是对集合做循环，每次循环把集合内的元素写入byte数组（对于map来说，就是指其中的Entry作为元素）。针对这四种类型的集合的序列化，我们提出一个父类序列化器，作为MultiSerializer </p>
+
+          <pre><code>
+public abstract class MultiSerializer {
+
+    public abstract Object getEachElement(Object multi, int i);
+
+    protected boolean isInterface(Object[] extraParams) {
+        return extraParams.length == 2 && (Boolean) extraParams[1];
+    }
+
+    //无泛型或泛型为Object
+    protected void writeObjectElement(PBSerializer serializer, Object multi, int size) {
+        try {
+            ObjectSerializer preWriter = null;
+            Class preClazz = null;
+            for (int i = 0; i < size; i++) {
+                Object item = getEachElement(multi, i);
+                if (item == null) {
+                    serializer.writeNull();
+                } else {
+                    Class clazz = item.getClass();
+                    if (clazz == preClazz) {
+                        if (serializer.needConsiderRef(preWriter) && serializer.isReference(item)) {
+                            serializer.writeNull();
+                        } else {
+                            serializer.writeNotNull();
+                            if (serializer.isAsmJavaBean(preWriter)) {
+                                serializer.writeType(com.jd.dd.glowworm.asm.Type.OBJECT);
+                                serializer.writeString("");//写入空类名
+                            }
+                            preWriter.write(serializer, item, true);
+                        }
+                    } else {
+                        preClazz = clazz;
+                        preWriter = serializer.getObjectWriter(clazz);
+                        if (serializer.needConsiderRef(preWriter) && serializer.isReference(item)) {
+                            serializer.writeNull();
+                        } else {
+                            serializer.writeNotNull();
+                            if (serializer.isAsmJavaBean(preWriter)) {
+                                serializer.writeType(com.jd.dd.glowworm.asm.Type.OBJECT);
+                                serializer.writeString(clazz.getName());//写入类名
+                            }
+                            preWriter.write(serializer, item, true);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //有明确泛型
+    protected void writeElementWithGerenic(PBSerializer serializer, Object multi, Class elementClazz, int size) {
+        ObjectSerializer objectSerializer = serializer.getObjectWriter(elementClazz);
+        boolean needConsiderRef = serializer.needConsiderRef(objectSerializer);
+        for (int i = 0; i < size; i++) {
+            Object item = getEachElement(multi, i);
+            if (item == null) {
+                serializer.writeNull();
+            } else {
+                if (needConsiderRef && serializer.isReference(item)) {
+                    serializer.writeNull();
+                } else {
+                    serializer.writeNotNull();
+                    try {
+                        objectSerializer.write(serializer, item, false);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+}
+          </code></pre>
+
+
+          <p>如代码中所示，写入操作明确分为针对泛型和无泛型（包括泛型为Object的情况）两种操作。区别在于如果有泛型，则我们不用对集合中的每一个元素写入Type。而对于无泛型的情况，我们会记录当前写入的type，记录当前属性所用的序列化器，如果是用户自定义的javabean，我们还会把类名写到byte数组当中。然后在写下一个元素时会把类型作比较，如果类型相同的话，就省去上述操作。代码中写的比较详细。</p>
+
+          <p>对于每一个集合的序列化器只需继承这个父类，然后实现getEachElement方法即可。</p>
+
+          <h4>针对引用</h4>
+
+          <p>对于任意一个Javabean来说，引用都是一个很棘手的问题。假设以下这个Javabean:</p>
+
+          <pre><code>
+public class LoopPerson1 {
+
+    private byte b;
+    private LoopPerson1 brother;
+
+    public LoopPerson1 getBrother() {
+        return brother;
+    }
+
+    public void setBrother(LoopPerson1 brother) {
+        this.brother = brother;
+    }
+
+    public byte getB() {
+        return b;
+    }
+
+    public void setB(byte b) {
+        this.b = b;
+    }
+}
+          </code></pre>
+
+          <p>有可能属性brother会指向自己的引用，那么常规序列化的时候就会造成死循环。glowworm是如何处理这个问题的呢。我们在每一个对象序列化时会维护这个对象的index，相当于序列化的顺序，并与之前已经被序列化过得对象进行比较，如果发现两个对象引用相同。则记录这个index。在反序列化时根据这个index找到对应的引用即可。</p>
+
+          <h3>最后提一下</h3>
+
+          <p>这个组件，我们进行了相关功能测试，测试代码已包含在源码中。100多个测试涉及到所有功能，是针对功能上的测试。</p>
+
       </section>
     </div>
   </body>
