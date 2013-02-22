@@ -29,22 +29,46 @@
     <div class="container">
       <section id="main_content">
           <h3>大概介绍一下</h3>
-          <p>别的不说，先上两张图，这两张图是在jvm序列化对比测试（https://github.com/eishay/jvm-serializers）的结果。这个对比测试涵盖了适用于java的大部分序列化组件，测试内容包括首先进行一段时间的预热（默认序列化+反序列化3000次），然后分别进行500次序列化和反序列化，最后统计运行时间和序列化之后的大小。</p>
-          <p>如图所示，我们的glowworm并未名列前茅，可以说只是排名中上游，但你依然可以在glowworm周围看到大名鼎鼎的protobuf。</p>
+          <p>别的不说，先上两张图，这两张图是jvm序列化对比测试（https://github.com/eishay/jvm-serializers）的结果。这个对比测试涵盖了适用于java的大部分序列化组件，测试内容包括首先进行一段时间的预热（默认序列化+反序列化3000次），然后分别进行500次序列化和反序列化，最后统计运行时间和序列化之后的大小。</p>
+          <p>如图所示，我们的glowworm并未名列前茅，可以说只是排名中上游，但你依然可以在glowworm排名的周围看到大名鼎鼎的protobuf。</p>
 
           <p>
               <img src="images/total.png" />
               图1.序列化+反序列化的时间
               <img src="images/size.png" />
-              图2.序列化后的容量（byte）
+              图2.序列化后的大小（byte）
           </p>
+
+          <h4>怎么使用glowworm</h4>
+
+          <pre><code>
+User user = new User();
+byte[] bytes = PB.toPBBytes(user);
+User result = PB.parsePBBytes(bytes, User.clase);
+          </code></pre>
+
+          <p>这就是最简单的使用方式，PB.toPBBytes(obj)进行序列化，PB.parsePBBytes(bytes, clazz)进行反序列化。反序列化的两个参数分别是序列化之后得到的byte[]，和需要反序列化的类型。</p>
+
+          <p>如果在反序列化时不知道是什么类型怎么办呢，我们支持自省功能，实际上就是在进行序列化时把类名写到byte[]中，反序列化时就能得到这个类名，进而知道需要用哪个Class进行解析了。方法如下：</p>
+
+          <pre><code>
+User user = new User();
+Parameters p = new Parameters();
+p.setNeedWriteClassName(true);
+byte[] bytes = PB.toPBBytes(user, p);
+User result = (User)PB.parsePBBytes(bytes,p);
+          </code></pre>
+
+          <p>需要设定一个参数Parameters，指定needWriteClassName = true即可。</p>
+
+          <p>当然如果看了源码的话，发现这个Parameters参数中还可以设定编码，默认为utf-8。Parameters这个参数现在暂时只有这两个用途，如果以后遇到一些特殊的需求，会在这个参数里进行添加。</p>
 
           <h3>glowworm是怎么做的</h3>
           <h4>开发glowworm的初衷</h4>
-          <p>众所周知，google的protobuf（http://code.google.com/p/protobuf/）作为老牌的序列化组件在google内部久经考验，在08年时贡献给了开源社区。protobuf无论从性能还是大小来说都是出类拔萃的， 但是我们不得不为每一个user javabean编写对应的proto文件。其实编写proto文件本身无可厚非，序列化就是一个通过解析对象结构把对象转成byte流的过程，解析对象结果本身是一个繁琐的过程，耗时耗力。所以protobuf用一个外部文件记录这个对象结构，那么每次遇到相同结构的对象时就省去了再次解析的过程，而且还能跨语言。</p>
-          <p>我们本来认为这是一件天经地义的事情，但是很显然fastjson（http://code.alibabatech.com/wiki/display/FastJSON/Home-zh）不这么认为。不得不说阿里的fastjson是地球上最好的基于json标准的的序列化组件，尤其在性能优化上做了大量的工作。而且用fastjson做序列化不需要写任何idl（Interface description language）文件，对于对象结构的解析会在第一次进行序列化的时候进行，并永久保存在jvm中，供以后复用。</p>
-          <p>但是作为序列化组件fastjson有一个天生的短板，就是json是以字符串进行传输的，而字符串在转化成byte占用了很大的空间，所以即便是强如fastjson也无法把容量降低到很低的水平。从图2中可以看到排名下半部分的都是基于xml或json格式进行序列化的组件，而上半部分多是直接把对象转成byte数组。</p>
-          <p>为什么不能参考protobuf的序列化协议和fastjson的架构开发一个序列化组件，既能保证大小又能兼顾性能呢。这就是我们开发glowworm的初衷。</p>
+          <p>众所周知，google的protobuf（http://code.google.com/p/protobuf/）作为老牌的序列化组件在google内部久经考验，在08年时贡献给了开源社区。protobuf无论从性能还是大小来说都是出类拔萃的， 但是我们不得不为每一个user javabean编写对应的proto文件。其实编写proto文件本身无可厚非，序列化就是一个通过解析对象结构把对象转成byte流的过程，解析对象结果本身很是繁琐，耗时耗力。所以protobuf用一个外部文件记录这个对象结构，那么每次遇到相同结构的对象时就省去了再次解析的过程，而且还能跨语言。</p>
+          <p>对此，fastjson（http://code.alibabatech.com/wiki/display/FastJSON/Home-zh）有不同的看法。不得不说阿里的fastjson是地球上最好的基于json标准的的序列化组件，尤其在性能优化上做了大量的工作。而且用fastjson做序列化不需要写任何idl（Interface description language）文件，对于对象结构的解析会在第一次进行序列化的时候进行，通过asm新建一个这个序列化器的class并保存下来，供以后复用。</p>
+          <p>但是作为序列化组件fastjson有一个天生的短板，就是json是以字符串进行传输的，而字符串在转化成byte占用了很大的空间，所以即便是强如fastjson也无法把序列化之后的文件大小缩减到很低的水平。从图2中可以看到排名下半部分的都是基于xml或json格式进行序列化的组件，而上半部分多是直接把对象转成byte数组。</p>
+          <p>为什么不能集合protobuf和fastjson各自的优点开发一个序列化组件，做到既能保证大小又能兼顾性能、而且使用起来轻便快捷呢？。glowworm应运而生。</p>
 
 
           <h4>glowworm的特点</h4>
@@ -67,6 +91,7 @@
           6.完美支持引用，包括循环引用<br>
         </p>
 
+
           <h4>glowworm的架构</h4>
 
           <p>图3、图4分别是序列化和反序列化的流程</p>
@@ -78,10 +103,10 @@
             图4.反序列化的流程
           </p>
 
-          <p>如图所示，序列化和反序列化其实是对称的。序列化时从object转成byte[]的过程，反序列化时他的逆过程。</p>
-          <p>以序列化为例，PBSerializer类是序列化的业务类， 里面封装了几乎所有序列化操作，并且只对序列化器暴露。这样把大部分逻辑都汇总在了一处，方便后续扩展。</p>
-          <p>在开始进行序列化之前，首先会根据object的类型找到对应的序列化器，如果没有，就使用asm动态生成一个序列化器，并保存在jvm中，以便复用。序列化器重包含了如何针对object结构调用不同byte[]写入的逻辑，当然对于一个复杂的javabean而言，序列化器中就是按顺序调用每一个属性的序列化器进行序列化，按顺序这点很重要，在下文会提及。</p>
-          <p>CodedOutputStream内封装了所有对byte数组操作的方法，比如：</p>
+          <p>如图所示，序列化和反序列化其实是对称的。序列化时从object转成byte[]的过程，反序列化是他的逆过程。</p>
+          <p>以序列化为例，PBSerializer类是序列化的核心类，并且只对序列化器暴露。这样把大部分逻辑都汇总在了一处，方便后续扩展。</p>
+          <p>在开始进行序列化之前，首先会根据object的类型找到对应的序列化器，如果没有，就使用asm动态生成一个序列化器，并保存在类变量的IdentityHashMap中，和所对应的Class类做映射，以便复用。序列化器中包含了如何针对object结构调用不同方法把内容写入byte[]的逻辑，当然对于一个复杂的javabean而言，外层的序列化器中就是按顺序调用每一个属性的内层序列化器进行序列化，按顺序这点很重要，在下文会提及。</p>
+          <p>CodedOutputStream内封装了对各种类型进行写入的方法，比如：</p>
           <pre><code>
 public void writeInt(int i) {
     writeRawVarint32(encodeZigZag32(i));
@@ -99,9 +124,9 @@ public void writeLong(long l) {
 
           <p>因为参考了fastjson的架构，protobuf的协议，这两个著名的序列化组件的一些特点也被glowworm吸收进来。</p>
 
-          <h4>使用threadLocal缓存byte[]</h4>
+          <h4>使用ThreadLocal缓存byte[]</h4>
 
-          <p>因为每次序列化或反序列化在创建一个数组以及对数组扩容时都有消耗，所以我们参照fastjson的架构，把这些byte[]包括序列化的内容以及头信息，都保存在ThreadLocal中，便于重复使用。序列化为例，在PBSerializer中声明了ThreadLocal变量，这个变量缓存了所有glowworm中用于保存信息的byte[]。</p>
+          <p>因为每次序列化或反序列化在创建和销毁一个数组以及对数组扩容时都有消耗，所以我们参照fastjson的架构，把这些byte[]包括序列化的内容以及头信息，都保存在ThreadLocal中，便于重复使用。序列化为例，在PBSerializer中声明了ThreadLocal变量，这个变量缓存了所有glowworm中用于保存信息的byte[]。</p>
           <pre><code>
 private final static ThreadLocal&ltSoftReference&ltOutputStreamBuffer&gt&gt bufLocal = new ThreadLocal&ltSoftReference&ltOutputStreamBuffer&gt&gt();
           </code></pre>
@@ -172,26 +197,26 @@ private final static ThreadLocal&ltSoftReference&ltOutputStreamBuffer&gt&gt bufL
 
           <h4>使用一个特殊的IdentityHashMap优化性能</h4>
 
-          <p>这个也是fastJson的产物，因为这个map作为类变量存储所有类-序列化器（以及类-反序列化器）的映射，所以会涉及到并发，但采用HashMap在做transfer操作的时候有可能导致死循环，如果采用ConcurrentHashMap性能有不高。所以fastJson使用了IndentityHashMap，其中去掉了key对比过程中的equal操作（毕竟实际场景中的key值仅限于Class），去掉了transfer操作（毕竟常见业务类并不多，无需扩容）。</p>
+          <p>这个也是fastJson的产物，因为这个map作为类变量存储所有类-序列化器（以及类-反序列化器）的映射，所以会涉及到并发，但采用HashMap在做transfer操作的时候有可能导致死循环，如果采用ConcurrentHashMap性能又不高。所以fastJson使用了IndentityHashMap，其中去掉了key对比过程中的equal操作（实际场景中的key值仅限于Class，用"=="作比较即可），去掉了transfer操作（针对单一系统的常见业务类并不多，无需扩容）。</p>
           <pre><code>
 private static IdentityHashMap theSerializerHMap = new IdentityHashMap();//序列化器的缓存
           </code></pre>
 
           <h4>ASM的引入</h4>
 
-          <p>ASM(http://asm.ow2.org/)是一个字节码操纵框架，可以动态的往java环境中加入class类。为了解析JavaBean的结构，不得做类反射，而类反射毕竟效率不高。所以引入了asm。</p>
+          <p>ASM(http://asm.ow2.org/)是一个字节码操纵框架，可以动态的创建class并加载到java环境中。我们知道为了解析JavaBean的结构，不得不做类反射，而类反射效率不高，很多性能。所以引入了asm，减少了再运行期间的类反射操作。</p>
           <p>使用场景就是如果序列化一个用户自定义的JavaBean，我们通过类反射解析这个JavaBean的结构，用asm生成对应的序列化器及反序列化器（其中包括对这个JavaBean属性的调用），以后就可以复用了。达到只做一次类反射的效果。glowworm也参考fastJson从这个框架中把用到的源码直接抠出来，使asm部分的代码不至于太臃肿。</p>
 
-          <p>另外，在动态生成序列化器的时候，会把每一个属性的序列化器作为实例变量存在这个javabean的序列化器内部，在第一次进行序列化时为其初始化，以后就可以进行复用了，无需每次都从IdentityHashMap中查找。</p>
+          <p>另外，在动态生成序列化器的时候，会把每一个属性的序列化器作为实例变量保存这个javabean的序列化器内部，在第一次进行序列化时为其初始化，以后就可以进行复用了，无需每次都从IdentityHashMap中查找。</p>
 
           <h4>序列化协议方面</h4>
 
-          <p>glowworm现阶段使用的序列化协议基本照搬protobuf的，并不是说protobuf的协议就是最好的，只是暂时还没有发现更好的。比如针对int类型的序列化协议，protobuf就略有不同。我们都知道常规32位int转成byte需要4个byte，但事实上业务使用中Integer.MAX_VALUE大小的整形使用并不多，所以4位byte显然是有浪费的。所以对于正整数使用varint算法，int转成byte的大小事浮动的，int数值小则有可能只需要2个byte，而Integer.MAX_VALUE则需要6个。而对于负整数，我们首先会先进行ZigZag之后再进行varint，同样可以节省int向byte转化之后的大小。</p>
+          <p>glowworm现阶段使用的序列化协议基本照搬protobuf的，并不是说protobuf的协议就是最好的，只是暂时还没有发现更好的。比如针对int类型的序列化协议，protobuf就略有不同。我们都知道常规32位int转成byte需要4个byte，但事实上业务中接近Integer.MAX_VALUE大小的整形使用并不多，所以4位byte显然是有浪费的。所以对于正整数使用varint算法，int转成byte的大小是根据int数值大小的不定值。int数值小则有可能只需要2个byte，而Integer.MAX_VALUE则需要6个。而对于负整数，我们首先会先进行ZigZag之后再通过varint转成byte[]，同样可以节省int向byte转化之后的大小。</p>
 
           <h4>glowworm序列化时是不传属性名的</h4>
-          <p>这也是为什么和采用json规范相比大小差距这么明显。glowworm序列化的时候不传属性名，但是会提前对所有属性进行排序，保证序列化与反序列化时属性的写和读的顺序是一致的。这点在之后会提到的对引用的处理上也至关重要。</p>
+          <p>这也是为什么序列化之后的文件和采用json规范相比大小优势这么明显。glowworm序列化的时候不传属性名，但是会提前对所有属性进行排序，保证序列化与反序列化时属性的写和读的顺序是一致的。这点在之后会提到的对引用的处理上也至关重要。</p>
 
-          <h4>对于对象类型以及是否存在的优化</h4>
+          <h4>对于对象类型以及非空与否的优化</h4>
 
           <p>如果User user = new User();如此声明一个对象的话，我们自然知道这个对象的结构，但如果遇到用Object进行声明，或者在集合声明时没有加入泛型的话。glowworm在序列化时需要写入Type来标识这个对象的类型。</p>
 
@@ -221,8 +246,9 @@ public class Type {
 }
           </code></pre>
 
-          <p>我们实现约定可以序列化的类型不超过64种，2的6次方，共8位bit(注意是bit，不是byte)。首先筛选出常用的类型8种，非常用类型30多种（以后如果有需要继续添加）。这样用3位bit（注意是bit哦~）就可以标识常用类型，6位bit标识费常用类型。另外加1位bit用来标识是常用类型还是飞常用类型。对比最初的用1位BYTE来标识类型，容量上缩减不少。</p>
+          <p>我们事先约定可以序列化的类型不超过64种。首先筛选出常用的类型8种，非常用类型30多种（以后如果有需要继续添加）。这样用3位bit（注意是bit哦~）就可以标识常用类型，6位bit标识费常用类型。另外加1位bit用来标识是常用类型还是飞常用类型。对比最初的用1位BYTE来标识类型，大小上缩减不少。</p>
 
+          <p>下面这个方法就是操作写入对象类型的逻辑</p>
 
           <pre><code>
 public void write(int i) {
@@ -305,7 +331,7 @@ public void write(int i) {
 
           <h4>针对集合的优化</h4>
 
-          <p>glowworm对于集合的序列化做了很多工作。这里的集合指的是广义上的结合，包括Array，List，Set，Map。在序列化时这四种类型集合的操作其实没本质差异。在我们看来都是对集合做循环，每次循环把集合内的元素写入byte数组（对于map来说，就是指其中的Entry作为元素）。针对这四种类型的集合的序列化，我们提出一个父类序列化器，作为MultiSerializer </p>
+          <p>glowworm对于集合的序列化做了很多工作。这里的集合指的是广义上的集合，包括Array，List，Set，Map。在序列化时这四种类型集合的操作其实没本质差异。在我们看来都是对集合做循环，每次循环把集合内的元素写入byte数组（对于map来说，就是指其中的Entry作为元素）。针对这四种类型的集合的序列化，我们提出一个序列化器的基类，作为MultiSerializer </p>
 
           <pre><code>
 public abstract class MultiSerializer {
@@ -385,7 +411,7 @@ public abstract class MultiSerializer {
           </code></pre>
 
 
-          <p>如代码中所示，写入操作明确分为针对泛型和无泛型（包括泛型为Object的情况）两种操作。区别在于如果有泛型，则我们不用对集合中的每一个元素写入Type。而对于无泛型的情况，我们会记录当前写入的type，记录当前属性所用的序列化器，如果是用户自定义的javabean，我们还会把类名写到byte数组当中。然后在写下一个元素时会把类型作比较，如果类型相同的话，就省去上述操作。代码中写的比较详细。</p>
+          <p>如代码中所示，写入操作明确分为针对泛型和无泛型（包括泛型为Object的情况）两种操作。区别在于如果有泛型，则我们不用对集合中的每一个元素写入Type。而对于无泛型的情况，我们会在写入第一个元素时附带这个元素的type，如果是用户自定义的javabean，我们还会附带类名。然后在写下一个元素时会检查类型是否与前一个元素相同，如果类型相同的话，我们就可以省去上述操作。这样即便对无泛型的集合进行序列化时也能一定程度上对大小进行控制。</p>
 
           <p>对于每一个集合的序列化器只需继承这个父类，然后实现getEachElement方法即可。</p>
 
@@ -417,11 +443,11 @@ public class LoopPerson1 {
 }
           </code></pre>
 
-          <p>有可能属性brother会指向自己的引用，那么常规序列化的时候就会造成死循环。glowworm是如何处理这个问题的呢。我们在每一个对象序列化时会维护这个对象的index，相当于序列化的顺序，并与之前已经被序列化过得对象进行比较，如果发现两个对象引用相同。则记录这个index。在反序列化时根据这个index找到对应的引用即可。</p>
+          <p>有可能属性brother会指向自己的引用，那么常规序列化的时候就会造成死循环。glowworm是如何处理这个问题的呢？我们在每一个对象序列化时会维护这个对象的index，相当于序列化时的写入顺序，并与之前已经被序列化过得对象进行比较，如果发现两个对象引用相同。则记录这个index。在反序列化时根据这个index找到对应的引用即可。</p>
 
           <h3>最后提一下</h3>
 
-          <p>这个组件，我们进行了相关功能测试，测试代码已包含在源码中。100多个测试涉及到所有功能，是针对功能上的测试。</p>
+          <p>这个组件，我们进行了相关功能测试，测试代码已包含在源码中。</p>
 
       </section>
     </div>
