@@ -1,6 +1,5 @@
 package testcase.function;
 
-import com.jd.dd.glowworm.PB;
 import com.jd.dd.glowworm.util.Parameters;
 import org.junit.Test;
 import testcase.TestBase;
@@ -2428,21 +2427,6 @@ public class AsmTest extends TestBase {
         assertEquals(String.valueOf(0), String.valueOf(result.getThebytes()[1]));
         assertEquals(String.valueOf(10), String.valueOf(result.getThebytes()[10]));
         assertEquals(String.valueOf(20), String.valueOf(result.getThebytes()[20]));
-    }
-
-    //dubbo的测试用例
-    @Test
-    public void testForDubbo() throws Exception {
-        DubboUser du = new DubboUser();
-        byte[] bytes = PB.toPBBytes(du);
-        DubboUser result = PB.parsePBBytes(bytes, DubboUser.class);
-        assertEquals(du.getData().length, result.getData().length);
-        for (int i = 0; i < 3; i++) {
-            assertEquals(du.getData()[i], result.getData()[i]);
-        }
-        assertEquals(du.getTest_int(), result.getTest_int());
-        assertEquals(du.getTest_long(), result.getTest_long());
-        assertEquals(du.getTest_string(), result.getTest_string());
     }
 
     //asm中的arrays.arraylist 带泛型+不带泛型
