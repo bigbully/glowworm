@@ -63,6 +63,30 @@ User result = (User)PB.parsePBBytes(bytes,p);
 
           <p>当然如果看了源码的话，发现这个Parameters参数中还可以设定编码，默认为utf-8。Parameters这个参数现在暂时只有这两个用途，如果以后遇到一些特殊的需求，会在这个参数里进行添加。</p>
 
+          <h4>maven相关</h4>
+<pre><code>
+已上传至sonatype.org，如有需要可以配置仓库地址：
+&ltrepositories&gt
+        &ltrepository&gt
+            &ltid&gtsonatype-nexus-snapshots&lt/id&gt
+            &ltname&gtSonatype Nexus Snapshots&lt/name&gt
+            &lturl&gthttps://oss.sonatype.org/content/repositories/snapshots&lt/url&gt
+            &ltreleases&gt
+                &ltenabled&gtfalse&lt/enabled&gt
+            &lt/releases&gt
+            &ltsnapshots&gt
+                &ltenabled&gttrue&lt/enabled&gt
+            &lt/snapshots&gt
+        &lt/repository&gt
+    &lt/repositories&gt
+</code></pre>
+
+<pre><code>
+&ltgroupId&gtcom.jd.dd&lt/groupId&gt
+&ltartifactId&gtglowworm&lt/artifactId&gt
+&ltversion&gt1.0-SNAPSHOT&lt/version&gt
+</code></pre>
+
           <h3>glowworm是怎么做的</h3>
           <h4>开发glowworm的初衷</h4>
           <p>众所周知，google的protobuf（http://code.google.com/p/protobuf/）作为老牌的序列化组件在google内部久经考验，在08年时贡献给了开源社区。protobuf无论从性能还是大小来说都是出类拔萃的， 但是我们不得不为每一个user javabean编写对应的proto文件。其实编写proto文件本身无可厚非，序列化就是一个通过解析对象结构把对象转成byte流的过程，解析对象结果本身很是繁琐，耗时耗力。所以protobuf用一个外部文件记录这个对象结构，那么每次遇到相同结构的对象时就省去了再次解析的过程，而且还能跨语言。</p>
