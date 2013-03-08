@@ -301,7 +301,12 @@ public class ASMSerializerFactory implements Opcodes {
         if (property.getFieldType() instanceof Class) {
             componentClazz = Object.class;
         } else {
-            componentClazz = (Class) ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[0];
+            java.lang.reflect.Type componentType = ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[0];
+            if (componentType instanceof Class){
+                componentClazz = (Class)componentType;
+            }else {
+                componentClazz = Object.class;
+            }
         }
         mw.visitInsn(ICONST_0);
         mw.visitLdcInsn(Type.getType(ASMUtils.getDesc(componentClazz)));
@@ -362,7 +367,12 @@ public class ASMSerializerFactory implements Opcodes {
         if (property.getFieldType() instanceof Class) {
             componentClazz = Object.class;
         } else {
-            componentClazz = (Class) ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[0];
+            java.lang.reflect.Type componentType = ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[0];
+            if (componentType instanceof Class){
+                componentClazz = (Class)componentType;
+            }else {
+                componentClazz = Object.class;
+            }
         }
         mw.visitInsn(ICONST_0);
         mw.visitLdcInsn(Type.getType(ASMUtils.getDesc(componentClazz)));
@@ -567,8 +577,18 @@ public class ASMSerializerFactory implements Opcodes {
             keyClazz = Object.class;
             valueClazz = Object.class;
         } else {
-            keyClazz = (Class) ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[0];
-            valueClazz = (Class) ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[1];
+            java.lang.reflect.Type keyType = ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[0];
+            java.lang.reflect.Type valueType = ((ParameterizedType) property.getFieldType()).getActualTypeArguments()[1];
+            if (keyType instanceof Class){
+                keyClazz = (Class)keyType;
+            }else {
+                keyClazz = Object.class;
+            }
+            if (valueType instanceof Class){
+                valueClazz = (Class)valueType;
+            }else {
+                valueClazz = Object.class;
+            }
         }
         mw.visitInsn(ICONST_0);
         mw.visitLdcInsn(Type.getType(ASMUtils.getDesc(keyClazz)));

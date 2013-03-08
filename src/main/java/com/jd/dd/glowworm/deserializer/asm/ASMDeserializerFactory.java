@@ -461,7 +461,12 @@ public class ASMDeserializerFactory implements Opcodes {
         if (fieldInfo.getFieldType() instanceof Class) {
             componentClazz = Object.class;
         } else {
-            componentClazz = (Class) ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[0];
+            java.lang.reflect.Type componentType = ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[0];
+            if (componentType instanceof Class){
+                componentClazz = (Class)componentType;
+            }else {
+                componentClazz = Object.class;
+            }
         }
         mw.visitLdcInsn(com.jd.dd.glowworm.asm.Type.getType(ASMUtils.getDesc(componentClazz)));
         mw.visitInsn(AASTORE);
@@ -492,7 +497,12 @@ public class ASMDeserializerFactory implements Opcodes {
         if (fieldInfo.getFieldType() instanceof Class) {
             componentClazz = Object.class;
         } else {
-            componentClazz = (Class) ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[0];
+            java.lang.reflect.Type componentType = ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[0];
+            if (componentType instanceof Class){
+                componentClazz = (Class)componentType;
+            }else {
+                componentClazz = Object.class;
+            }
         }
         mw.visitLdcInsn(com.jd.dd.glowworm.asm.Type.getType(ASMUtils.getDesc(componentClazz)));
         mw.visitInsn(AASTORE);
@@ -525,8 +535,18 @@ public class ASMDeserializerFactory implements Opcodes {
             keyClazz = Object.class;
             valueClazz = Object.class;
         } else {
-            keyClazz = (Class) ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[0];
-            valueClazz = (Class) ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[1];
+            java.lang.reflect.Type keyType = ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[0];
+            java.lang.reflect.Type valueType = ((ParameterizedType) fieldInfo.getFieldType()).getActualTypeArguments()[1];
+            if (keyType instanceof Class){
+                keyClazz = (Class)keyType;
+            }else {
+                keyClazz = Object.class;
+            }
+            if (valueType instanceof Class){
+                valueClazz = (Class)valueType;
+            }else {
+                valueClazz = Object.class;
+            }
         }
         mw.visitLdcInsn(com.jd.dd.glowworm.asm.Type.getType(ASMUtils.getDesc(keyClazz)));
         mw.visitInsn(AASTORE);

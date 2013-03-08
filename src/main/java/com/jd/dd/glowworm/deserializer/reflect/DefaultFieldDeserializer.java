@@ -46,17 +46,9 @@ public class DefaultFieldDeserializer extends FieldDeserializer {
                 if (type instanceof Class) {
                     Class rawClass = (Class) type;
                     if (Map.class.isAssignableFrom(rawClass)) {
-                        if (rawClass.isInterface()) {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, Object.class, Object.class, true);
-                        } else {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, Object.class, Object.class, false);
-                        }
+                        value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, Object.class, Object.class, rawClass.isInterface());
                     } else if (Collection.class.isAssignableFrom(rawClass)) {
-                        if (rawClass.isInterface()) {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, Object.class, true);
-                        } else {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, Object.class, false);
-                        }
+                        value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, Object.class, rawClass.isInterface());
                     } else {//默认类型
                         value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false);
                     }
@@ -64,20 +56,15 @@ public class DefaultFieldDeserializer extends FieldDeserializer {
                     ParameterizedType rawClass = (ParameterizedType) type;
                     Class rawType = (Class) rawClass.getRawType();
                     if (Map.class.isAssignableFrom(rawType)) {
-                        Class keyClazz = (Class) rawClass.getActualTypeArguments()[0];
-                        Class valueClazz = (Class) (rawClass).getActualTypeArguments()[1];
-                        if (((Class) rawClass.getRawType()).isInterface()) {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, keyClazz, valueClazz, true);
-                        } else {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, keyClazz, valueClazz, false);
-                        }
+                        Type keyType = rawClass.getActualTypeArguments()[0];
+                        Type valueType = rawClass.getActualTypeArguments()[1];
+                        Class keyClazz = keyType instanceof Class?(Class) keyType:Object.class;
+                        Class valueClazz = valueType instanceof Class?(Class)valueType:Object.class;
+                        value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, keyClazz, valueClazz, ((Class) rawClass.getRawType()).isInterface());
                     } else if (Collection.class.isAssignableFrom(rawType)) {
-                        Class componentClazz = (Class) rawClass.getActualTypeArguments()[0];
-                        if (rawType.isInterface()) {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, componentClazz, true);
-                        } else {
-                            value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, componentClazz, false);
-                        }
+                        Type componentType = rawClass.getActualTypeArguments()[0];
+                        Class componentClazz = componentType instanceof Class?(Class)componentType:Object.class;
+                        value = fieldValueDeserilizer.deserialize(deserializer, getFieldType(), false, componentClazz, rawType.isInterface());
                     } else {
                         throw new PBException("暂时不支持的带泛型的集合");
                     }

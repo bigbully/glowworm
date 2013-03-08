@@ -1,5 +1,6 @@
 package testcase.function;
 
+import com.jd.dd.glowworm.PB;
 import com.jd.dd.glowworm.util.Parameters;
 import org.junit.Test;
 import testcase.TestBase;
@@ -2463,5 +2464,50 @@ public class AsmTest extends TestBase {
         u.setException(new RuntimeException("123123"));
         User16 result = executeBackAndForth(u, User16.class);
         assertEquals("123123", result.getException().getMessage());
+    }
+
+    //List里面套Map
+    @Test
+    public void testMapInList() throws Exception{
+        User18 u = new User18();
+        List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        Map<String, String> map1 = new HashMap<String, String>();
+        map1.put("1", "abc");
+        map1.put("2", "cde");
+        list.add(map1);
+        u.setList(list);
+
+        Set<Map<String, String>> set = new HashSet<Map<String, String>>();
+        Map<String, String> map2 = new HashMap<String, String>();
+        map2.put("1", "abc");
+        map2.put("2", "cde");
+        set.add(map2);
+        u.setSet(set);
+
+        Map<String, Map<String, String>> map = new HashMap<String, Map<String, String>>();
+        Map<String, String> map3 = new HashMap<String, String>();
+        map3.put("1", "abc");
+        map3.put("2", "cde");
+        map.put("www", map3);
+        u.setMap(map);
+
+        User18 result = executeBackAndForth(u,User18.class);
+        assertEquals("abc", result.getList().get(0).get("1"));
+        assertEquals("cde", result.getList().get(0).get("2"));
+
+        assertEquals("abc", result.getSet().iterator().next().get("1"));
+        assertEquals("cde", result.getSet().iterator().next().get("2"));
+
+        assertEquals("abc", result.getMap().get("www").get("1"));
+        assertEquals("cde", result.getMap().get("www").get("2"));
+    }
+
+    @Test
+    public void testListSize0() throws Exception{
+        School school = new School();
+        school.setName("123");
+        school.setStudents(new ArrayList<Student>());
+        School result = executeBackAndForth(school, School.class);
+        assertEquals(0, result.getStudents().size());
     }
 }

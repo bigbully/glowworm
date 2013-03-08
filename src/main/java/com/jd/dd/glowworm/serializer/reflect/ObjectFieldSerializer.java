@@ -59,17 +59,9 @@ public class ObjectFieldSerializer extends FieldSerializer {
                 if (type instanceof Class) {
                     Class rawClass = (Class) type;
                     if (Map.class.isAssignableFrom(rawClass)) {
-                        if (rawClass.isInterface()) {
-                            fieldSerializer.write(serializer, propertyValue, false, Object.class, Object.class, true);
-                        } else {
-                            fieldSerializer.write(serializer, propertyValue, false, Object.class, Object.class, false);
-                        }
+                        fieldSerializer.write(serializer, propertyValue, false, Object.class, Object.class, rawClass.isInterface());
                     } else if (Collection.class.isAssignableFrom(rawClass)) {
-                        if (rawClass.isInterface()) {
-                            fieldSerializer.write(serializer, propertyValue, false, Object.class, true);
-                        } else {
-                            fieldSerializer.write(serializer, propertyValue, false, Object.class, false);
-                        }
+                        fieldSerializer.write(serializer, propertyValue, false, Object.class, rawClass.isInterface());
                     } else if (rawClass.isArray()) {
                         fieldSerializer.write(serializer, propertyValue, false, ((Class) type).getComponentType());
                     } else {//默认类型
@@ -79,20 +71,15 @@ public class ObjectFieldSerializer extends FieldSerializer {
                     ParameterizedType rawClass = (ParameterizedType) type;
                     Class rawType = (Class) rawClass.getRawType();
                     if (Map.class.isAssignableFrom(rawType)) {
-                        Class keyClazz = (Class) rawClass.getActualTypeArguments()[0];
-                        Class valueClazz = (Class) (rawClass).getActualTypeArguments()[1];
-                        if (rawType.isInterface()) {
-                            fieldSerializer.write(serializer, propertyValue, false, keyClazz, valueClazz, true);
-                        } else {
-                            fieldSerializer.write(serializer, propertyValue, false, keyClazz, valueClazz, false);
-                        }
+                        Type keyType = rawClass.getActualTypeArguments()[0];
+                        Type valueType = rawClass.getActualTypeArguments()[1];
+                        Class keyClazz = keyType instanceof Class?(Class)keyType:Object.class;
+                        Class valueClazz = valueType instanceof  Class?(Class)valueType:Object.class;
+                        fieldSerializer.write(serializer, propertyValue, false, keyClazz, valueClazz, rawType.isInterface());
                     } else if (Collection.class.isAssignableFrom(rawType)) {
-                        Class componentClazz = (Class) rawClass.getActualTypeArguments()[0];
-                        if (rawType.isInterface()) {
-                            fieldSerializer.write(serializer, propertyValue, false, componentClazz, true);
-                        } else {
-                            fieldSerializer.write(serializer, propertyValue, false, componentClazz, false);
-                        }
+                        Type componentType = rawClass.getActualTypeArguments()[0];
+                        Class componentClazz = componentType instanceof Class?(Class)componentType:Object.class;
+                        fieldSerializer.write(serializer, propertyValue, false, componentClazz, rawType.isInterface());
                     }
                 }
             }
