@@ -44,22 +44,23 @@
           <pre><code>
 User user = new User();
 byte[] bytes = PB.toPBBytes(user);
-User result = PB.parsePBBytes(bytes, User.clase);
+User result = (User)PB.parsePBBytes(bytes);
           </code></pre>
 
+	  <p style="color:red;">这里需要注意一下，glowworm现在的方案是默认写入类名！</p>
           <p>这就是最简单的使用方式，PB.toPBBytes(obj)进行序列化，PB.parsePBBytes(bytes, clazz)进行反序列化。反序列化的两个参数分别是序列化之后得到的byte[]，和需要反序列化的类型。</p>
 
-          <p>如果在反序列化时不知道是什么类型怎么办呢，我们支持自省功能，实际上就是在进行序列化时把类名写到byte[]中，反序列化时就能得到这个类名，进而知道需要用哪个Class进行解析了。方法如下：</p>
+          <p>如果觉得每次把类名写入到byte[]中比较消耗大小的话，可以手动设定不传类名，那么在反序列化时就需要传入class参数，来告诉glowworm需要反序列化的是哪个类。方法如下：</p>
 
           <pre><code>
 User user = new User();
 Parameters p = new Parameters();
-p.setNeedWriteClassName(true);
+p.setNeedWriteClassName(false);
 byte[] bytes = PB.toPBBytes(user, p);
-User result = (User)PB.parsePBBytes(bytes,p);
+User result = PB.parsePBBytes(bytes,p);
           </code></pre>
 
-          <p>需要设定一个参数Parameters，指定needWriteClassName = true即可。</p>
+          <p>需要设定一个参数Parameters，指定needWriteClassName = false即可。</p>
 
           <p>当然如果看了源码的话，发现这个Parameters参数中还可以设定编码，默认为utf-8。Parameters这个参数现在暂时只有这两个用途，如果以后遇到一些特殊的需求，会在这个参数里进行添加。</p>
 
