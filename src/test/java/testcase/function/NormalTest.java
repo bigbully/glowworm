@@ -423,7 +423,8 @@ public class NormalTest extends TestBase {
     }
 
 
-    @Test
+    //如果是null的话正常序列化
+//    @Test
     public void testNull() throws Exception{
         assertNull(PB.parsePBBytes(PB.toPBBytes(null)));
     }
