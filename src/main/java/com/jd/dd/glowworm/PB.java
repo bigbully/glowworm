@@ -4,9 +4,12 @@ import com.jd.dd.glowworm.asm.Type;
 import com.jd.dd.glowworm.deserializer.ObjectDeserializer;
 import com.jd.dd.glowworm.deserializer.PBDeserializer;
 import com.jd.dd.glowworm.serializer.PBSerializer;
+import com.jd.dd.glowworm.serializer.normal.StringSerializer;
 import com.jd.dd.glowworm.util.Parameters;
 import com.jd.dd.glowworm.util.TypeUtils;
 import org.xerial.snappy.Snappy;
+
+import java.io.IOException;
 
 public class PB {
 
@@ -22,11 +25,19 @@ public class PB {
         }
         PBSerializer serializer = new PBSerializer();
         try {
+            //默认写类名
+            serializer.writeBool(true);//写入了类名的标识
+            Class<?> clazz = object.getClass();
+            serializer.writeString(clazz.getName());
             serializer.write(object);
             return serializer.createByteArray();
-        } finally {
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
             serializer.close();
         }
+
     }
 
     /**
@@ -45,7 +56,14 @@ public class PB {
         try {
             //分析数组头
             deserializer.analysizeHead(bytes);
-            return (T) deserializeObj(deserializer, clazz);
+            Class fieldClazz;
+            if (deserializer.scanBool()){//即便反序列化的时候传入了class参数，如果序列化时写入了类名，就按写入的类进行反序列化
+                String tmpClassName = deserializer.scanString();
+                fieldClazz = TypeUtils.loadClass(tmpClassName);
+            }else {//如果没写入类名，就按传入的clazz参数
+                fieldClazz = clazz;
+            }
+            return (T) deserializeObj(deserializer, fieldClazz);
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -70,6 +88,12 @@ public class PB {
         try {
             //分析数组头
             deserializer.analysizeHead(bytes);
+            if (deserializer.scanBool()){
+                String tmpClassName = deserializer.scanString();
+                fieldClass = TypeUtils.loadClass(tmpClassName);
+            }else {
+                 throw new PBException("没有找到写入的类名");
+            }
             return deserializeObj(deserializer, fieldClass);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -191,7 +215,7 @@ public class PB {
 
         try {
             byte[] tmpRowBytes = Snappy.uncompress(bytes);
-            retObj = parsePBBytes(tmpRowBytes);
+            retObj = parsePBBytes(tmpRowBytes, parameters);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -236,7 +260,7 @@ public class PB {
         deserializer.setParameters(parameters);
         try {
             deserializer.analysizeHead(bytes);
-            if (parameters.getNeedWriteClassName()) {
+            if (deserializer.scanBool() && parameters.getNeedWriteClassName()) {
                 String tmpClassName = deserializer.scanString();
             }
             return (T) deserializeObj(deserializer, fieldClass);
@@ -266,7 +290,9 @@ public class PB {
         try {
             //分析数组头
             deserializer.analysizeHead(bytes);
-            if (parameters.getNeedWriteClassName()) {
+            if (!deserializer.scanBool()){
+                throw new PBException("没写入类名!");
+            }else {
                 String tmpClassName = deserializer.scanString();
                 fieldClass = TypeUtils.loadClass(tmpClassName);
             }
@@ -292,8 +318,11 @@ public class PB {
             serializer.setParameters(parameters);
             if (parameters.getNeedWriteClassName()) {
                 // 对象类型字符串
+                serializer.writeBool(true);
                 Class<?> clazz = object.getClass();
                 serializer.writeString(clazz.getName());
+            }else {
+                serializer.writeBool(false);
             }
             serializer.write(object);
             return serializer.createByteArray();

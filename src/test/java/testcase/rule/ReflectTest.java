@@ -31,7 +31,8 @@ public class ReflectTest extends TestBase {
         assertEquals(0, typeHeadArray.length);
         assertEquals(0, typeArray.length);
 
-        assertEquals(1, result[0]);
+        assertEquals(0, result[0]);//默认不写类名
+        assertEquals(1, result[1]);
     }
 
     //只有一个属性Boolean的javabean
@@ -55,7 +56,8 @@ public class ReflectTest extends TestBase {
         assertEquals(0, typeHeadArray.length);
         assertEquals(0, typeArray.length);
 
-        assertEquals(1, result[0]);
+        assertEquals(0, result[0]);//默认不写类名
+        assertEquals(1, result[1]);
     }
 
     //测试User9的inner中的属性是User1的情况，user1走asm
@@ -82,7 +84,8 @@ public class ReflectTest extends TestBase {
         assertEquals(0, typeHeadArray.length);
         assertEquals(0, typeArray.length);
 
-        assertEquals(1, result[0]);
+        assertEquals(0, result[0]);//默认不写类名
+        assertEquals(1, result[1]);
     }
 
     //测试User10中inner类中的属性是User1数组的情况，都走user1走asm
@@ -119,6 +122,7 @@ public class ReflectTest extends TestBase {
         assertEquals(0, typeArray.length);
 
         int index = 0;
+        assertEquals(0, result[index++]);//默认不写类名
         assertEquals(3, result[index++]);
         assertEquals(1, result[index++]);
         assertEquals(0, result[index++]);
@@ -166,6 +170,7 @@ public class ReflectTest extends TestBase {
         assertEquals(0, typeArray[1]);
 
         int index = 0;
+        assertEquals(0, result[index++]);//默认不写类名
         assertEquals(4, result[index++]);
 
         //第一个元素，写入type，类名

@@ -32,7 +32,8 @@ public class NormalTest extends TestBase {
         assertEquals(32, typeArray[0]);
 
         //检查Boolean中的值
-        assertEquals(flag ? 1 : 0, result[0]);
+        assertEquals(0, result[0]);//默认不写类名
+        assertEquals(flag ? 1 : 0, result[1]);
     }
 
     //测试Boolean类型 FALSE
@@ -56,8 +57,9 @@ public class NormalTest extends TestBase {
         assertEquals(1, typeArray.length);
         assertEquals(32, typeArray[0]);
 
+        assertEquals(0, result[0]);//默认不写类名
         //检查Boolean中的值
-        assertEquals(flag ? 1 : 0, result[0]);
+        assertEquals(flag ? 1 : 0, result[1]);
     }
 
 

@@ -25,7 +25,8 @@ public class TestBase {
     protected synchronized byte[] executeSerialization(Object testData) throws InterruptedException {
         byte[] result = null;
         if (isForFunctionality) {
-            result = PB.toPBBytes(testData);
+            Parameters p = new Parameters();
+            result = PB.toPBBytes(testData, p);
             StringBuilder sb = new StringBuilder();
             int headNum = result[0];
             int classNameNum = 1 + result[0];
@@ -145,7 +146,7 @@ public class TestBase {
     protected synchronized <T> T executeBackAndForth(Object obj, Class<T> clazz) throws InterruptedException {
         Object result = null;
         if (isForFunctionality) {
-            result = PB.parsePBBytes(PB.toPBBytes(obj), clazz);
+            result = PB.parsePBBytes(PB.toPBBytes(obj));
             return (T) result;
         } else {
             if (needCompareWithFastJSON) {

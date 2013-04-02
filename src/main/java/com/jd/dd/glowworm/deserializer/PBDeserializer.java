@@ -622,7 +622,7 @@ public class PBDeserializer {
     }
 
     public Object[] scanObjArray() {
-        return ArrayDeserializer.instance.deserialize(this, Object[].class, false);
+        return (Object[])ArrayDeserializer.instance.deserialize(this, Object[].class, false);
     }
 
     public long[] scanLongArray() throws Exception {

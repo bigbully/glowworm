@@ -30,11 +30,12 @@ public class MultiTest extends TestBase {
         assertEquals(1, typeArray.length);
         assertEquals(108, typeArray[0]);//ARRAY_BOOLEAN 11011000
 
-        assertEquals(4, result[0]);
-        assertEquals(1, result[1]);
-        assertEquals(0, result[2]);
+        assertEquals(0, result[0]);//默认不写类名
+        assertEquals(4, result[1]);
+        assertEquals(1, result[2]);
         assertEquals(0, result[3]);
-        assertEquals(1, result[4]);
+        assertEquals(0, result[4]);
+        assertEquals(1, result[5]);
     }
 
     //测试Boolean[4]{true, false,null, false, true}
@@ -59,11 +60,12 @@ public class MultiTest extends TestBase {
         assertEquals(1, typeArray.length);
         assertEquals(84, typeArray[0]);//ARRAY_BOOLEAN 01010100
 
-        assertEquals(booleans.length, result[0]);
-        assertEquals(1, result[1]);
-        assertEquals(0, result[2]);
+        assertEquals(0, result[0]);//默认不写类名
+        assertEquals(booleans.length, result[1]);
+        assertEquals(1, result[2]);
         assertEquals(0, result[3]);
-        assertEquals(1, result[4]);
+        assertEquals(0, result[4]);
+        assertEquals(1, result[5]);
     }
 
     //测试Object[5]{true, false,null, false, true}
@@ -91,12 +93,14 @@ public class MultiTest extends TestBase {
         assertEquals(64, typeArray[2]);
 
         int index = 0;
+        assertEquals(0, result[index++]);//默认不写类名
         assertEquals(booleans.length, result[index++]);
 
-        assertEquals(1, result[1]);
-        assertEquals(0, result[2]);
-        assertEquals(0, result[3]);
-        assertEquals(1, result[4]);
+
+        assertEquals(1, result[index++]);
+        assertEquals(0, result[index++]);
+        assertEquals(0, result[index++]);
+        assertEquals(1, result[index++]);
     }
 
 

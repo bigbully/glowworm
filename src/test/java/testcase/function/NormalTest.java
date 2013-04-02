@@ -1,5 +1,6 @@
 package testcase.function;
 
+import com.jd.dd.glowworm.PB;
 import com.jd.dd.glowworm.PBException;
 import com.jd.dd.glowworm.util.Parameters;
 import org.junit.Test;
@@ -302,18 +303,6 @@ public class NormalTest extends TestBase {
         assertEquals(Long.MIN_VALUE, result.longValue());
     }
 
-    //测试Null
-    @Test
-    public void testNull() throws Exception {
-        try {
-            executeDeserialization(null);
-            assertTrue(false);
-        } catch (PBException e) {
-            assertTrue(true);
-        }
-    }
-
-
     //测试一个空的UserJavaBean能否顺利序列化
     @Test
     public void testNewBean() throws Exception {
@@ -432,4 +421,11 @@ public class NormalTest extends TestBase {
         assertEquals(e.getCause(), result.getCause());
         assertEquals(e.getStackTrace().length, result.getStackTrace().length);
     }
+
+
+    @Test
+    public void testNull() throws Exception{
+        assertNull(PB.parsePBBytes(PB.toPBBytes(null)));
+    }
+
 }

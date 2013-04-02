@@ -1,6 +1,7 @@
 package testcase.function;
 
 import com.jd.dd.glowworm.PB;
+import com.jd.dd.glowworm.PBException;
 import com.jd.dd.glowworm.util.Parameters;
 import org.junit.Test;
 import testcase.TestBase;
@@ -2509,5 +2510,85 @@ public class AsmTest extends TestBase {
         school.setStudents(new ArrayList<Student>());
         School result = executeBackAndForth(school, School.class);
         assertEquals(0, result.getStudents().size());
+    }
+
+
+    //测试是否传入类名的相关测试
+    //使用默认方式，写入类名
+    @Test
+    public void testWriteClassName1() throws Exception{
+        User1 user = new User1();
+        user.setB(true);
+
+        User1 result = (User1)PB.parsePBBytes(PB.toPBBytes(user));
+        assertEquals(true, result.getB());
+    }
+
+
+    //使用默认方式，写入类名, 但是反序列化时传入Class参数（这种方式下，默认使用被写入的类名进行反序列化）
+    @Test
+    public void testWriteClassName2() throws Exception{
+        User1 user = new User1();
+        user.setB(true);
+
+        User1 result = PB.parsePBBytes(PB.toPBBytes(user), User1.class);
+        assertEquals(true, result.getB());
+    }
+
+    //序列化时明确表明，不写入类名, 但是反序列化时不传入Class参数（这种方式下，返回null）
+    @Test
+    public void testWriteClassName3() throws Exception{
+        User1 user = new User1();
+        user.setB(true);
+
+        Parameters p = new Parameters();
+        p.setNeedWriteClassName(false);
+
+
+        User1 result = (User1)PB.parsePBBytes(PB.toPBBytes(user, p));
+        assertNull(result);
+    }
+
+
+    //序列化时明确表明，不写入类名, 但是反序列化时传入Class参数（这种方式下，正常）
+    @Test
+    public void testWriteClassName4() throws Exception{
+        User1 user = new User1();
+        user.setB(true);
+
+        Parameters p = new Parameters();
+        p.setNeedWriteClassName(false);
+
+
+        User1 result = PB.parsePBBytes(PB.toPBBytes(user, p), User1.class);
+        assertEquals(true, result.getB());
+    }
+
+    //序列化时明确表明，写入类名, 但是反序列化时仍然传入Class参数（这种方式下，正常）
+    @Test
+    public void testWriteClassName5() throws Exception{
+        User1 user = new User1();
+        user.setB(true);
+
+        Parameters p = new Parameters();
+        p.setNeedWriteClassName(true);
+
+
+        User1 result = PB.parsePBBytes(PB.toPBBytes(user, p), User1.class);
+        assertEquals(true, result.getB());
+    }
+
+    //序列化时明确表明，写入类名, 但是反序列化时不传Class参数（这种方式下，正常）
+    @Test
+    public void testWriteClassName6() throws Exception{
+        User1 user = new User1();
+        user.setB(true);
+
+        Parameters p = new Parameters();
+        p.setNeedWriteClassName(true);
+
+
+        User1 result = (User1)PB.parsePBBytes(PB.toPBBytes(user, p));
+        assertEquals(true, result.getB());
     }
 }
