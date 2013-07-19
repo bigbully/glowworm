@@ -65,8 +65,8 @@ public class ASMDeserializerFactory implements Opcodes {
 
         byte[] code = cw.toByteArray();
 
-//        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
-//                "d:/" + className + ".class"));
+        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
+                "/home/bigbully/" + className + ".class"));
 
         Class<?> exampleClass = classLoader.defineClassPublic(className, code, 0, code.length);
 
@@ -282,7 +282,7 @@ public class ASMDeserializerFactory implements Opcodes {
                                 factoryMethod.getName(), getDesc(factoryMethod));
                         mw.visitVarInsn(ASTORE, context.var("instance"));
                     } else {
-                        throw new PBException("TODO");
+                        throw new PBException("缺省无参的构造函数！");
                     }
                 }
             }

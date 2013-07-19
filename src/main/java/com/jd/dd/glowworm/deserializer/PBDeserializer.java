@@ -191,15 +191,20 @@ public class PBDeserializer {
     }
 
     public void close() {
-        existStream.reset();
-        theCodedInputStream.reset();
-        typeStream.reset();
+        if (existStream != null){
+            existStream.reset();
+        }
+        if (theCodedInputStream != null){
+            theCodedInputStream.reset();
+        }
+        if (typeStream != null){
+            typeStream.reset();
+        }
         if (inputStreamBuffer == null) {
             inputStreamBuffer = new InputStreamBuffer(theCodedInputStream, existStream, typeStream);
         } else {
             inputStreamBuffer.setAll(theCodedInputStream, existStream, typeStream);
         }
-
         bufLocal.set(new SoftReference<InputStreamBuffer>(inputStreamBuffer));
         this.theCodedInputStream = null;
         this.existStream = null;
@@ -403,7 +408,8 @@ public class PBDeserializer {
         if (parameters != null) {
             return theCodedInputStream.readString(parameters.getCharset());
         } else {
-            return theCodedInputStream.readString();
+            String str = theCodedInputStream.readString();
+            return str;
         }
     }
 
