@@ -2590,5 +2590,45 @@ public class AsmTest extends TestBase {
 
         User1 result = (User1)PB.parsePBBytes(PB.toPBBytes(user, p));
         assertEquals(true, result.getB());
+
+    }
+
+
+    @Test
+    public void testTest(){
+        MemoryRecord mr = new MemoryRecord();
+        mr.setPin("05liusp");
+        mr.setLevel(61);
+        mr.setRegTime("2012-04-01");
+        mr.setFirstWareId(1003480569);
+        mr.setFirstWare("NIKE 耐克 LIUNAR");
+        mr.setPs1Id(652);
+        mr.setPs1Name("手机数码");
+        mr.setPs1WareNum(8);
+        mr.setPs2Id(1315);
+        mr.setPs2Name("服饰鞋帽");
+        mr.setPs2WareNum(1);
+        mr.setPs3Id(0);
+        mr.setPs3Name("NULL");
+        mr.setPs3WareNum(0);
+        mr.setPs4Id(0);
+        mr.setPs4Name("哈哈你好");
+        mr.setPs3WareNum(123213213);
+        mr.setPs5Id(0);
+        mr.setPs5Name("我还了");
+        mr.setPs5WareNum(123214125);
+        mr.setAllPsWareNum(123123);
+        mr.setCommentNum(123);
+        mr.setShoworderNum(123);
+        mr.setHelp4Others(1232);
+        mr.setOrderTotalNum(125125125);
+        mr.setAllAmount(0.0D);
+        mr.setAllWareType(123);
+        mr.setConsumerRanking(2.34);
+        mr.setDiscountAmount(18.4D);
+        mr.setClosestFourCreated("2012-04-01 23:23:23");
+        byte[] bytes = PB.toPBBytes(mr);
+        MemoryRecord result = (MemoryRecord)PB.parsePBBytes(bytes);
+        System.out.println(result);
     }
 }
