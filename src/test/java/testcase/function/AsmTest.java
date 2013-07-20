@@ -2702,22 +2702,114 @@ public class AsmTest extends TestBase {
         System.out.println(result);
     }
 
+    //测试继承
     @Test
-    public void testForWhale(){
-        Set<Broker> treeSet = new TreeSet<Broker>();
-        Broker b = new Broker();
-        b.setId(1);
-        b.setIp("129.213.32.12");
-        b.setMaster(true);
-        b.setPort(123);
-
-        treeSet.add(b);
-        CommonResponse commonResponse = CommonResponse.successResponse(treeSet);
-
-        byte[] bytes = PB.toPBBytes(commonResponse);
-        CommonResponse result = (CommonResponse)PB.parsePBBytes(bytes);
-
-        System.out.println(123);
+    public void testExtend1() throws InterruptedException {
+        Student1 stu = new Student1();
+        stu.setId(1L);
+        stu.setName("哈哈");
+        byte[] bytes = executeSerialization(stu);
+        Person1 result = (Person1)executeDeserialization(bytes);
+        assertEquals("1", result.getId().toString());
+        assertEquals("哈哈", ((Student1)result).getName());
     }
 
+
+    //测试继承,父类设置Trancient
+    @Test
+    public void testExtend2() throws InterruptedException {
+        Student2 stu = new Student2();
+        stu.setIndex(1);
+        stu.setName("哈哈");
+        byte[] bytes = executeSerialization(stu);
+        TransientBean1 result = (TransientBean1)executeDeserialization(bytes);
+        assertNull(result.getIndex());
+        assertEquals("哈哈", ((Student2)result).getName());
+    }
+
+
+    //测试缺省
+    @Test
+    public void testNoDefaultConstructorBean() throws InterruptedException {
+        NoDefaultConstructorBean noDefaultConstructorBean = new NoDefaultConstructorBean("1");
+        try {
+            byte[] bytes = executeSerialization(noDefaultConstructorBean);
+            NoDefaultConstructorBean result = (NoDefaultConstructorBean)executeDeserialization(bytes);
+            assertTrue(true);
+        }catch (Exception e){
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void testParameter1(){
+        Person1 p = new Person1();
+        p.setId(1L);
+        byte[] bytes = PB.toPBBytes(p);
+        Person1 result = PB.parsePBBytes(bytes, Person1.class);
+        assertEquals("1", result.getId().toString());
+    }
+
+    @Test
+    public void testParameter2(){
+        Person1 p = new Person1();
+        p.setId(1L);
+        Parameters parameters = new Parameters();
+        parameters.setNeedWriteClassName(false);
+        byte[] bytes = PB.toPBBytes(p, parameters);
+        Person1 result = PB.parsePBBytes(bytes, Person1.class);
+        assertEquals("1", result.getId().toString());
+    }
+
+    @Test
+    public void testParameter3(){
+        Student1 p = new Student1();
+        p.setId(1L);
+        p.setName("哈哈");
+        byte[] bytes = PB.toPBBytes(p);
+        Person1 result = PB.parsePBBytes(bytes, Person1.class);
+        assertEquals("1", result.getId().toString());
+        assertEquals("哈哈", ((Student1)result).getName());
+    }
+
+    @Test
+    public void testNull1(){
+        byte[] bytes = PB.toPBBytes(null);
+        Object result = PB.parsePBBytes(bytes);
+        assertNull(result);
+    }
+
+    @Test
+    public void testNull2(){
+        Parameters parameters = new Parameters();
+        parameters.setNeedWriteClassName(false);
+        byte[] bytes = PB.toPBBytes(null, parameters);
+        Object result = PB.parsePBBytes(bytes);
+        assertNull(result);
+    }
+
+    @Test
+    public void testNull3(){
+        Parameters parameters = new Parameters();
+        parameters.setNeedWriteClassName(false);
+        byte[] bytes = PB.toPBBytes(null, parameters);
+        Object result = PB.parsePBBytes(bytes, Person1.class);
+        assertNull(result);
+    }
+
+    //既然强制不读类名，只能抛异常了
+//    @Test
+//    public void testNull4(){
+//        Parameters parameters = new Parameters();
+//        parameters.setNeedWriteClassName(false);
+//        byte[] bytes = PB.toPBBytes(null, parameters);
+//        try {
+//            Object result = PB.parsePBBytes(bytes, Person1.class, parameters);
+//
+//        }catch (Exception e){
+//            assertFalse(false);
+//        }
+//
+//
+//    }
 }

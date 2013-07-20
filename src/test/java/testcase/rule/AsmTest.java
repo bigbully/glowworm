@@ -31,8 +31,18 @@ public class AsmTest extends TestBase {
         assertEquals(0, typeHeadArray.length);
         assertEquals(0, typeArray.length);
 
-        assertEquals(0, result[0]);//默认不写类名
-        assertEquals(1, result[1]);
+        int index = 0;
+        assertEquals(1, result[index++]);//默认写类名
+        byte[] bytesString = (User1.class.getName().getBytes("UTF-8"));
+        Byte[] bytesStringLength = writeRawVarint32(bytesString.length);
+        for (int i = 0; i < bytesStringLength.length; i++) {
+            assertEquals(bytesStringLength[i].toString(), String.valueOf(result[index++]));
+        }
+        //循环判断str内容转化成的byte[]
+        for (int i = 0; i < bytesString.length; i++) {
+            assertEquals(bytesString[i], result[index++]);
+        }
+        assertEquals(1, result[index++]);
     }
 
     //只有一个属性Boolean的javabean
@@ -56,8 +66,18 @@ public class AsmTest extends TestBase {
         assertEquals(0, typeHeadArray.length);
         assertEquals(0, typeArray.length);
 
-        assertEquals(0, result[0]);//默认不写类名
-        assertEquals(1, result[1]);
+        int index = 0;
+        assertEquals(1, result[index++]);//默认写类名
+        byte[] bytesString = (User2.class.getName().getBytes("UTF-8"));
+        Byte[] bytesStringLength = writeRawVarint32(bytesString.length);
+        for (int i = 0; i < bytesStringLength.length; i++) {
+            assertEquals(bytesStringLength[i].toString(), String.valueOf(result[index++]));
+        }
+        //循环判断str内容转化成的byte[]
+        for (int i = 0; i < bytesString.length; i++) {
+            assertEquals(bytesString[i], result[index++]);
+        }
+        assertEquals(1, result[index++]);
     }
 
     //测试User3中的属性是User1的情况，都走asm
@@ -84,8 +104,18 @@ public class AsmTest extends TestBase {
         assertEquals(0, typeHeadArray.length);
         assertEquals(0, typeArray.length);
 
-        assertEquals(0, result[0]);//默认不写类名
-        assertEquals(1, result[1]);
+        int index = 0;
+        assertEquals(1, result[index++]);//默认写类名
+        byte[] bytesString = (User3.class.getName().getBytes("UTF-8"));
+        Byte[] bytesStringLength = writeRawVarint32(bytesString.length);
+        for (int i = 0; i < bytesStringLength.length; i++) {
+            assertEquals(bytesStringLength[i].toString(), String.valueOf(result[index++]));
+        }
+        //循环判断str内容转化成的byte[]
+        for (int i = 0; i < bytesString.length; i++) {
+            assertEquals(bytesString[i], result[index++]);
+        }
+        assertEquals(1, result[index++]);
     }
 
     //测试User4中的属性是User1数组的情况，都走asm
@@ -121,7 +151,16 @@ public class AsmTest extends TestBase {
         assertEquals(0, typeArray.length);
 
         int index = 0;
-        assertEquals(0, result[index++]);//默认不写类名
+        assertEquals(1, result[index++]);//默认写类名
+        byte[] bytesString = (User4.class.getName().getBytes("UTF-8"));
+        Byte[] bytesStringLength = writeRawVarint32(bytesString.length);
+        for (int i = 0; i < bytesStringLength.length; i++) {
+            assertEquals(bytesStringLength[i].toString(), String.valueOf(result[index++]));
+        }
+        //循环判断str内容转化成的byte[]
+        for (int i = 0; i < bytesString.length; i++) {
+            assertEquals(bytesString[i], result[index++]);
+        }
         assertEquals(3, result[index++]);
         assertEquals(1, result[index++]);
         assertEquals(0, result[index++]);
@@ -168,7 +207,18 @@ public class AsmTest extends TestBase {
         assertEquals(0, typeArray[1]);
 
         int index = 0;
-        assertEquals(0, result[index++]);//默认不写类名
+        assertEquals(1, result[index++]);//默认写类名
+        byte[] bytesString0 = (User5.class.getName().getBytes("UTF-8"));
+        Byte[] bytesStringLength0 = writeRawVarint32(bytesString0.length);
+        for (int i = 0; i < bytesStringLength0.length; i++) {
+            assertEquals(bytesStringLength0[i].toString(), String.valueOf(result[index++]));
+        }
+        //循环判断str内容转化成的byte[]
+        for (int i = 0; i < bytesString0.length; i++) {
+            assertEquals(bytesString0[i], result[index++]);
+        }
+
+
         assertEquals(4, result[index++]);
 
         //第一个元素，写入type，类名

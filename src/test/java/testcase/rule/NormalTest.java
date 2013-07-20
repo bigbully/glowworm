@@ -32,8 +32,18 @@ public class NormalTest extends TestBase {
         assertEquals(32, typeArray[0]);
 
         //检查Boolean中的值
-        assertEquals(0, result[0]);//默认不写类名
-        assertEquals(flag ? 1 : 0, result[1]);
+        int index = 0;
+        assertEquals(1, result[index++]);//默认写类名
+        byte[] bytesString = (Boolean.class.getName().getBytes("UTF-8"));
+        Byte[] bytesStringLength = writeRawVarint32(bytesString.length);
+        for (int i = 0; i < bytesStringLength.length; i++) {
+            assertEquals(bytesStringLength[i].toString(), String.valueOf(result[index++]));
+        }
+        //循环判断str内容转化成的byte[]
+        for (int i = 0; i < bytesString.length; i++) {
+            assertEquals(bytesString[i], result[index++]);
+        }
+        assertEquals(flag ? 1 : 0, result[index++]);
     }
 
     //测试Boolean类型 FALSE
@@ -57,9 +67,19 @@ public class NormalTest extends TestBase {
         assertEquals(1, typeArray.length);
         assertEquals(32, typeArray[0]);
 
-        assertEquals(0, result[0]);//默认不写类名
+        int index = 0;
+        assertEquals(1, result[index++]);//默认写类名
+        byte[] bytesString = (Boolean.class.getName().getBytes("UTF-8"));
+        Byte[] bytesStringLength = writeRawVarint32(bytesString.length);
+        for (int i = 0; i < bytesStringLength.length; i++) {
+            assertEquals(bytesStringLength[i].toString(), String.valueOf(result[index++]));
+        }
+        //循环判断str内容转化成的byte[]
+        for (int i = 0; i < bytesString.length; i++) {
+            assertEquals(bytesString[i], result[index++]);
+        }
         //检查Boolean中的值
-        assertEquals(flag ? 1 : 0, result[1]);
+        assertEquals(flag ? 1 : 0, result[index++]);
     }
 
 

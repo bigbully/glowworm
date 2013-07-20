@@ -10,6 +10,7 @@ public class CommonResponse {
     public static int SUCCESS_TYPE = 0;
     public static int EXCEPTION_TYPE = 1;
 
+
     public static CommonResponse successResponse(){
         return new CommonResponse(SUCCESS_TYPE);
     }

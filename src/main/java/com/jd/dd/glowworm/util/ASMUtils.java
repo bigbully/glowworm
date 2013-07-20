@@ -108,10 +108,15 @@ public class ASMUtils {
     }
 
     public static Field getField(Class<?> clazz, String fieldName) {
-        try {
-            return clazz.getDeclaredField(fieldName);
-        } catch (Exception e) {
-            return null;
+        Field field = null;
+        while (clazz != Object.class){
+            try {
+                field = clazz.getDeclaredField(fieldName);
+                return field;
+            } catch (NoSuchFieldException e) {
+                clazz = clazz.getSuperclass();
+            }
         }
+        return field;
     }
 }

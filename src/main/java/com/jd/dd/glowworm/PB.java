@@ -20,16 +20,17 @@ public class PB {
      * @return byte[] 序列化之后的byte数组
      */
     public static byte[] toPBBytes(Object object) {
-        if (object == null) {
-            throw new PBException("不能序列化NULL！");
-        }
         PBSerializer serializer = new PBSerializer();
         try {
             //默认写类名
             serializer.writeBool(true);//写入了类名的标识
-            Class<?> clazz = object.getClass();
-            serializer.writeString(clazz.getName());
-            serializer.write(object);
+            if (object == null) {
+                serializer.writeString("null");
+            }else {
+                Class<?> clazz = object.getClass();
+                serializer.writeString(clazz.getName());
+                serializer.write(object);
+            }
             return serializer.createByteArray();
         } catch (Exception e){
             e.printStackTrace();
@@ -37,7 +38,6 @@ public class PB {
         }finally {
             serializer.close();
         }
-
     }
 
     /**
@@ -49,7 +49,7 @@ public class PB {
      * @return clazz对应的对象
      */
     public static <T> T parsePBBytes(byte[] bytes, Class<T> clazz) {
-        if (bytes == null) {
+        if (bytes == null || bytes.length == 0) {
             throw new PBException("不能反序列化空byte数组!");
         }
         PBDeserializer deserializer = new PBDeserializer();
@@ -59,7 +59,11 @@ public class PB {
             Class fieldClazz;
             if (deserializer.scanBool()){//即便反序列化的时候传入了class参数，如果序列化时写入了类名，就按写入的类进行反序列化
                 String tmpClassName = deserializer.scanString();
-                fieldClazz = TypeUtils.loadClass(tmpClassName);
+                if (tmpClassName.equals("null")){
+                    return null;
+                }else {
+                    fieldClazz = TypeUtils.loadClass(tmpClassName);
+                }
             }else {//如果没写入类名，就按传入的clazz参数
                 fieldClazz = clazz;
             }
@@ -79,18 +83,21 @@ public class PB {
      * @return 返回object，需要强转。
      */
     public static Object parsePBBytes(byte[] bytes) {
-        if (bytes == null) {
+        if (bytes == null|| bytes.length == 0) {
             throw new PBException("不能反序列化空byte数组!");
         }
         PBDeserializer deserializer = new PBDeserializer();
-
         Class fieldClass = null;
         try {
             //分析数组头
             deserializer.analysizeHead(bytes);
             if (deserializer.scanBool()){
                 String tmpClassName = deserializer.scanString();
-                fieldClass = TypeUtils.loadClass(tmpClassName);
+                if (tmpClassName.equalsIgnoreCase("null")){
+                    return null;
+                }else {
+                    fieldClass = TypeUtils.loadClass(tmpClassName);
+                }
             }else {
                  throw new PBException("没有找到写入的类名");
             }
@@ -319,10 +326,22 @@ public class PB {
             if (parameters.getNeedWriteClassName()) {
                 // 对象类型字符串
                 serializer.writeBool(true);
-                Class<?> clazz = object.getClass();
-                serializer.writeString(clazz.getName());
+                if (object == null){//如果确认写入类名，则把类名置为"null"
+                    serializer.writeString("null");
+                    return serializer.createByteArray();
+                }else {
+                    Class<?> clazz = object.getClass();
+                    serializer.writeString(clazz.getName());
+                }
             }else {
-                serializer.writeBool(false);
+                //如果确认不写类名，但是发现对象为null，则强制写入类名"null"
+                if (object == null){
+                    serializer.writeBool(true);
+                    serializer.writeString("null");
+                    return serializer.createByteArray();
+                }else {
+                    serializer.writeBool(false);
+                }
             }
             serializer.write(object);
             return serializer.createByteArray();
