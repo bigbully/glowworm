@@ -239,13 +239,22 @@ public class BitTest {
 //        }
 //        System.out.println(b);
 
+        short n = 3600;
+        byte[] b = new byte[3];
+        b[0] = (byte) (n >>> 8);
+        b[1] = (byte) (n >>> 0);
 
-//        String str = "";
-//        byte b = 40;
-//        for (int i = 0; i < 8; i++) {
-//            str += (b >>> (7 - i) & 1);
-//        }
-//        System.out.println(str);
-        System.out.println(Integer.MAX_VALUE / 1000 / 1000);
+        b[2] = (byte)9;
+
+        String str = "";
+        for (int i = 0; i < b.length; i++) {
+            byte b1 = b[i];
+            for (int j = 0; j < 8; j++) {
+                str += (b1 >>> (7 - j) & 1);
+            }
+            str += " ";
+        }
+        System.out.println(str);
+//        System.out.println(Integer.MAX_VALUE / 1000 / 1000);
     }
 }

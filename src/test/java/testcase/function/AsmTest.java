@@ -1,5 +1,7 @@
 package testcase.function;
 
+import com.alibaba.fastjson.JSONObject;
+import com.jd.bdp.seomonitor.model.page.SeoWord;
 import com.jd.dd.glowworm.PB;
 import com.jd.dd.glowworm.PBException;
 import com.jd.dd.glowworm.util.Parameters;
@@ -2530,7 +2532,7 @@ public class AsmTest extends TestBase {
     public void testWriteClassName2() throws Exception{
         User1 user = new User1();
         user.setB(true);
-
+//
         User1 result = PB.parsePBBytes(PB.toPBBytes(user), User1.class);
         assertEquals(true, result.getB());
     }
@@ -2631,4 +2633,91 @@ public class AsmTest extends TestBase {
         MemoryRecord result = (MemoryRecord)PB.parsePBBytes(bytes);
         System.out.println(result);
     }
+
+    @Test
+    public void testForSeo(){
+        List<SeoWord> list = new ArrayList<SeoWord>();
+        SeoWord seoWord = new SeoWord();
+        seoWord.setGrabDate(new Date());
+        seoWord.setId(1L);
+//        seoWord.setRanking("123123cxv");
+        seoWord.setSearchNumber(12312L);
+        seoWord.setUrl("sfwwwdbaidudcom");
+        seoWord.setChange(1);
+//        seoWord.setChangeDesc("123123123123");
+//        seoWord.setGrabDate(new Date());
+//        seoWord.setId(123123132L);
+//        seoWord.setLimit(1);
+//        seoWord.setOperateTime(new Date());
+//        seoWord.setPerson("12");
+//        seoWord.setStart(1123);
+//        seoWord.setSearchTime("123123");
+//        seoWord.setWordConfigId(123123L);
+//        seoWord.setWordName("123123");
+//        list.add(seoWord);
+
+//        byte[] bytes = PB.toPBBytes(list);
+//        List<SeoWord> result = (List)PB.parsePBBytes(bytes);
+        byte[] bytes = PB.toPBBytes(seoWord);
+        SeoWord result = (SeoWord)PB.parsePBBytes(bytes);
+        System.out.println(result.toString());
+
+    }
+
+    @Test
+    public void testForMr(){
+        MemoryRecord mr = new MemoryRecord();
+        mr.setPin("13724379985");
+        mr.setLevel(56);
+        mr.setRegTime("2012-04-01 13:39:00");
+        mr.setFirstWareId(136363);
+        mr.setFirstWare("金士顿（Kingston） 8G class4 TF (micro SD) 储存卡 （SDC4/8GBSP）");
+        mr.setPs1Id(652);
+        mr.setPs1Name("手机数码");
+        mr.setPs1WareNum(3);
+        mr.setPs2Id(1315);
+        mr.setPs2Name("服饰鞋帽");
+        mr.setPs2WareNum(2);
+        mr.setPs3Id(0);
+        mr.setPs3Name("NULL");
+        mr.setPs3WareNum(0);
+        mr.setPs4Id(0);
+        mr.setPs4Name("NULL");
+        mr.setPs3WareNum(123213213);
+        mr.setPs5Id(0);
+        mr.setPs5Name("NULL");
+        mr.setPs5WareNum(0);
+        mr.setAllPsWareNum(5);
+        mr.setCommentNum(0);
+        mr.setShoworderNum(0);
+        mr.setHelp4Others(0);
+        mr.setOrderTotalNum(4);
+        mr.setAllAmount(1893.0D);
+        mr.setAllWareType(5);
+        mr.setConsumerRanking(0.7091D);
+        mr.setDiscountAmount(508.0D);
+        mr.setClosestFourCreated("0000-00-00 00:00:00");
+        byte[] bytes = PB.toPBBytes(mr);
+        MemoryRecord result = (MemoryRecord)PB.parsePBBytes(bytes);
+        System.out.println(result);
+    }
+
+    @Test
+    public void testForWhale(){
+        Set<Broker> treeSet = new TreeSet<Broker>();
+        Broker b = new Broker();
+        b.setId(1);
+        b.setIp("129.213.32.12");
+        b.setMaster(true);
+        b.setPort(123);
+
+        treeSet.add(b);
+        CommonResponse commonResponse = CommonResponse.successResponse(treeSet);
+
+        byte[] bytes = PB.toPBBytes(commonResponse);
+        CommonResponse result = (CommonResponse)PB.parsePBBytes(bytes);
+
+        System.out.println(123);
+    }
+
 }

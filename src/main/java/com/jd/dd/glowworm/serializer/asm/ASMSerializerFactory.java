@@ -123,7 +123,7 @@ public class ASMSerializerFactory implements Opcodes {
         byte[] code = cw.toByteArray();
 
 //        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
-//                "D:/" + className + ".class"));
+//                "/home/bigbully/" + className + ".class"));
 
         Class<?> exampleClass = classLoader.defineClassPublic(className, code, 0, code.length);
         Object instance = exampleClass.newInstance();
