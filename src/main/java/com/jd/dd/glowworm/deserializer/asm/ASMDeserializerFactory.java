@@ -65,8 +65,8 @@ public class ASMDeserializerFactory implements Opcodes {
 
         byte[] code = cw.toByteArray();
 
-        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
-                "/home/bigbully/" + className + ".class"));
+//        org.apache.commons.io.IOUtils.write(code, new java.io.FileOutputStream(
+//                "/home/bigbully/" + className + ".class"));
 
         Class<?> exampleClass = classLoader.defineClassPublic(className, code, 0, code.length);
 

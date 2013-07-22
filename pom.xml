@@ -155,7 +155,7 @@
                     <excludes>
                         <exclude>**/TestBase.java</exclude>
                     </excludes>
-                    <argLine>-javaagent:/home/bigbully/program/workspace/TProfiler/target/tprofiler.jar</argLine>
+                    <!--<argLine>-javaagent:/home/bigbully/program/workspace/TProfiler/target/tprofiler.jar</argLine>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -171,12 +171,12 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>sonar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
+    <!--<profiles>-->
+        <!--<profile>-->
+            <!--<id>sonar</id>-->
+            <!--<activation>-->
+                <!--<activeByDefault>true</activeByDefault>-->
+            <!--</activation>-->
+        <!--</profile>-->
+    <!--</profiles>-->
 </project>
